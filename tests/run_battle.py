@@ -31,7 +31,7 @@ def player(b, url=URL):
 def room(pg): return pg.evaluate("__erg.mp.room")
 def state(pg): return pg.evaluate("(() => { const r = __erg.mp.room; return r ? r.st : null })()")
 def cur_title(pg):
-    return pg.evaluate("(() => { const r = __erg.mp.room; const q = r.q['n' + r.cur]; return __erg.BANK[q.s].title })()")
+    return pg.evaluate("(() => { const r = __erg.mp.room; const q = r.q['n' + r.cur]; const op = (q.op || []).find(o => +o[0] === +q.s); return op ? op[1] : __erg.BANK[q.s].title })()")
 
 def play_round(pages, picks, idx):
     """picks: list of 'right' / 'wrong' / None per page; waits for every device to finish the round."""

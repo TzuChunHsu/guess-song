@@ -461,7 +461,7 @@ a{color:inherit}
   </details>
   <p class="foot">
     <button class="link" id="btn-beep">🔊 測試聲音</button> · <button class="link" id="btn-sfx">音效：開</button><br>
-    試聽音源來自 Apple Music 與 Deezer 的公開 30 秒試聽，需要連網。
+    試聽音源來自 Apple Music 與 Deezer 的公開 30 秒試聽，需要連網。<br><span id="ver"></span>
   </p>
 </section>
 
@@ -598,7 +598,8 @@ a{color:inherit}
 const BANK_RAW = /*__BANK__*/;
 const T2S = /*__T2S__*/;
 const ALIASES = /*__ALIASES__*/;
-const VOICE = /*__VOICE__*/;    // singer voice: m male, f female, M male group, F female group, x mixed
+const VOICE = /*__VOICE__*/;
+const BUILD = /*__BUILD__*/;    // when this page was built, shown on the home screen    // singer voice: m male, f female, M male group, F female group, x mixed
 
 /* ================= helpers ================= */
 const $ = s => document.querySelector(s);
@@ -1050,6 +1051,7 @@ function rangeLabel(y0, y1){ return y0 <= MINY && y1 >= MAXY ? '全部年代' : 
 function bestKey(mode, diff, nopt, y0, y1, clip, tl, cats){ return ['best5', mode, diff, nopt, y0, y1, clip || 'random', tl || 0, (cats || []).slice().sort().join('')].join('_'); }
 function renderHome(){
   $('#bank-count').textContent = BANK.length;
+  $('#ver').textContent = `版本 ${BUILD}`;
   $$('.mode').forEach(b => b.setAttribute('aria-checked', String(b.dataset.mode === settings.mode)));
   $$('#seg-diff button').forEach(b => b.classList.toggle('on', b.dataset.diff === settings.diff));
   $$('#seg-n button').forEach(b => b.classList.toggle('on', +b.dataset.n === settings.nopt));

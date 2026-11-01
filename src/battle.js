@@ -6,7 +6,10 @@
    given in server time. Room layout (rooms/CODE):
      v, bv (song bank version), host (player id), nm (room name, optional), ts, st ('lobby' | 'play' | 'end'), gk (game id),
      cfg { cats, y0, y1, diff, n, t, clip, r }, cur (question index), at (server ms the question starts),
-     q/nI { s song id, u preview, st clip start, o option ids, ev, src, art, th, lk, alt, ch, ce },
+     q/nI { s song id, u preview, st clip start, o option ids, op options as [id, title, artist, year] (room v2+),
+            src, art, th, lk, alt, ch, ce },
+     From v2 every question carries its own titles, so players on different versions of the song
+     list (an older cached page, or the Netlify copy) can still play together.
      a/nI/PLAYER { k picked song id (-1 time up, -2 can't play), t seconds, p points },
      p/PLAYER { n name, j joined, hb heartbeat, s score, c correct, tt seconds spent on correct answers }
    Battle rules (modelled on Kahoot-style speed scoring and the fastest-answer bonus of music quizzes):
@@ -209,7 +212,7 @@ async function mpCreate(){
     }
     if (!code) throw new Error('no code');
     const t0 = Date.now();
-    const room = await fb.put(`rooms/${code}`, Object.assign({ v: 1, bv: BANK_VER, host: pid, ts: SV_TS, st: 'lobby', cfg: mpCfgFromSettings(), p: { [pid]: { n: name, j: SV_TS, hb: SV_TS, s: 0, c: 0 } } }, named ? { nm: rn } : {}));
+    const room = await fb.put(`rooms/${code}`, Object.assign({ v: 2, bv: BANK_VER, host: pid, ts: SV_TS, st: 'lobby', cfg: mpCfgFromSettings(), p: { [pid]: { n: name, j: SV_TS, hb: SV_TS, s: 0, c: 0 } } }, named ? { nm: rn } : {}));
     clockSample(t0, Date.now(), room && room.ts);
     mpEnter(code, pid);
   } catch(e){ toast('建立房間失敗，請確認網路後再試'); }
@@ -235,7 +238,7 @@ async function mpJoin(raw){
       name = name + k; store.set('mpName', name); $('#mp-name').value = name;
       toast(`房間裡已經有人叫這個名字，你改叫「${name}」`);
     }
-    if (room.bv && room.bv !== BANK_VER) return showModal('遊戲版本不一樣', '你的遊戲版本跟房主的不同，題目會對不上。請重新整理頁面後再加入；還是不行的話，請房主也重新整理。', [{ label: '取消' }, { label: '重新整理', primary: true, fn: () => location.reload() }]);
+    if (room.bv && room.bv !== BANK_VER && !(+room.v >= 2)) return showModal('房主的遊戲版本比較舊', '這個房間是用舊版遊戲開的，題目會對不上。請房主重新整理頁面（或按下面的連結打開最新版），再開一次房間。', [{ label: '知道了' }]);
     const me = room.p && room.p[pid];
     const t0 = Date.now();
     const v = await fb.patch(`rooms/${code}/p/${pid}`, me ? { n: name, hb: SV_TS } : { n: name, j: SV_TS, hb: SV_TS, s: 0, c: 0 });
@@ -478,8 +481,14 @@ function mpSetupRound(i, q){
   Object.keys(mp.local).forEach(k => { if (+k < i){ audioPool.release(mp.local[k].audio); delete mp.local[k]; } });
   mp.roundIdx = i; mp.cd = 0; mp.boardHtml = '';
   G.roundNo = i + 1;
-  const song = BANK[q.s];
-  const options = mpArr(q.o).map(id => BANK[id]).filter(Boolean);
+  // the question's own titles (rooms v2+); older rooms only have ids into the host's song list
+  const own = mpArr(q.op).map(o => mpArr(o)).filter(o => o.length >= 2).map(([id, title, artist, year]) => {
+    const local = BANK[+id];
+    const artists = String(artist || '').split('、').filter(Boolean);
+    return local && local.title === title && local.artist === artist ? local : { id: +id, title: String(title), artist: String(artist || ''), artists, year: +year || 0, keys: [norm(title)], cat: 'zh', v: 'x', foreign: true };
+  });
+  const options = own.length ? own : mpArr(q.o).map(id => BANK[id]).filter(Boolean);
+  const song = options.find(o => o.id === +q.s) || BANK[q.s];
   if (!song || options.length < 2) return mpGone('題目對不上，可能是大家的遊戲版本不同。請所有人重新整理頁面後再開一局。');
   const a = mpLoadAudio(i, q);
   R = {
@@ -620,7 +629,13 @@ function mpRenderBoard(note){
 function mpEnsureProducer(){
   if (mp.producer || !G || G.mode !== 'battle') return;
   mp.producer = true;
-  const used = Object.values((mp.room && mp.room.q) || {}).map(q => q && q.s).filter(x => x != null);
+  // songs already asked in this game, matched by title and singer (the old host may run another version)
+  const used = Object.values((mp.room && mp.room.q) || {}).filter(Boolean).map(q => {
+    const me = mpArr(q.op).map(o => mpArr(o)).find(o => +o[0] === +q.s);
+    if (!me) return +q.s;
+    const hit = BANK.find(x => x.title === me[1] && x.artist === me[2]);
+    return hit ? hit.id : null;
+  }).filter(x => x != null);
   G.played = new Set(used);
   const left = BANK.filter(s => G.poolIds.has(s.id) && !G.played.has(s.id));
   G.bag = diverseOrder(left, cryptoRnd, null, new Set(store.get('recent', [])));
@@ -670,7 +685,7 @@ async function mpPrepare(){
       if (!now || (now.q && now.q['n' + k])){ g.queue.unshift(it); continue; }   // filled meanwhile by another device
       const opts = buildOptions(it.song, g.nopt, g.diff, cryptoRnd, g.optSeen);
       const info = it.info;
-      const q = { s: it.song.id, u: String(info.u).replace(/^http:\/\//, 'https://'), st: it.start, o: opts.map(s => s.id), src: info.src || '', art: info.art || '', th: info.thumb || '', lk: info.link || '' };
+      const q = { s: it.song.id, u: String(info.u).replace(/^http:\/\//, 'https://'), st: it.start, o: opts.map(s => s.id), op: opts.map(s => [s.id, s.title, s.artist, s.year]), src: info.src || '', art: info.art || '', th: info.thumb || '', lk: info.link || '' };
       if (Array.isArray(info.alts) && info.alts.length) q.alt = info.alts.slice(0, 2);
       if (it.chorus){ q.ch = 1; q.ce = it.chorus.ce; }
       mp.local[k] = it;
@@ -750,8 +765,10 @@ function mpShowFinal(){
     </li>`).join('');
   $('#btn-again').textContent = mp.isHost ? '再來一局（同一個房間）' : '回房間等下一局';
   $('#btn-home').textContent = '離開房間';
-  const recent = store.get('recent', []).filter(id => !g.history.some(h => h.song.id === id));
-  store.set('recent', [...g.history.map(h => h.song.id), ...recent].slice(0, 150));
+  if (room.bv === BANK_VER){                      // song ids only mean the same songs on the same version
+    const recent = store.get('recent', []).filter(id => !g.history.some(h => h.song.id === id));
+    store.set('recent', [...g.history.map(h => h.song.id), ...recent].slice(0, 150));
+  }
   hideModal();
   show('result');
   countUp($('#res-score'), g.score);

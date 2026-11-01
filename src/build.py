@@ -168,6 +168,9 @@ def main(template, bank_path, out):
             voice[name] = code
     unlabelled = sorted(a for a in artists if a not in voice)
     assert not unlabelled, "singers.txt is missing: " + "、".join(unlabelled)
+    import datetime, hashlib
+    stamp = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y.%m.%d %H:%M")   # Taiwan time
+    html = html.replace("/*__BUILD__*/", json.dumps(stamp + " · " + hashlib.sha1("\n".join(rows).encode()).hexdigest()[:6]))
     html = html.replace("/*__VOICE__*/", json.dumps({a: voice[a] for a in sorted(artists)}, ensure_ascii=False))
     chorus = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "chorus.js"), encoding="utf-8").read()
     html = html.replace("/*__CHORUS__*/", chorus)

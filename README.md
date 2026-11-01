@@ -35,6 +35,8 @@
 
 單人模式的難度用同一套干擾選項規則（選項數另外選）。歌手只有一兩首歌時，不夠的部分改用同性別歌手補上。
 
+不同版本也能一起玩：每一題都帶著自己的歌名和歌手，房主和朋友就算開的是不同時間的頁面（手機快取的舊頁面、Netlify 的舊版），題目照樣對得上；只有用很舊的版本開的房間會請房主重新整理。首頁最下面顯示目前的版本時間。
+
 斷線處理：手機睡著或網路中斷會自動重連；重新整理頁面後按「加入」回到房間，分數保留；房主斷線 20 秒，房間裡最早加入的人自動接手；網路擋住即時串流時改成每秒查詢。
 
 ## 線上資料庫（Firebase Realtime Database）
@@ -96,5 +98,6 @@ python3 tests/run_board.py index.html src/bank.txt          # 每日挑戰排行
 python3 tests/run_rand.py index.html src/bank.txt           # 出題隨機性與歌手分散
 python3 tests/run_options.py index.html src/bank.txt        # 干擾選項：同歌手、同性別、同年代
 python3 tests/run_room_names.py index.html src/bank.txt     # 房間名稱（含 test 這種 4 個字母的名字）
+python3 tests/run_battle_versions.py index.html src/bank.txt # 房主和朋友的題庫版本不同時照樣能玩
 python3 tests/run_v6.py index.html src/bank.txt             # Apple / Deezer 連不上時的備援
 ```
