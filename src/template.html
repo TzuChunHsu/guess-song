@@ -158,10 +158,10 @@ a{color:inherit}
 .mp-box #mp-code::placeholder{font-weight:500;letter-spacing:normal}
 .mp-sub{font-size:12px;letter-spacing:.12em;color:var(--dim);font-weight:700;margin:2px 0 -4px}
 .lb-name{color:var(--cream);font-weight:700;font-size:14.5px;margin:0 0 6px}
-.rules{margin:0;padding:12px 14px 12px 32px;background:var(--card);border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:13.5px;line-height:1.75}
+.rules{margin:0 0 14px;padding:0 0 0 18px;color:var(--muted);font-size:13.5px;line-height:1.75}
+#seg-time.no-free{grid-template-columns:repeat(4,1fr)}
 .rules b{color:var(--cream)}
-#lb-diff button:disabled,#lb-rounds button:disabled{cursor:default}
-#lb-diff button:disabled:not(.on),#lb-rounds button:disabled:not(.on){opacity:.4}
+
 #mp-join{flex:none;padding:0 18px;border-radius:12px;background:var(--gold);color:var(--bg);font-weight:900}
 #mp-join:disabled{opacity:.4}
 .mp-hint{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
@@ -385,12 +385,12 @@ a{color:inherit}
       </div>
       <div class="mp-sub">自己開房間</div>
       <label class="mp-field"><input id="mp-room" maxlength="16" autocomplete="off" enterkeyhint="done" placeholder="房間名稱（選填，例如：阿明的歌房）" aria-label="房間名稱"></label>
-      <p class="mp-hint" id="mp-hint">取了名稱，朋友輸入名稱就能進來；不取也會拿到 4 碼房號。在下面選好類別和年代，按「建立房間」，難度和題數進房間再選。</p>
+      <p class="mp-hint" id="mp-hint">取了名稱，朋友輸入名稱就能進來；不取也會拿到 4 碼房號。在下面設定好題目，按「建立房間」；進房間後房主也能再改。</p>
     </div>
     <p class="daily-note" id="mp-off" hidden>好友對戰需要先設定線上資料庫，目前這個網站還沒設定好。</p>
   </div>
 
-  <div id="opts-wrap">
+  <div id="opts-home-slot"><div id="opts-wrap">
     <h2 class="sec">題目類別 · 可複選</h2>
     <div class="chips cats" id="chips-cat"></div>
     <div id="stage-wrap" hidden>
@@ -436,7 +436,7 @@ a{color:inherit}
       <div class="yr-ends"><span id="yr-min"></span><span>拖動兩端調整年份</span><span id="yr-max"></span></div>
       <div class="chips" id="yr-presets"></div>
     </div>
-  </div>
+  </div></div>
   <p class="daily-note" id="daily-note" hidden>每日挑戰固定華語歌、「普通」難度、9 選 1、20 秒、全年代、隨機片段。今天每個人聽到的是同一組 5 首歌，片段位置也一樣，每天第一次的成績可以上排行榜。</p>
   <ol class="mpboard" id="home-daily-board" hidden></ol>
 
@@ -522,23 +522,21 @@ a{color:inherit}
   </div>
   <h2 class="sec" id="lb-count">玩家</h2>
   <ul class="players" id="lb-players"></ul>
-  <h2 class="sec">題目</h2>
+  <h2 class="sec">這局的設定</h2>
   <p class="daily-note" id="lb-cfg" style="margin-top:0"></p>
-  <h2 class="sec">難度 · 房主決定</h2>
-  <div class="seg" id="lb-diff">
-    <button data-d="easy"><b>輕鬆</b><small>5 秒 · 4 選 1</small></button>
-    <button data-d="normal"><b>普通</b><small>3 秒 · 6 選 1</small></button>
-    <button data-d="hard"><b>地獄</b><small>1.5 秒 · 9 選 1</small></button>
+  <div id="lb-host">
+    <p class="mp-hint" style="margin:10px 2px 0">房主可以直接在下面調整，所有人會同步看到。</p>
+    <h2 class="sec">題數</h2>
+    <div class="seg seg4" id="lb-rounds">
+      <button data-r="5"><b>5</b><small>首</small></button>
+      <button data-r="10"><b>10</b><small>首</small></button>
+      <button data-r="15"><b>15</b><small>首</small></button>
+      <button data-r="20"><b>20</b><small>首</small></button>
+    </div>
+    <div id="lb-opts-slot"></div>
   </div>
-  <p class="mp-hint" id="lb-diff-note" style="margin:8px 2px 0"></p>
-  <h2 class="sec">題數 · 房主決定</h2>
-  <div class="seg seg4" id="lb-rounds">
-    <button data-r="5"><b>5</b><small>首</small></button>
-    <button data-r="10"><b>10</b><small>首</small></button>
-    <button data-r="15"><b>15</b><small>首</small></button>
-    <button data-r="20"><b>20</b><small>首</small></button>
-  </div>
-  <h2 class="sec">對戰規則</h2>
+  <details class="howto" id="lb-rules-box">
+  <summary>對戰規則</summary>
   <ul class="rules">
     <li>倒數結束後，<b>大家同時聽同一段</b>，選出歌名，每首只能選一次。</li>
     <li>答對拿 <b>500–1000 分</b>，越快越多；按「聽長一點」分數會打折（×0.6、×0.35）。</li>
@@ -548,10 +546,8 @@ a{color:inherit}
     <li id="lb-rules-wrong"><b>地獄難度答錯倒扣 200</b>，沒把握可以不答（時間到不扣分）。</li>
     <li>同分時，答對首數多的人贏；再同分，答對花的總時間短的人贏。</li>
   </ul>
-  <div id="lb-host">
-    <button class="start" id="lb-start">開始對戰</button>
-    <button class="start ghost" id="lb-edit">改類別、年代、片段</button>
-  </div>
+  </details>
+  <button class="start" id="lb-start">開始對戰</button>
   <p class="daily-note" id="lb-wait" hidden>等房主按開始…</p>
   <button class="start ghost" id="lb-leave">離開房間</button>
 </section>
@@ -1051,7 +1047,7 @@ settings.y0 = Math.max(MINY, Math.min(MAXY, +settings.y0 || MINY));
 settings.y1 = Math.max(settings.y0, Math.min(MAXY, +settings.y1 || MAXY));
 
 /* ================= home screen ================= */
-function show(id){ $$('.screen').forEach(s => s.classList.toggle('active', s.id === id)); window.scrollTo(0, 0); }
+function show(id){ $$('.screen').forEach(s => s.classList.toggle('active', s.id === id)); mpPlaceOpts(); window.scrollTo(0, 0); }
 function poolFor(cats, y0, y1){ return BANK.filter(s => cats.includes(s.cat) && s.year >= y0 && s.year <= y1); }
 function catLabel(cats){ return cats.length === CATS.length ? '全部類別' : CATS.filter(c => cats.includes(c[0])).map(c => c[1]).join('・'); }
 function rangeLabel(y0, y1){ return y0 <= MINY && y1 >= MAXY ? '全部年代' : y0 === y1 ? `${y0} 年` : `${y0} – ${y1}`; }
@@ -1066,7 +1062,12 @@ function renderHome(){
   $$('#seg-diff button').forEach(b => b.classList.toggle('on', b.dataset.diff === settings.diff));
   $$('#seg-n button').forEach(b => b.classList.toggle('on', +b.dataset.n === settings.nopt));
   $$('#seg-clip button').forEach(b => b.classList.toggle('on', b.dataset.clip === settings.clip));
-  $$('#seg-time button').forEach(b => b.classList.toggle('on', +b.dataset.t === settings.tlimit));
+  const battleMode = settings.mode === 'battle';
+  const tShown = battleMode && !settings.tlimit ? 20 : settings.tlimit;            // battles always have a time limit
+  $$('#seg-time button').forEach(b => b.classList.toggle('on', +b.dataset.t === tShown));
+  $('#seg-time button[data-t="0"]').hidden = battleMode;
+  $('#seg-time').classList.toggle('no-free', battleMode);
+  $$('#seg-n small').forEach(x => x.hidden = battleMode);                          // battle scoring doesn't use these multipliers
   const daily = settings.mode === 'daily';
   $('#opts-wrap').hidden = daily;
   $('#daily-note').hidden = !daily;
@@ -1079,7 +1080,7 @@ function renderHome(){
   // stage panel
   const stage = settings.mode === 'stage';
   $('#stage-wrap').hidden = !stage;
-  $('#grp-free').hidden = stage || settings.mode === 'battle';
+  $('#grp-free').hidden = stage;
   if (settings.mode === 'battle') mpCheckDb();
   dailyHome();
   if (stage){
@@ -1144,7 +1145,7 @@ $('#chips-cat').addEventListener('click', e => {
 });
 $('#chips-level').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.disabled){ settings.stageStart = +b.dataset.lv; saveSettings(); } });
 $('#seg-n').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.nopt = +b.dataset.n; saveSettings(); } });
-function saveSettings(){ store.set('settings', settings); renderHome(); }
+function saveSettings(){ store.set('settings', settings); renderHome(); mpSettingsChanged(); }
 $$('.mode').forEach(b => b.addEventListener('click', () => { settings.mode = b.dataset.mode; saveSettings(); }));
 $('#seg-diff').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.diff = b.dataset.diff; saveSettings(); } });
 $('#btn-sfx').addEventListener('click', () => { sfx.on = !sfx.on; store.set('sfx', sfx.on); renderHome(); });

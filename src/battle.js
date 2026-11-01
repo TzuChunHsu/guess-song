@@ -167,15 +167,54 @@ function mpLink(code){
   u.hash = '';
   return u.toString();
 }
+/* A room uses the same settings as a solo game (categories, clip, difficulty, choices, time, years)
+   plus the song count; "no time limit" isn't offered, a battle needs one. */
+const MP_TIMES = [10, 15, 20, 30];
 function mpCfgFromSettings(){
   const old = (mp.room && mp.room.cfg) || {};
   const r = +(old.r || store.get('mpRounds', 10)) || 10;
-  const diff = MP_DIFF[old.diff] ? old.diff : MP_DIFF[store.get('mpDiff', 'normal')] ? store.get('mpDiff', 'normal') : 'normal';
-  return { cats: settings.cats.slice(), y0: settings.y0, y1: settings.y1, diff, n: MP_DIFF[diff].n, t: MP_DIFF[diff].t, clip: settings.clip, r };
+  const diff = DIFF[settings.diff] ? settings.diff : 'normal';
+  return { cats: settings.cats.slice(), y0: settings.y0, y1: settings.y1, diff, n: settings.nopt, t: MP_TIMES.includes(settings.tlimit) ? settings.tlimit : 20, clip: settings.clip, r };
 }
+function mpCfgN(c){ const d = MP_DIFF[c.diff] ? c.diff : 'normal'; return [4, 6, 9].includes(+c.n) ? +c.n : MP_DIFF[d].n; }
+function mpCfgT(c){ const d = MP_DIFF[c.diff] ? c.diff : 'normal'; return MP_TIMES.includes(+c.t) ? +c.t : MP_DIFF[d].t; }
+function mpCfgCats(c){ const a = mpArr(c.cats).filter(k => CATS.some(x => x[0] === k)); return a.length ? a : ['zh']; }
 function mpCfgText(c){
-  const cats = mpArr(c.cats).length ? mpArr(c.cats) : ['zh'];
-  return `${catLabel(cats)} · ${rangeLabel(+c.y0 || MINY, +c.y1 || MAXY)}${c.clip === 'chorus' ? ' · 只出副歌' : ' · 隨機片段'} · 共 ${poolFor(cats, +c.y0 || MINY, +c.y1 || MAXY).length} 首可抽`;
+  const cats = mpCfgCats(c), d = MP_DIFF[c.diff] ? c.diff : 'normal';
+  return `${catLabel(cats)} · ${rangeLabel(+c.y0 || MINY, +c.y1 || MAXY)} · ${c.clip === 'chorus' ? '只出副歌' : '隨機片段'} · ${MP_DIFF[d].name}${MP_DIFF[d].wrong ? `（答錯倒扣 ${MP_DIFF[d].wrong}）` : ''} · ${mpCfgN(c)} 選 1 · 限時 ${mpCfgT(c)} 秒 · ${+c.r || 10} 首 · 共 ${poolFor(cats, +c.y0 || MINY, +c.y1 || MAXY).length} 首可抽`;
+}
+/* the host's settings panel sits in the room; everyone else sees the summary */
+function mpPlaceOpts(){
+  const el = $('#opts-wrap');
+  if (!el) return;
+  const inRoom = $('#lobby').classList.contains('active') && mp.isHost && !!mp.room;
+  const slot = inRoom ? $('#lb-opts-slot') : $('#opts-home-slot');
+  if (el.parentNode === slot) return;
+  if (inRoom) mpAdoptCfg();                       // show the room's settings, not this phone's last solo ones
+  slot.appendChild(el);
+  el.hidden = false;
+}
+function mpAdoptCfg(){
+  const c = (mp.room && mp.room.cfg) || {};
+  settings.cats = mpCfgCats(c);
+  settings.y0 = Math.max(MINY, Math.min(MAXY, +c.y0 || MINY));
+  settings.y1 = Math.max(settings.y0, Math.min(MAXY, +c.y1 || MAXY));
+  settings.diff = DIFF[c.diff] ? c.diff : 'normal';
+  settings.nopt = mpCfgN(c);
+  settings.tlimit = mpCfgT(c);
+  settings.clip = c.clip === 'chorus' ? 'chorus' : 'random';
+  settings.mode = 'battle';
+  store.set('settings', settings);
+  renderHome();
+}
+let mpCfgTimer = 0;
+function mpSettingsChanged(){
+  if (!mp.code || !mp.isHost || !mp.room || mp.room.st !== 'lobby' || !$('#lobby').classList.contains('active')) return;
+  clearTimeout(mpCfgTimer);
+  mpCfgTimer = setTimeout(() => {
+    if (!mp.code || !mp.isHost || !mp.room || mp.room.st !== 'lobby') return;
+    mpPatchRoom({ cfg: mpCfgFromSettings() }); mpRender();
+  }, 250);
 }
 function mpStartLabel(){
   if (!mp.code) return '建立房間';
@@ -184,7 +223,7 @@ function mpStartLabel(){
 function mpBusy(on){ mp.busy = on; $('#mp-join').disabled = on || !FB; $('#btn-start').disabled = on || $('#btn-start').disabled; if (!on) renderHome(); }
 function mpPlayers(room){ return Object.entries((room && room.p) || {}).filter(([, p]) => p && typeof p === 'object').map(([id, p]) => Object.assign({ id }, p)); }
 function mpActive(room, now){ return mpPlayers(room).filter(p => now - (+p.hb || 0) < MP_STALE); }
-function mpT(room){ const c = (room && room.cfg) || {}; return (MP_DIFF[c.diff] || MP_DIFF.normal).t; }
+function mpT(room){ return mpCfgT((room && room.cfg) || {}); }
 
 /* ---- create / join / leave ---- */
 async function mpCreate(){
@@ -373,14 +412,16 @@ function mpRenderLobby(now){
   const c = room.cfg || {};
   const d = MP_DIFF[c.diff] ? c.diff : 'normal';
   $('#lb-cfg').textContent = mpCfgText(c);
-  $('#lb-diff-note').textContent = `${MP_DIFF[d].name}：${MP_DIFF[d].desc}`;
-  $$('#lb-diff button').forEach(b => { b.classList.toggle('on', b.dataset.d === d); b.disabled = !mp.isHost; });
   $('#lb-rules-wrong').hidden = !MP_DIFF[d].wrong;
+  mpPlaceOpts();
   $('#lb-host').hidden = !mp.isHost;
+  $('#lb-start').hidden = !mp.isHost;
   $('#lb-wait').hidden = mp.isHost;
   $('#lb-wait').textContent = room.st === 'end' ? '這局結束了，等房主開下一局…' : '等房主按開始…';
-  $$('#lb-rounds button').forEach(b => { b.classList.toggle('on', +b.dataset.r === (+c.r || 10)); b.disabled = !mp.isHost; });
-  $('#lb-start').textContent = ps.length > 1 ? `開始對戰 · ${ps.length} 人` : '開始（朋友還沒進來，也可以先自己試玩）';
+  $$('#lb-rounds button').forEach(b => b.classList.toggle('on', +b.dataset.r === (+c.r || 10)));
+  const pool = poolFor(mpCfgCats(c), +c.y0 || MINY, +c.y1 || MAXY).length;
+  $('#lb-start').disabled = pool < MIN_POOL;
+  $('#lb-start').textContent = pool < MIN_POOL ? `題目太少（${pool} 首），放寬類別或年代` : ps.length > 1 ? `開始對戰 · ${ps.length} 人` : '開始（朋友還沒進來，也可以先自己試玩）';
 }
 function mpRankText(){
   const room = mp.room;
@@ -391,14 +432,14 @@ function mpRankText(){
   return ps.length > 1 ? `第 ${rank} 名 · ${ps.length} 人` : '';
 }
 /* the settings that decide which songs can come up (the song count doesn't) */
-function mpCfgKey(c){ return JSON.stringify([mpArr(c.cats).slice().sort(), +c.y0 || MINY, +c.y1 || MAXY, MP_DIFF[c.diff] ? c.diff : 'normal', c.clip === 'chorus']); }
+function mpCfgKey(c){ return JSON.stringify([mpCfgCats(c).slice().sort(), +c.y0 || MINY, +c.y1 || MAXY, c.clip === 'chorus']); }   // what decides which songs can come up
 function mpNewG(c){
-  const cats = mpArr(c.cats).filter(k => CATS.some(x => x[0] === k));
+  const cats = mpCfgCats(c);
   const diff = MP_DIFF[c.diff] ? c.diff : 'normal';
   const y0 = +c.y0 || MINY, y1 = +c.y1 || MAXY;
-  const poolArr = poolFor(cats.length ? cats : ['zh'], y0, y1);
+  const poolArr = poolFor(cats, y0, y1);
   return {
-    mode: 'battle', diff, nopt: MP_DIFF[diff].n, y0, y1, cats: cats.length ? cats : ['zh'], daily: false, tlimit: MP_DIFF[diff].t, mpWrong: MP_DIFF[diff].wrong, mpTime: 0, chorus: c.clip === 'chorus', blobs: [], dateKey: todayKey(), cfg: DIFF[diff],
+    mode: 'battle', diff, nopt: mpCfgN(c), y0, y1, cats, daily: false, tlimit: mpCfgT(c), mpWrong: MP_DIFF[diff].wrong, mpTime: 0, chorus: c.clip === 'chorus', blobs: [], dateKey: todayKey(), cfg: DIFF[diff],
     rounds: Math.max(1, Math.min(30, +c.r || 10)), roundNo: 0, score: 0, combo: 0, maxCombo: 0, lives: 0, level: 0, correct: 0,
     items: { cut: 0, free: 0, skip: 0 },
     history: [], played: new Set(), failed: new Set(), retry: new Map(), optSeen: { ids: new Set(), artists: new Map() }, bag: [], poolIds: new Set(poolArr.map(s => s.id)),
@@ -424,7 +465,10 @@ function mpStartLocal(room){
   stopPlayback(); stopTimer();
   Object.values(mp.aud).forEach(a => audioPool.release(a.audio));
   Object.values(mp.local).forEach(it => audioPool.release(it.audio));
-  if (reuse){ G.mpPre = null; G.rounds = Math.max(1, Math.min(30, +c.r || 10)); }   // keep the songs found in the lobby
+  if (reuse){                                      // keep the songs found in the lobby, take the latest difficulty, choices, time
+    const f = mpNewG(c);
+    Object.assign(G, { mpPre: null, rounds: f.rounds, diff: f.diff, nopt: f.nopt, tlimit: f.tlimit, mpWrong: f.mpWrong, cfg: f.cfg });
+  }
   else G = mpNewG(c);
   const me = room.p && room.p[mp.pid];
   if (me){ G.score = +me.s || 0; G.correct = +me.c || 0; G.mpTime = +me.tt || 0; }       // back in after a reload
@@ -727,7 +771,7 @@ async function mpStartGame(){
   const room = mp.room;
   if (!room || !mp.isHost) return;
   const c = room.cfg || {};
-  if (poolFor(mpArr(c.cats).length ? mpArr(c.cats) : ['zh'], +c.y0 || MINY, +c.y1 || MAXY).length < MIN_POOL) return toast('題目太少，按「改類別、難度、年代」放寬一點');
+  if (poolFor(mpCfgCats(c), +c.y0 || MINY, +c.y1 || MAXY).length < MIN_POOL) return toast('題目太少，按「改類別、難度、年代」放寬一點');
   const now = srvNow();
   const upd = { st: 'play', cur: 0, at: null, q: null, a: null, gk: Date.now().toString(36) + Math.floor(cryptoRnd() * 1e6).toString(36), ts: SV_TS };
   mpPlayers(room).forEach(p => {
@@ -819,14 +863,7 @@ $('#mp-code').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preve
 $('#mp-room').addEventListener('change', () => store.set('mpRoomName', ($('#mp-room').value || '').trim()));
 $('#mp-name').addEventListener('change', () => { const v = $('#mp-name').value.trim().slice(0, 12); if (v) store.set('mpName', v); });
 $('#lb-start').addEventListener('click', () => { sfx.init(); audioPool.unlock(); mpStartGame(); });
-$('#lb-edit').addEventListener('click', () => { settings.mode = 'battle'; saveSettings(); show('home'); });
 $('#lb-leave').addEventListener('click', () => { mpLeave(); goHome(); });
-$('#lb-diff').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b || !mp.isHost || !mp.room) return;
-  const d = b.dataset.d; if (!MP_DIFF[d]) return;
-  store.set('mpDiff', d);
-  mpPatchRoom({ 'cfg/diff': d, 'cfg/n': MP_DIFF[d].n, 'cfg/t': MP_DIFF[d].t }); mpRender();
-});
 $('#lb-rounds').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !mp.isHost || !mp.room) return;
   const r = +b.dataset.r; store.set('mpRounds', r);

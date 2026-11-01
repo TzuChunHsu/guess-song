@@ -62,7 +62,7 @@ with sync_playwright() as p:
     # ---- host creates a named room ----
     ca, A = player(b)
     A.click('.mode[data-mode="battle"]')
-    check("battle panel shows", A.locator("#battle-wrap").is_visible() and A.locator("#grp-free").is_hidden())
+    check("battle panel shows with the full settings", A.locator("#battle-wrap").is_visible() and A.locator("#grp-free").is_visible() and A.locator('#seg-time button[data-t="0"]').is_hidden())
     A.click("#btn-start"); time.sleep(.3)
     check("nickname is required", A.locator("#lobby").is_hidden() and A.evaluate("document.activeElement.id") == "mp-name")
     A.fill("#mp-name", "阿明"); A.fill("#mp-room", "測試歌房")
@@ -93,11 +93,18 @@ with sync_playwright() as p:
     D.click('.mode[data-mode="battle"]'); D.fill("#mp-name", "路人"); D.fill("#mp-code", "QQQQ"); D.click("#mp-join"); D.wait_for_timeout(1500)
     check("unknown room is refused", D.locator("#lobby").is_hidden() and D.locator("#home").is_visible())
     cd.close()
-    # ---- host picks difficulty and song count; guests see it ----
-    A.click('#lb-diff button[data-d="normal"]'); A.click('#lb-rounds button[data-r="5"]')
-    C.wait_for_function("document.querySelector('#lb-rounds button[data-r=\"5\"]').classList.contains('on')", timeout=10000)
-    check("guests see host's settings", C.locator('#lb-diff button[data-d="normal"]').get_attribute("class") == "on" and C.locator('#lb-diff button[data-d="hard"]').is_disabled())
-    check("hard-mode penalty rule hidden on normal", C.locator("#lb-rules-wrong").is_hidden())
+    # ---- the host sets everything a solo game has, right in the room; guests see it ----
+    check("host has the full settings panel in the room", A.evaluate("!!document.querySelector('#lb-opts-slot #opts-wrap')") and A.locator("#seg-diff").is_visible() and A.locator("#yr-a").is_visible())
+    check("guests get a summary, not the controls", C.locator("#lb-host").is_hidden() and C.evaluate("!document.querySelector('#lobby #opts-wrap')"))
+    check("no 'no time limit' in a battle", A.locator('#seg-time button[data-t="0"]').is_hidden())
+    for k in ("tw", "yue", "en", "kr", "jp", "ot"):
+        if "on" in (A.get_attribute(f'#chips-cat button[data-cat="{k}"]', "class") or ""): A.click(f'#chips-cat button[data-cat="{k}"]')
+    A.click('#yr-presets button:has-text("2000 年代")')
+    A.click('#seg-diff button[data-diff="normal"]'); A.click('#seg-n button[data-n="6"]'); A.click('#seg-time button[data-t="15"]')
+    A.click('#lb-rounds button[data-r="5"]')
+    C.wait_for_function("/華語 · 2000 – 2009/.test(document.querySelector('#lb-cfg').textContent) && /普通 · 6 選 1 · 限時 15 秒 · 5 首/.test(document.querySelector('#lb-cfg').textContent)", timeout=10000)
+    check("guests see every setting the host picked", True, C.inner_text("#lb-cfg"))
+    check("hard-mode penalty rule hidden on normal", C.evaluate("document.querySelector('#lb-rules-wrong').hidden"))
     # ---- play 5 songs ----
     A.wait_for_function("__erg.G && __erg.G.queue.length >= 2", timeout=60000)
     check("host prepares songs while everyone waits in the lobby", True)
@@ -112,7 +119,10 @@ with sync_playwright() as p:
     ats = [pg.evaluate("__erg.mp.room.at") for pg in (A, B, C)]
     check("same start time on every device", len(set(ats)) == 1)
     nopt = A.locator("#options .opt").count()
-    check("normal = 6 choices", nopt == 6, nopt)
+    check("6 choices as set in the room", nopt == 6, nopt)
+    qs = A.evaluate("Object.values(__erg.mp.room.q).map(q => { const s = __erg.BANK[q.s]; return [s.cat, s.year] })")
+    check("questions follow the room's categories and years", all(c == "zh" and 2000 <= y <= 2009 for c, y in qs), qs)
+    check("time limit as set in the room", A.evaluate("__erg.G.tlimit") == 15)
     if A.evaluate("__erg.srvNow() < __erg.mp.room.at - 800"):
         A.click("#record"); time.sleep(.2)
         check("record can't be played before the countdown ends", A.locator("#options.locked").count() == 1)
@@ -155,10 +165,12 @@ with sync_playwright() as p:
     sc = scores(A)
     check("lobby keeps everyone; scores reset when the next game starts", len(sc) == 3)
     A.click("#lb-leave"); A.wait_for_selector("#home.active", timeout=10000)
-    B.wait_for_function("!document.querySelector('#lb-start').closest('#lb-host').hidden", timeout=15000)
+    B.wait_for_function("!document.querySelector('#lb-start').hidden", timeout=15000)
     check("host leaves: next player becomes host", B.locator("#lb-start").is_visible(), B.inner_text("#lb-players"))
     # ---- B hosts a hard game; B drops out mid-game; C takes over and finishes ----
-    B.click('#lb-diff button[data-d="hard"]'); B.click('#lb-rounds button[data-r="5"]')
+    B.wait_for_function("!!document.querySelector('#lb-opts-slot #opts-wrap')", timeout=10000)
+    check("new host's panel shows the room's settings", B.get_attribute('#seg-n button.on', "data-n") == "6" and B.get_attribute('#seg-time button.on', "data-t") == "15" and "2000" in B.inner_text("#yr-label"))
+    B.click('#seg-diff button[data-diff="hard"]'); B.click('#seg-n button[data-n="9"]'); B.click('#seg-time button[data-t="10"]'); B.click('#lb-rounds button[data-r="5"]')
     C.wait_for_function("!document.querySelector('#lb-rules-wrong').hidden", timeout=10000)
     check("hard: penalty rule shown", True)
     B.click("#lb-start")
