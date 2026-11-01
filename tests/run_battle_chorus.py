@@ -4,7 +4,7 @@
 """
 import os, pathlib, re, shutil, sys, tempfile, time
 exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "run_battle.py"), encoding="utf-8").read().split("with sync_playwright() as p:")[0])
-S["chorus_layout"] = "all"
+S["chorus_layout"] = "first_flat"     # only the 2nd album's preview has a chorus: the host must hand out that file
 if "--no-stream" in sys.argv: FF.NO_STREAM["on"] = True   # same game with event streams blocked: polling takes over
 with sync_playwright() as p:
     b = p.chromium.launch(args=["--autoplay-policy=user-gesture-required"])
@@ -23,6 +23,8 @@ with sync_playwright() as p:
             check("question carries the chorus start", q.get("ch") == 1 and q.get("st", 0) > 0, (q.get("ch"), q.get("st")))
             sb = B.evaluate("__erg.mp.aud[0] ? __erg.mp.aud[0].audio.currentTime : -1")
             check("guest plays from the chorus", sb >= q["st"] - 0.5, (sb, q["st"]))
+        gu = B.evaluate(f"__erg.mp.aud[{i}] ? __erg.mp.aud[{i}].url : ''")
+        check(f"song {i + 1}: everyone gets the file the chorus was found in", q["u"].endswith("-a2.m4a") and gu == q["u"], (q["u"][-12:], gu[-12:]))
     for pg in (A, B): pg.wait_for_selector("#result.active", timeout=30000)
     check("chorus battle finishes", A.locator("#res-list .song").count() == 5)
     if FF.NO_STREAM["on"]: check("both devices fell back to polling", all(pg.evaluate("!!(__erg.mp.sub && __erg.mp.sub.polling())") for pg in (A, B)))

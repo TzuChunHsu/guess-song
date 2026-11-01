@@ -99,10 +99,16 @@ with sync_playwright() as p:
     check("guests see host's settings", C.locator('#lb-diff button[data-d="normal"]').get_attribute("class") == "on" and C.locator('#lb-diff button[data-d="hard"]').is_disabled())
     check("hard-mode penalty rule hidden on normal", C.locator("#lb-rules-wrong").is_hidden())
     # ---- play 5 songs ----
+    A.wait_for_function("__erg.G && __erg.G.queue.length >= 2", timeout=60000)
+    check("host prepares songs while everyone waits in the lobby", True)
+    t_start = time.time()
     A.click("#lb-start")
     for pg in (A, B, C): pg.wait_for_selector("#game.active", timeout=20000)
     check("everyone moves to the game", True)
     A.wait_for_function("__erg.mp.room.at", timeout=60000)
+    check("first song starts counting down right after start", time.time() - t_start < 4, round(time.time() - t_start, 1))
+    A.wait_for_function("Object.keys(__erg.mp.room.q || {}).length >= 3", timeout=30000)
+    check("host keeps three songs written ahead", True)
     ats = [pg.evaluate("__erg.mp.room.at") for pg in (A, B, C)]
     check("same start time on every device", len(set(ats)) == 1)
     nopt = A.locator("#options .opt").count()

@@ -115,7 +115,8 @@ function clockSample(t0, t1, ts){
 const MP_ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';     // no I/O/0/1, easy to read out loud
 const MP_LEAD = 3000;          // countdown before a song starts
 const MP_GRACE = 7000;         // extra time on top of the time limit for slow loaders
-const MP_HOLD = 6000;          // how long the answer and scores stay up before the next song
+const MP_HOLD = 5000;          // how long the answer and scores stay up before the next song
+const MP_AHEAD = 3;            // questions the host keeps written ahead of the current one (incl. it)
 const MP_STALE = 15000;        // a player whose heartbeat is older than this is treated as gone
 const MP_HOST_STALE = 20000;   // after this long without the host, the next player takes over
 const BANK_VER = hashStr(BANK_RAW).toString(36);
@@ -351,6 +352,7 @@ function mpRender(){
     if ($('#game').classList.contains('active') || $('#result').classList.contains('active')) show('lobby');
     if ($('#lobby').classList.contains('active')) mpRenderLobby(now);
     if ($('#home').classList.contains('active')) $('#btn-start').textContent = mpStartLabel();
+    if (mp.isHost) mpPrewarm(room);
     return;
   }
   if (room.gk && mp.gameKey !== room.gk) mpStartLocal(room);
@@ -388,27 +390,45 @@ function mpRankText(){
   const rank = 1 + ps.filter(p => p.id !== mp.pid && (+p.s || 0) > G.score).length;
   return ps.length > 1 ? `第 ${rank} 名 · ${ps.length} 人` : '';
 }
-function mpStartLocal(room){
-  const c = room.cfg || {};
-  if (G){ G.dead = true; G.queue.forEach(q => audioPool.release(q.audio)); }
-  stopPlayback(); stopTimer();
-  Object.values(mp.aud).forEach(a => audioPool.release(a.audio));
-  Object.values(mp.local).forEach(it => audioPool.release(it.audio));
+/* the settings that decide which songs can come up (the song count doesn't) */
+function mpCfgKey(c){ return JSON.stringify([mpArr(c.cats).slice().sort(), +c.y0 || MINY, +c.y1 || MAXY, MP_DIFF[c.diff] ? c.diff : 'normal', c.clip === 'chorus']); }
+function mpNewG(c){
   const cats = mpArr(c.cats).filter(k => CATS.some(x => x[0] === k));
   const diff = MP_DIFF[c.diff] ? c.diff : 'normal';
-  const nopt = MP_DIFF[diff].n;
   const y0 = +c.y0 || MINY, y1 = +c.y1 || MAXY;
   const poolArr = poolFor(cats.length ? cats : ['zh'], y0, y1);
-  G = {
-    mode: 'battle', diff, nopt, y0, y1, cats: cats.length ? cats : ['zh'], daily: false, tlimit: MP_DIFF[diff].t, mpWrong: MP_DIFF[diff].wrong, mpTime: 0, chorus: c.clip === 'chorus', blobs: [], dateKey: todayKey(), cfg: DIFF[diff],
+  return {
+    mode: 'battle', diff, nopt: MP_DIFF[diff].n, y0, y1, cats: cats.length ? cats : ['zh'], daily: false, tlimit: MP_DIFF[diff].t, mpWrong: MP_DIFF[diff].wrong, mpTime: 0, chorus: c.clip === 'chorus', blobs: [], dateKey: todayKey(), cfg: DIFF[diff],
     rounds: Math.max(1, Math.min(30, +c.r || 10)), roundNo: 0, score: 0, combo: 0, maxCombo: 0, lives: 0, level: 0, correct: 0,
     items: { cut: 0, free: 0, skip: 0 },
     history: [], played: new Set(), failed: new Set(), retry: new Map(), optSeen: { ids: new Set(), artists: new Map() }, bag: [], poolIds: new Set(poolArr.map(s => s.id)),
     queue: [], waiters: [], filling: false, netFails: 0, audioFails: 0, skipped: 0, netError: false, audioError: false, dead: false
   };
+}
+/* While everyone is still in the lobby, the host already looks up and checks the first songs,
+   so the game starts the moment the host presses start. */
+function mpPrewarm(room){
+  const c = room.cfg || {}, key = mpCfgKey(c);
+  if (G && G.mpPre === key && !G.dead) return;
+  if (G && !G.dead && G.mode !== 'battle') return;                     // a solo game is on: leave it alone
+  if (G && !G.dead){ G.dead = true; G.queue.forEach(q => audioPool.release(q.audio)); G.queue = []; }
+  G = mpNewG(c);
+  G.mpPre = key;
+  G.bag = diverseOrder(BANK.filter(s => G.poolIds.has(s.id)), cryptoRnd, null, new Set(store.get('recent', [])));
+  fillQueue();
+}
+function mpStartLocal(room){
+  const c = room.cfg || {};
+  const reuse = mp.isHost && G && !G.dead && G.mode === 'battle' && G.mpPre === mpCfgKey(c);
+  if (!reuse && G){ G.dead = true; G.queue.forEach(q => audioPool.release(q.audio)); }
+  stopPlayback(); stopTimer();
+  Object.values(mp.aud).forEach(a => audioPool.release(a.audio));
+  Object.values(mp.local).forEach(it => audioPool.release(it.audio));
+  if (reuse){ G.mpPre = null; G.rounds = Math.max(1, Math.min(30, +c.r || 10)); }   // keep the songs found in the lobby
+  else G = mpNewG(c);
   const me = room.p && room.p[mp.pid];
   if (me){ G.score = +me.s || 0; G.correct = +me.c || 0; G.mpTime = +me.tt || 0; }       // back in after a reload
-  Object.assign(mp, { gameKey: room.gk, roundIdx: -1, aud: {}, local: {}, overAt: {}, preparing: false, noMore: false, producer: false, finalShown: false, boardHtml: '', cd: 0, netRetry: 0 });
+  Object.assign(mp, { gameKey: room.gk, roundIdx: -1, aud: {}, local: {}, overAt: {}, preparing: false, noMore: false, producer: reuse, finalShown: false, boardHtml: '', cd: 0, netRetry: 0, waitSince: 0 });
   R = null;
   $('#game').classList.toggle('n9', G.nopt === 9);
   $('#res-board-wrap').hidden = true;
@@ -418,7 +438,7 @@ function mpStartLocal(room){
     $('#options').innerHTML = ''; $('#options').className = 'options locked';
     $('#items').hidden = true; $('#btn-next').hidden = true; $('#mp-board').hidden = true;
     $('#label').classList.remove('show', 'big'); $('#label-q').className = 'q load'; $('#label-q').textContent = '?';
-    $('#status-text').textContent = '房主正在準備第一首歌…';
+    $('#status-text').textContent = mp.isHost ? '正在找第 1 首歌，確認試聽可以播放…' : '房主正在準備第 1 首歌…';
     renderHud();
     show('game');
   }
@@ -446,13 +466,17 @@ function mpRenderPlay(now){
   const room = mp.room, i = +room.cur || 0;
   if (!$('#game').classList.contains('active') && $('#modal').hidden) show('game');
   const q = room.q && room.q['n' + i];
-  [i, i + 1].forEach(k => { const qq = room.q && room.q['n' + k]; if (qq && k < G.rounds) mpLoadAudio(k, qq); });
+  for (let k = i; k < i + MP_AHEAD; k++){ const qq = room.q && room.q['n' + k]; if (qq && k < G.rounds) mpLoadAudio(k, qq); }
   if (mp.roundIdx !== i){
     if (!q){
-      if (!R) $('#status-text').textContent = '房主正在找歌…';
-      else if (R.answered) mpRenderBoard('房主正在找下一首歌…');
+      if (!mp.waitSince) mp.waitSince = Date.now();
+      const w = Math.round((Date.now() - mp.waitSince) / 1000), sec = w >= 3 ? `（${w} 秒）` : '';
+      const msg = mp.isHost ? `正在找第 ${i + 1} 首歌，確認試聽可以播放…${sec}` : `房主正在準備第 ${i + 1} 首歌…${sec}`;
+      if (!R) $('#status-text').textContent = msg;
+      else if (R.answered) mpRenderBoard(msg);
       return;
     }
+    mp.waitSince = 0;
     mpSetupRound(i, q);
   }
   if (!R || R.mpIdx !== i) return;
@@ -479,7 +503,7 @@ function mpSetupRound(i, q){
   stopPlayback(); stopTimer();
   Object.keys(mp.aud).forEach(k => { if (+k < i){ audioPool.release(mp.aud[k].audio); delete mp.aud[k]; } });
   Object.keys(mp.local).forEach(k => { if (+k < i){ audioPool.release(mp.local[k].audio); delete mp.local[k]; } });
-  mp.roundIdx = i; mp.cd = 0; mp.boardHtml = '';
+  mp.roundIdx = i; mp.cd = 0; mp.boardHtml = ''; mp.waitSince = 0;
   G.roundNo = i + 1;
   // the question's own titles (rooms v2+); older rooms only have ids into the host's song list
   const own = mpArr(q.op).map(o => mpArr(o)).filter(o => o.length >= 2).map(([id, title, artist, year]) => {
@@ -646,7 +670,7 @@ function mpHostDuties(now){
   mpEnsureProducer();
   const i = +room.cur || 0;
   const hasQ = k => !!(room.q && room.q['n' + k]);
-  if (!mp.preparing && !mp.noMore && ((i < G.rounds && !hasQ(i)) || (i + 1 < G.rounds && !hasQ(i + 1)))) mpPrepare();
+  if (!mp.preparing && !mp.noMore && [...Array(MP_AHEAD).keys()].some(d => i + d < G.rounds && !hasQ(i + d))) mpPrepare();
   if (mp.patching) return;
   if (!hasQ(i)){
     if (mp.noMore && !mp.preparing) mpPatchRoom({ st: 'end' });          // ran out of songs that play
@@ -665,19 +689,19 @@ async function mpPrepare(){
   mp.preparing = true;
   const g = G, code = mp.code;
   try {
-    for (let guard = 0; guard < 12; guard++){
+    for (let guard = 0; guard < 40; guard++){
       const room = mp.room;
       if (!room || room.st !== 'play' || !mp.isHost || g !== G || g.dead || code !== mp.code) break;
       const i = +room.cur || 0;
-      const k = [i, i + 1].find(x => x < g.rounds && !(room.q && room.q['n' + x]));
+      const k = [...Array(MP_AHEAD).keys()].map(d => i + d).find(x => x < g.rounds && !(room.q && room.q['n' + x]));
       if (k == null) break;
       const it = await nextReady();
       if (g !== G || g.dead || code !== mp.code){ if (it) audioPool.release(it.audio); break; }
       if (!it){
-        if (g.netError && (mp.netRetry = (mp.netRetry || 0) + 1) <= 3){
-          toast('找歌的網路不太順，再試一次…');
+        if (g.netError && (mp.netRetry = (mp.netRetry || 0) + 1) <= 12){     // a shaky phone connection: keep trying
+          if (mp.netRetry === 1 || mp.netRetry % 4 === 0) toast('找歌的網路不太順，繼續試…');
           Object.assign(g, { netError: false, audioError: false, netFails: 0, audioFails: 0 });
-          await sleep(2500); continue;
+          await sleep(2000); continue;
         }
         mp.noMore = true; break;
       }
@@ -685,8 +709,10 @@ async function mpPrepare(){
       if (!now || (now.q && now.q['n' + k])){ g.queue.unshift(it); continue; }   // filled meanwhile by another device
       const opts = buildOptions(it.song, g.nopt, g.diff, cryptoRnd, g.optSeen);
       const info = it.info;
-      const q = { s: it.song.id, u: String(info.u).replace(/^http:\/\//, 'https://'), st: it.start, o: opts.map(s => s.id), op: opts.map(s => [s.id, s.title, s.artist, s.year]), src: info.src || '', art: info.art || '', th: info.thumb || '', lk: info.link || '' };
-      if (Array.isArray(info.alts) && info.alts.length) q.alt = info.alts.slice(0, 2);
+      mp.netRetry = 0;
+      // the exact preview this device will play (for chorus questions it can be another album's or Deezer's)
+      const q = { s: it.song.id, u: String(it.srcUrl || info.u).replace(/^http:\/\//, 'https://'), st: it.start, o: opts.map(s => s.id), op: opts.map(s => [s.id, s.title, s.artist, s.year]), src: info.src || '', art: info.art || '', th: info.thumb || '', lk: info.link || '' };
+      if (!it.chorus && Array.isArray(info.alts) && info.alts.length) q.alt = info.alts.slice(0, 2);   // a chorus start only fits its own file
       if (it.chorus){ q.ch = 1; q.ce = it.chorus.ce; }
       mp.local[k] = it;
       treeSet(mp.room, `q/n${k}`, q);

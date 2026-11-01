@@ -461,7 +461,7 @@ a{color:inherit}
   </details>
   <p class="foot">
     <button class="link" id="btn-beep">🔊 測試聲音</button> · <button class="link" id="btn-sfx">音效：開</button><br>
-    試聽音源來自 Apple Music 與 Deezer 的公開 30 秒試聽，需要連網。<br><span id="ver"></span>
+    試聽音源來自 Apple Music 與 Deezer 的公開 30 秒試聽，需要連網。<br><span id="ver"></span><span id="reports-wrap" hidden> · <button class="link" id="btn-reports"></button></span>
   </p>
 </section>
 
@@ -798,6 +798,13 @@ function decodeAudio(buf){
 }
 /*__CHORUS__*/
 const notChorus = store.get('notChorus', {});
+// one-time fix: a report on 遺失的美好 was made by mistake
+if (!store.get('fixReport1', false)){
+  const k = '遺失的美好|張韶涵';
+  delete notChorus[k]; store.set('notChorus', notChorus);
+  if (chorusMap[k] && chorusMap[k].reject){ delete chorusMap[k]; store.set('chorus4', chorusMap); }
+  store.set('fixReport1', true);
+}
 function chorusKey(song){ return song.title + '|' + song.artist; }
 /* Skip songs already known to have no clear chorus in their preview, or reported by the player. */
 function chorusSkip(song){ const k = chorusKey(song), c = chorusMap[k]; return !!notChorus[k] || !!(c && c.reject); }
@@ -900,7 +907,7 @@ const audioPool = {
   els: [],
   make(){ const a = new Audio(); a.preload = 'auto'; a._busy = false; this.els.push(a); return a; },
   unlock(){
-    while (this.els.length < 5) this.make();
+    while (this.els.length < 8) this.make();
     for (const a of this.els){
       if (a._busy) continue;
       try { a.src = SILENT; const p = a.play(); if (p && p.then) p.then(() => { if (!a._busy) a.pause(); }).catch(() => {}); } catch(e){}
@@ -1052,6 +1059,9 @@ function bestKey(mode, diff, nopt, y0, y1, clip, tl, cats){ return ['best5', mod
 function renderHome(){
   $('#bank-count').textContent = BANK.length;
   $('#ver').textContent = `版本 ${BUILD}`;
+  const nRep = Object.keys(notChorus).length;
+  $('#reports-wrap').hidden = !nRep;
+  $('#btn-reports').textContent = `副歌回報 ${nRep} 首（可取消）`;
   $$('.mode').forEach(b => b.setAttribute('aria-checked', String(b.dataset.mode === settings.mode)));
   $$('#seg-diff button').forEach(b => b.classList.toggle('on', b.dataset.diff === settings.diff));
   $$('#seg-n button').forEach(b => b.classList.toggle('on', +b.dataset.n === settings.nopt));
@@ -1185,13 +1195,14 @@ async function fillQueue(){
   const g = G;
   if (!g || g.filling || g.dead) return;
   g.filling = true;
-  while (!g.dead && g.queue.length < 2 && !g.netError){
+  const ahead = g.mode === 'battle' ? 3 : 2;
+  while (!g.dead && g.queue.length < ahead && !g.netError){
     if (!g.bag.length && !refillBag(g)) break;
     const song = g.bag.shift();
     if (g.played.has(song.id)) continue;
     if (g.chorus && chorusSkip(song)) continue;
     let info; const why = {};
-    try { info = await resolveSong(song, { why, wait: () => !g.dead }); }
+    try { info = await resolveSong(song, { why, wait: () => !g.dead && g.mode !== 'battle' }); }   // battles take another song instead of waiting
     catch(e){
       if (++g.netFails >= 4){ g.netError = true; break; }
       noteNet(`找歌中…（連線不順，換一首試試）`);
@@ -1206,7 +1217,7 @@ async function fillQueue(){
         g.skipped++; g.failed.add(song.id); continue;
       }
       const url = String(info.u).replace(/^http:\/\//, 'https://');
-      let start, src = url, chorus = null;
+      let start, src = url, chorus = null, srcUrl = url;
       if (g.chorus){
         const ch = await prepareChorus(song, info);
         if (g.dead){ if (ch.src) URL.revokeObjectURL(ch.src); break; }
@@ -1218,6 +1229,7 @@ async function fillQueue(){
           continue;
         }
         if (ch.src){ src = ch.src; g.blobs.push(ch.src); } else src = ch.url;
+        srcUrl = ch.url || url;                              // the chorus may sit in another album's (or Deezer's) preview
         chorus = { cs: ch.cs, ce: ch.ce, via: ch.via };
         start = ch.cs;                                       // play from the moment the chorus starts
       } else {
@@ -1240,7 +1252,7 @@ async function fillQueue(){
       }
       g.audioFails = 0;
       g.played.add(song.id);
-      g.queue.push({ song, info, audio, start, chorus, url: audio.src, verified: check === 'ok' });
+      g.queue.push({ song, info, audio, start, chorus, url: audio.src, srcUrl, verified: check === 'ok' });
       flushWaiters(g);
     } catch(e){ g.skipped++; }
   }
@@ -1689,7 +1701,7 @@ function renderHud(pop){
     $('#hud-round').textContent = `Lv.${G.level + 1} · 第 ${G.roundNo} 首`;
     $('#hud-lives').innerHTML = `<span class="hearts${pop === 'hit' ? ' hit' : ''}" aria-label="剩 ${G.lives} 條命">${'❤️'.repeat(Math.max(0, G.lives))}<span class="lost">${'♡'.repeat(Math.max(0, 3 - G.lives))}</span></span>`;
   } else if (G.mode === 'battle'){
-    $('#hud-round').textContent = `對戰 · 第 ${G.roundNo} / ${G.rounds} 首`;
+    $('#hud-round').textContent = `對戰 · 第 ${Math.max(1, G.roundNo)} / ${G.rounds} 首`;
     $('#hud-lives').textContent = mpRankText();
   } else {
     $('#hud-round').textContent = `${G.daily ? '每日 · ' : ''}第 ${G.roundNo} / ${G.rounds} 首`;
@@ -1817,10 +1829,29 @@ $('#btn-notchorus').addEventListener('click', () => {
   const h = G && G.history[G.history.length - 1];
   if (!h) return;
   const k = chorusKey(h.song);
+  if (notChorus[k]){                                   // pressed by mistake: undo
+    delete notChorus[k]; store.set('notChorus', notChorus);
+    if (chorusMap[k] && chorusMap[k].reject){ delete chorusMap[k]; store.set('chorus4', chorusMap); }
+    $('#btn-notchorus').textContent = '已取消回報。這段不是副歌？按這裡回報';
+    toast('已取消回報'); renderHome();
+    return;
+  }
   notChorus[k] = Date.now(); store.set('notChorus', notChorus);
   chorusMap[k] = { reject: true, ts: Date.now() }; store.set('chorus4', chorusMap);
-  $('#btn-notchorus').textContent = '已記下，之後副歌模式不會再出這首';
-  toast('謝謝回報！');
+  $('#btn-notchorus').textContent = '已記下，副歌模式不會再出這首（按錯了？再按一次取消）';
+  toast('謝謝回報！'); renderHome();
+});
+$('#btn-reports').addEventListener('click', () => {
+  const keys = Object.keys(notChorus).sort((a, b) => notChorus[b] - notChorus[a]);
+  if (!keys.length) return;
+  const list = keys.slice(0, 12).map(k => '・' + k.replace('|', ' — ')).join('\n') + (keys.length > 12 ? `\n…共 ${keys.length} 首` : '');
+  showModal('回報過「不是副歌」的歌', `這些歌在副歌模式不會出題：\n${list}\n\n按錯的話可以全部取消，之後會重新分析副歌。`, [
+    { label: '關閉' },
+    { label: '全部取消回報', primary: true, fn: () => {
+      keys.forEach(k => { delete notChorus[k]; if (chorusMap[k] && chorusMap[k].reject) delete chorusMap[k]; });
+      store.set('notChorus', notChorus); store.set('chorus4', chorusMap); toast('已全部取消'); renderHome();
+    } }
+  ]);
 });
 
 /* ---- sound diagnostics ---- */
@@ -1885,7 +1916,7 @@ document.addEventListener('keydown', e => {
 });
 
 /*__BATTLE__*/
-if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, poolFor, recentArtistPenalty, mp, srvNow };   // test hook
+if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, poolFor, recentArtistPenalty, mp, srvNow, get G(){ return G; }, get R(){ return R; } };   // test hook
 renderHome();
 })();
 </script>

@@ -37,6 +37,8 @@
 
 不同版本也能一起玩：每一題都帶著自己的歌名和歌手，房主和朋友就算開的是不同時間的頁面（手機快取的舊頁面、Netlify 的舊版），題目照樣對得上；只有用很舊的版本開的房間會請房主重新整理。首頁最下面顯示目前的版本時間。
 
+順暢度：房主在大廳等人時就先找好、確認好前三首歌，按開始馬上倒數；遊戲中房主一直保持三首歌寫在前面，朋友的手機也先把這幾首載入。只出副歌時，大家拿到的是房主找到副歌的那一個試聽檔，片段完全相同。
+
 斷線處理：手機睡著或網路中斷會自動重連；重新整理頁面後按「加入」回到房間，分數保留；房主斷線 20 秒，房間裡最早加入的人自動接手；網路擋住即時串流時改成每秒查詢。
 
 ## 線上資料庫（Firebase Realtime Database）
@@ -99,5 +101,6 @@ python3 tests/run_rand.py index.html src/bank.txt           # 出題隨機性與
 python3 tests/run_options.py index.html src/bank.txt        # 干擾選項：同歌手、同性別、同年代
 python3 tests/run_room_names.py index.html src/bank.txt     # 房間名稱（含 test 這種 4 個字母的名字）
 python3 tests/run_battle_versions.py index.html src/bank.txt # 房主和朋友的題庫版本不同時照樣能玩
+python3 tests/run_reports.py index.html src/bank.txt        # 「不是副歌」回報：當場取消、清單、全部取消
 python3 tests/run_v6.py index.html src/bank.txt             # Apple / Deezer 連不上時的備援
 ```
