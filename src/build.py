@@ -3,6 +3,8 @@
 import json, os, sys, opencc
 
 ALIASES = {
+    "畢書盡": ["Bii"], "汪蘇瀧": ["Silence Wang"], "理想混蛋": ["Bestards"], "老王樂隊": ["Your Woman Sleep With Others"],
+    "陳零九": ["Nine Chen"], "顏人中": ["Yan Jen Chung"], "キタニタツヤ": ["Tatsuya Kitani"], "FIFTY FIFTY": ["피프티피프티"],
     "鄧麗君": ["Teresa Teng"], "蔡琴": ["Tsai Chin"], "費玉清": ["Fei Yu-Ching", "Yu-Ching Fei"],
     "蘇芮": ["Julie Sue"], "羅大佑": ["Lo Ta-Yu", "Lo Ta-You"], "鳳飛飛": ["Fong Fei-Fei"],
     "費翔": ["Kris Phillips", "Fei Xiang"], "齊秦": ["Chyi Chin"], "王傑": ["Dave Wang"],
@@ -157,6 +159,16 @@ def main(template, bank_path, out):
     html = html.replace("/*__BANK__*/", json.dumps("\n".join(rows), ensure_ascii=False))
     html = html.replace("/*__T2S__*/", json.dumps(t2s, ensure_ascii=False))
     html = html.replace("/*__ALIASES__*/", json.dumps(aliases, ensure_ascii=False))
+    # singer voice (m/f/M/F/x) for same-gender decoys; every singer in the bank must be labelled
+    voice = {}
+    for l in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "singers.txt"), encoding="utf-8").read().splitlines():
+        if l and not l.startswith("#"):
+            name, code = l.rsplit("|", 1)
+            assert code in ("m", "f", "M", "F", "x"), l
+            voice[name] = code
+    unlabelled = sorted(a for a in artists if a not in voice)
+    assert not unlabelled, "singers.txt is missing: " + "、".join(unlabelled)
+    html = html.replace("/*__VOICE__*/", json.dumps({a: voice[a] for a in sorted(artists)}, ensure_ascii=False))
     chorus = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "chorus.js"), encoding="utf-8").read()
     html = html.replace("/*__CHORUS__*/", chorus)
     battle = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "battle.js"), encoding="utf-8").read()

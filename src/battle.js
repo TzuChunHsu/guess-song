@@ -118,9 +118,9 @@ const MP_HOST_STALE = 20000;   // after this long without the host, the next pla
 const BANK_VER = hashStr(BANK_RAW).toString(36);
 /* difficulty presets for battles: everyone in the room plays the same settings */
 const MP_DIFF = {
-  easy:   { name: '輕鬆', n: 4, t: 20, wrong: 0,   desc: '片段 5 秒 · 4 選 1 · 限時 20 秒 · 答錯不扣分' },
-  normal: { name: '普通', n: 6, t: 15, wrong: 0,   desc: '片段 3 秒 · 6 選 1 · 限時 15 秒 · 混 1 首同歌手的歌' },
-  hard:   { name: '地獄', n: 9, t: 10, wrong: 200, desc: '片段 1.5 秒 · 9 選 1 · 限時 10 秒 · 一半是同歌手陷阱 · 答錯倒扣 200' }
+  easy:   { name: '輕鬆', n: 4, t: 20, wrong: 0,   desc: '片段 5 秒 · 4 選 1 · 限時 20 秒 · 一半選項是同性別歌手 · 答錯不扣分' },
+  normal: { name: '普通', n: 6, t: 15, wrong: 0,   desc: '片段 3 秒 · 6 選 1 · 限時 15 秒 · 2 首同歌手，其他全是同性別歌手' },
+  hard:   { name: '地獄', n: 9, t: 10, wrong: 200, desc: '片段 1.5 秒 · 9 選 1 · 限時 10 秒 · 一半同歌手，其他是同性別、同年代 · 答錯倒扣 200' }
 };
 const MP_FAST = 200;          // bonus for the fastest correct answer of a song
 /* A room can be found by its 4-letter code or by a name: the name is hashed into the code. */

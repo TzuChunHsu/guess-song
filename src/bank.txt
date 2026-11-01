@@ -627,7 +627,6 @@ I Hate Myself Sometimes|派偉俊、李浩瑋|2024
 下沙|游鴻明|1999
 白樺林|朴樹|1999
 黑色幽默|周杰倫|2000
-伊斯坦堡|周杰倫|2000
 愛情萬歲|五月天|2000
 K歌之王|陳奕迅|2000
 一笑而過|那英|2000
@@ -640,7 +639,6 @@ K歌之王|陳奕迅|2000
 情深深雨濛濛|趙薇|2001
 爺爺泡的茶|周杰倫|2002
 龍拳|周杰倫|2002
-對不起|周杰倫|2002
 找自己|陶喆|2002
 我不難過|孫燕姿|2002
 我也很想他|孫燕姿|2002
@@ -648,7 +646,6 @@ K歌之王|陳奕迅|2000
 會呼吸的痛|梁靜茹|2002
 一個人的精彩|蕭亞軒|2002
 太聰明|陳綺貞|2002
-半獸人|周杰倫|2003
 飛機場的10:30|陶喆|2003
 Melody|陶喆|2003
 波斯貓|S.H.E|2003
@@ -658,9 +655,6 @@ Melody|陶喆|2003
 壁虎漫步|潘瑋柏|2003
 生如夏花|朴樹|2003
 你快回來|孫楠|2003
-外婆|周杰倫|2004
-借口|周杰倫|2004
-止戰之殤|周杰倫|2004
 人質|張惠妹|2004
 我最親愛的|張惠妹|2004
 假如|信樂團|2004
@@ -703,12 +697,10 @@ Kiss Goodbye|王力宏|2006
 早安晨之美|盧廣仲|2009
 三人遊|方大同|2009
 說了再見|周杰倫|2010
-超人不會飛|周杰倫|2010
 小手拉大手|梁靜茹|2010
 阿飛的小蝴蝶|蕭敬騰|2010
 不只是朋友|黃小琥|2010
 荷塘月色|鳳凰傳奇|2010
-愛的飛行日記|周杰倫|2011
 孤獨患者|陳奕迅|2011
 頑固|五月天|2011
 星空|五月天|2011
@@ -820,6 +812,26 @@ One Night in 北京|信樂團|2002
 迷迭香|周杰倫|2006
 我不配|周杰倫|2007
 Always Online|林俊傑|2008
+任性|孫燕姿|2001
+暗號|周杰倫|2002
+美人計|蔡依林|2009
+水手怕水|周杰倫|2011
+我比從前想你了|畢書盡|2019
+無人知曉|田馥甄|2020
+偷走你的心|陳零九、邱鋒澤|2022
+孤獨娛樂|林俊傑|2023
+假裝|蔡依林|2006
+觸電|S.H.E|2006
+親親|梁靜茹|2006
+遇上愛|楊丞琳|2006
+給我你的愛|Tank|2006
+像晴天像雨天|汪蘇瀧|2025
+不是因為天氣晴朗才愛你|理想混蛋|2023
+有些|顏人中|2023
+月牙灣|飛兒樂團|2004
+脆弱一分鐘|林宥嘉|2008
+我還年輕 我還年輕|老王樂隊|2016
+
 @tw
 愛拼才會贏|葉啟田|1988
 愛人醉落去|葉啟田|1987
@@ -925,6 +937,8 @@ Always Online|林俊傑|2008
 打鐵|玖壹壹|2015
 捲菸|美秀集團|2019
 一生只督妳一人|玖壹壹|2023
+再會啦心愛的無緣的人|李千娜、黃奇斌|2025
+
 @en
 Can't Help Falling in Love|Elvis Presley|1961
 Yesterday|The Beatles|1965
@@ -1060,6 +1074,18 @@ Birds of a Feather|Billie Eilish|2024
 Golden|HUNTR/X|2025
 Soda Pop|Saja Boys|2025
 Ordinary|Alex Warren|2025
+Something Just Like This|The Chainsmokers、Coldplay|2017
+Dancing With Your Ghost|Sasha Alex Sloan|2018
+We Don't Talk Anymore|Charlie Puth、Selena Gomez|2016
+Lemon Tree|Fool's Garden|1995
+Big Big World|Emilia|1998
+Let Her Go|Passenger|2012
+Nothing's Gonna Change My Love for You|Glenn Medeiros|1987
+Heat Waves|Glass Animals|2020
+Love Me Like You Do|Ellie Goulding|2015
+Because of You|Kelly Clarkson|2004
+Apologize|Timbaland、OneRepublic|2007
+
 @kr
 Tell Me|Wonder Girls|2007
 Nobody|Wonder Girls|2008
@@ -1138,6 +1164,11 @@ Magnetic|ILLIT|2024
 Whiplash|aespa|2024
 Small girl|李泳知、D.O.|2024
 SPOT!|ZICO、JENNIE|2024
+Cupid|FIFTY FIFTY|2023
+Lovesick Girls|BLACKPINK|2020
+Feel Special|TWICE|2019
+Bad Boy|BIGBANG|2012
+
 @jp
 上を向いて歩こう|坂本九|1961
 Plastic Love|竹内まりや|1984
@@ -1212,6 +1243,12 @@ Habit|SEKAI NO OWARI|2022
 晩餐歌|tuki.|2023
 ケセラセラ|Mrs. GREEN APPLE|2023
 ライラック|Mrs. GREEN APPLE|2024
+青のすみか|キタニタツヤ|2023
+SPECIALZ|King Gnu|2023
+晴る|ヨルシカ|2024
+オトノケ|Creepy Nuts|2024
+オレンジ|SPYAIR|2024
+
 @yue
 半斤八兩|許冠傑|1976
 浪子心聲|許冠傑|1976

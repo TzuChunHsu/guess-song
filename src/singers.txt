@@ -1,0 +1,559 @@
+# 歌手聲音類別，出干擾選項時用來挑「同性別」的歌
+# m 男歌手　f 女歌手　M 男子團體／男主唱樂團　F 女子團體／女主唱　x 男女都有（合唱團、男女雙主唱）
+# 樂團以主唱為準：飛兒樂團、YOASOBI、いきものがかり 算女聲；告五人、鳳凰傳奇 算男女都有
+鄧麗君|f
+蔡琴|f
+費玉清|m
+蘇芮|f
+羅大佑|m
+鳳飛飛|f
+費翔|m
+齊秦|m
+王傑|m
+張雨生|m
+陳淑樺|f
+姜育恆|m
+童安格|m
+潘美辰|f
+小虎隊|M
+趙傳|m
+黃鶯鶯|f
+庾澄慶|m
+黃品源|m
+郭富城|m
+優客李林|M
+葉蒨文|f
+黎明|m
+周華健|m
+劉德華|m
+鄭智化|m
+陳昇|m
+李宗盛|m
+孟庭葦|f
+黃安|m
+張學友|m
+張信哲|m
+張宇|m
+那英|f
+王菲|f
+辛曉琪|f
+萬芳|f
+伍佰|m
+陳奕迅|m
+許茹芸|f
+許美靜|f
+熊天平|m
+任賢齊|m
+張惠妹|f
+陶喆|m
+張震嶽|m
+蔡健雅|f
+莫文蔚|f
+李翊君|f
+劉若英|f
+江美琪|f
+五月天|M
+朴樹|m
+林憶蓮|f
+周傳雄|m
+迪克牛仔|m
+蕭亞軒|f
+李玟|f
+孫燕姿|f
+梁靜茹|f
+周杰倫|m
+F4|M
+光良|m
+王力宏|m
+S.H.E|F
+信樂團|M
+戴佩妮|f
+李聖傑|m
+蔡依林|f
+范瑋琪|f
+林俊傑|m
+陳綺貞|f
+張韶涵|f
+王心凌|f
+潘瑋柏|m
+飛兒樂團|f
+弦子|f
+楊丞琳|f
+蕭煌奇|m
+蘇打綠|M
+張懸|f
+Tank|m
+楊培安|m
+羅志祥|m
+盧廣仲|m
+楊宗緯|m
+林宥嘉|m
+蕭敬騰|m
+黃小琥|f
+徐佳瑩|f
+A-Lin|f
+田馥甄|f
+曲婉婷|f
+鄧紫棋|f
+宋冬野|m
+薛之謙|m
+周興哲|m
+趙雷|m
+毛不易|m
+李榮浩|m
+告五人|x
+韋禮安|m
+齊豫|f
+李建復|m
+草蜢|M
+高勝美|f
+邰正宵|m
+趙詠華|f
+范曉萱|f
+動力火車|M
+林曉培|f
+溫嵐|f
+金莎|f
+郭靜|f
+張芸京|f
+鳳凰傳奇|x
+魏如昀|f
+筷子兄弟|M
+謝和弦|m
+周湯豪|m
+八三夭|M
+張碧晨|f
+黃舒駿|m
+張國榮|m
+張艾嘉|f
+伍思凱|m
+黃大煒|m
+吳宗憲|m
+梅艷芳|f
+林志炫|m
+無印良品|M
+徐懷鈺|f
+梁詠琪|f
+阿杜|m
+彭佳慧|f
+陳慧琳|f
+5566|M
+刀郎|m
+龐龍|m
+南拳媽媽|x
+方大同|m
+曹格|m
+張棟樑|m
+吳克群|m
+蔡旻佑|m
+熱狗|m
+陳勢安|m
+范逸臣|m
+汪峰|m
+胡夏|m
+李健|m
+周深|m
+草東沒有派對|M
+陳華|m
+尤雅|f
+劉文正|m
+王夢麟|m
+鄭怡|f
+王芷蕾|f
+崔健|m
+甄妮|f
+潘越雲|f
+林志穎|m
+張洪量|m
+毛寧|m
+老狼|m
+裘海正|f
+巫啟賢|m
+張衛健|m
+蘇慧倫|f
+蘇永康|m
+周蕙|f
+謝霆鋒|m
+Energy|M
+阿桑|f
+胡彥斌|m
+林依晨|f
+陳小春|m
+容祖兒|f
+蔡淳佳|f
+李玖哲|m
+戴愛玲|f
+黃義達|m
+飛輪海|M
+丁噹|f
+張靚穎|f
+黃鴻升|m
+李佳薇|f
+逃跑計劃|M
+王錚亮|m
+馬頔|m
+黃明志|m
+大壯|m
+小潘潘|f
+小峰峰|m
+任然|f
+夢然|m
+吳青峰|m
+陳雪凝|f
+阿冗|m
+高爾宣|m
+瘦子E.SO|m
+艾怡良|f
+張遠|m
+小阿七|f
+詹雯婷|f
+孫盛希|f
+理想混蛋|M
+承桓|m
+菲道爾|m
+大穎|m
+盧盧快閉嘴|f
+王宇宙Leto|m
+喬浚丞|m
+派偉俊|m
+李浩瑋|m
+邱鋒澤|m
+艾薇|f
+JOYCE就以斯|f
+美秀集團|M
+LBI利比|f
+于冬然|m
+水木年華|M
+可米小子|M
+許巍|m
+林凡|f
+梁文音|f
+許嵩|m
+張杰|m
+華晨宇|m
+郁可唯|f
+金玟岐|f
+黃霄雲|f
+姚蘇蓉|f
+潘安邦|m
+葉佳修|m
+銀霞|f
+金智娟|f
+劉佳慧|f
+王馨平|f
+陶晶瑩|f
+李娜|f
+高慧君|f
+劉歡|m
+游鴻明|m
+趙薇|f
+孫楠|m
+Lara|f
+胡歌|m
+品冠|m
+Ella|f
+李玉剛|m
+于文文|f
+袁婭維|f
+王貳浪|m
+寶石Gem|m
+吳奇隆|m
+陳曉東|m
+井朧|m
+艾辰|m
+畢書盡|m
+陳零九|m
+汪蘇瀧|m
+顏人中|m
+老王樂隊|M
+葉啟田|m
+沈文程|m
+文夏|m
+陳小雲|f
+江蕙|f
+蔡秋鳳|f
+陳雷|m
+林強|m
+張秀卿|f
+陳盈潔|f
+黃妃|f
+謝金燕|f
+茄子蛋|M
+洪一峰|m
+陳芬蘭|f
+洪榮宏|m
+吳淑敏|f
+施文彬|m
+王識賢|m
+蔡小虎|m
+金門王|m
+李炳輝|m
+翁立友|m
+阿密特|f
+滅火器|M
+珂拉琪|x
+黃乙玲|f
+孫淑媚|f
+李千娜|f
+玖壹壹|M
+許富凱|m
+曾瑋中|m
+邱軍|m
+黃奇斌|m
+郭金發|m
+江淑娜|f
+Under Lover|M
+Elvis Presley|m
+The Beatles|M
+Carpenters|f
+Queen|M
+ABBA|F
+Eagles|M
+Bee Gees|M
+Journey|M
+Michael Jackson|m
+Toto|M
+Survivor|M
+Cyndi Lauper|f
+Wham!|M
+a-ha|M
+Guns N' Roses|M
+Madonna|f
+Richard Marx|m
+Nirvana|M
+Bryan Adams|m
+Whitney Houston|f
+Michael Learns to Rock|M
+Mariah Carey|f
+Oasis|M
+Spice Girls|F
+Backstreet Boys|M
+Celine Dion|f
+Savage Garden|M
+Britney Spears|f
+Westlife|M
+Bon Jovi|M
+Coldplay|M
+Avril Lavigne|f
+Linkin Park|M
+Rihanna|f
+Lady Gaga|f
+Taylor Swift|f
+Beyoncé|f
+Jason Mraz|m
+The Black Eyed Peas|x
+Owl City|m
+Bruno Mars|m
+Adele|f
+Katy Perry|f
+Justin Bieber|m
+Shakira|f
+Maroon 5|M
+Imagine Dragons|M
+OneRepublic|M
+Pharrell Williams|m
+John Legend|m
+Avicii|m
+Mark Ronson|m
+Ed Sheeran|m
+Sam Smith|m
+Wiz Khalifa|m
+Charlie Puth|m
+Alan Walker|m
+The Chainsmokers|M
+Camila Cabello|f
+Bradley Cooper|m
+Post Malone|m
+Swae Lee|m
+Lewis Capaldi|m
+Billie Eilish|f
+The Weeknd|m
+Dua Lipa|f
+Olivia Rodrigo|f
+Harry Styles|m
+Miley Cyrus|f
+Sabrina Carpenter|f
+Ben E. King|m
+Louis Armstrong|m
+Frank Sinatra|m
+John Lennon|m
+John Denver|m
+The Police|M
+Bonnie Tyler|f
+George Michael|m
+Ricky Martin|m
+Lou Bega|m
+Eminem|m
+Green Day|M
+Leona Lewis|f
+LMFAO|M
+Carly Rae Jepsen|f
+Idina Menzel|f
+Sia|f
+Tones and I|f
+Lil Nas X|m
+Shawn Mendes|m
+The Kid LAROI|m
+Benson Boone|m
+HUNTR/X|F
+Saja Boys|M
+Alex Warren|m
+Sasha Alex Sloan|f
+Selena Gomez|f
+Fool's Garden|M
+Emilia|f
+Passenger|m
+Glenn Medeiros|m
+Glass Animals|M
+Ellie Goulding|f
+Kelly Clarkson|f
+Timbaland|m
+Wonder Girls|F
+BIGBANG|M
+少女時代|F
+Super Junior|M
+KARA|F
+T-ara|F
+IU|f
+2NE1|F
+PSY|m
+EXO|M
+TWICE|F
+Chanyeol|m
+Punch|f
+Yoon Mi-rae|f
+BTS|M
+BLACKPINK|F
+Red Velvet|F
+aespa|F
+NewJeans|F
+IVE|F
+LE SSERAFIM|F
+Jung Kook|m
+ROSÉ|f
+Brown Eyed Girls|F
+SHINee|M
+miss A|F
+HyunA|f
+SEVENTEEN|M
+iKON|M
+LISA|f
+(G)I-DLE|F
+JISOO|f
+ILLIT|F
+李泳知|f
+D.O.|m
+ZICO|m
+JENNIE|f
+FIFTY FIFTY|F
+坂本九|m
+竹内まりや|f
+X JAPAN|M
+小田和正|m
+ZARD|f
+DREAMS COME TRUE|f
+高橋洋子|f
+スピッツ|M
+久保田利伸|m
+安室奈美恵|f
+Kiroro|F
+宇多田ヒカル|f
+椎名林檎|f
+浜崎あゆみ|f
+夏川りみ|f
+中島美嘉|f
+大塚愛|f
+平井堅|m
+嵐|M
+GReeeeN|M
+いきものがかり|f
+RADWIMPS|M
+米津玄師|m
+あいみょん|f
+YOASOBI|f
+LiSA|f
+Official髭男dism|M
+King Gnu|M
+Ado|f
+優里|m
+藤井風|m
+Aimer|f
+Creepy Nuts|M
+THE BOOM|M
+Mr.Children|M
+松任谷由実|f
+KinKi Kids|M
+和田光司|m
+MISIA|f
+サザンオールスターズ|M
+BUMP OF CHICKEN|M
+B'z|M
+SMAP|M
+ゆず|M
+レミオロメン|M
+AI|f
+supercell|f
+Linked Horizon|M
+TK from 凛として時雨|m
+星野源|m
+DAOKO|f
+Mrs. GREEN APPLE|M
+ヨルシカ|f
+SEKAI NO OWARI|M
+tuki.|f
+キタニタツヤ|m
+SPYAIR|M
+許冠傑|m
+羅文|m
+葉麗儀|f
+陳百強|m
+譚詠麟|m
+徐小鳳|f
+林子祥|m
+李克勤|m
+Beyond|M
+陳慧嫻|f
+關淑怡|f
+周慧敏|f
+楊千嬅|f
+鄭秀文|f
+Twins|F
+鄭中基|m
+側田|m
+張敬軒|m
+Édith Piaf|f
+Ritchie Valens|m
+Domenico Modugno|m
+Joe Dassin|m
+Umberto Tozzi|m
+Dschinghis Khan|x
+Toto Cutugno|m
+Nena|f
+Mecano|f
+Gipsy Kings|M
+Kaoma|f
+Los del Río|M
+Andrea Bocelli|m
+Céline Dion|f
+Era|x
+Khaled|m
+Rammstein|M
+Tarkan|m
+Daler Mehndi|m
+Las Ketchup|F
+O-Zone|M
+Daddy Yankee|m
+Juanes|m
+A. R. Rahman|m
+Stromae|m
+Don Omar|m
+Michel Teló|m
+Indila|f
+Marc Anthony|m
+Enrique Iglesias|m
+Luis Fonsi|m
+J Balvin|m
+Willy William|m
+Maluma|m
+Bad Bunny|m
+Jhay Cortez|m

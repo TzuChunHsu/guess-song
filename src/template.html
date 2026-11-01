@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14100d">
 <title>耳熟能詳 · 華語金曲猜歌王</title>
-<meta name="description" content="聽一小段旋律，猜出是哪首歌。1337 首華語、台語、粵語、西洋、日韓熱門金曲，可以開房間跟朋友即時對戰。">
+<meta name="description" content="聽一小段旋律，猜出是哪首歌。1369 首華語、台語、粵語、西洋、日韓熱門金曲，可以開房間跟朋友即時對戰。">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="耳熟能詳">
 <meta property="og:title" content="耳熟能詳 · 猜歌王｜好友連線對戰">
@@ -407,8 +407,8 @@ a{color:inherit}
     <h2 class="sec">難度</h2>
     <div class="seg" id="seg-diff">
       <button data-diff="easy"><b>輕鬆</b><small>5 秒片段</small></button>
-      <button data-diff="normal"><b>普通</b><small>3 秒 · 混同歌手</small></button>
-      <button data-diff="hard"><b>地獄</b><small>1.5 秒 · 同歌手陷阱</small></button>
+      <button data-diff="normal"><b>普通</b><small>3 秒 · 同性別歌手</small></button>
+      <button data-diff="hard"><b>地獄</b><small>1.5 秒 · 一半同歌手</small></button>
     </div>
     <h2 class="sec">選項數量</h2>
     <div class="seg" id="seg-n">
@@ -455,6 +455,7 @@ a{color:inherit}
       <li><b>闖關模式</b>：共 10 關，每關 5 首，本關分數達到目標才能進下一關；越後面片段越短、選項越多、時間越緊。過過的關卡可以直接選來挑戰。</li>
       <li><b>生存模式</b>：答錯扣一條命；每答對 5 首升一級，片段變短；每答對 10 首回一條命。</li>
       <li><b>好友對戰</b>：一人建立房間，把 4 碼房號或邀請連結傳給朋友。房主按開始後，大家同時倒數、同時播同一首歌，答對越快分數越高，每題結束會顯示所有人的分數，最後排出名次。</li>
+      <li><b>選項難度</b>：輕鬆沒有同歌手的歌、一半是同性別歌手；普通有 2 首同歌手的歌，其他全是同性別歌手；地獄一半是同歌手的歌，其他是同性別、同年代的歌手。</li>
       <li>每次的歌單、片段位置、干擾選項都是隨機的，最近玩過的歌會排到後面。</li>
     </ul>
   </details>
@@ -597,6 +598,7 @@ a{color:inherit}
 const BANK_RAW = /*__BANK__*/;
 const T2S = /*__T2S__*/;
 const ALIASES = /*__ALIASES__*/;
+const VOICE = /*__VOICE__*/;    // singer voice: m male, f female, M male group, F female group, x mixed
 
 /* ================= helpers ================= */
 const $ = s => document.querySelector(s);
@@ -637,7 +639,9 @@ const BANK = BANK_RAW.split('\n').map((line, id) => {
   const titles = t.split('/');
   const artists = a.split('、');
   const akeys = [...new Set(artists.flatMap(x => [x, ...(ALIASES[x] || [])]).map(norm).filter(k => k.length >= 2))];
-  return { id, title: titles[0], keys: [...new Set(titles.map(norm))], artists, artist: artists.join('、'), akeys, year: +y, cat: cat || 'zh' };
+  const voices = new Set(artists.map(x => ({ m: 'm', M: 'm', f: 'f', F: 'f' })[VOICE[x]] || 'x'));
+  const v = voices.size === 1 ? [...voices][0] : 'x';                     // a duet of a man and a woman counts as mixed
+  return { id, title: titles[0], keys: [...new Set(titles.map(norm))], artists, artist: artists.join('、'), akeys, year: +y, cat: cat || 'zh', v };
 });
 
 /* ================= online preview lookup ================= */
@@ -1321,6 +1325,7 @@ function buildOptions(song, n, diff, rng, seen){
   let all = BANK.filter(s => s.id !== song.id && s.cat === song.cat);
   if (all.length < n + 3) all = BANK.filter(s => s.id !== song.id);
   const sameArtist = s => s.artists.some(a => song.artists.includes(a));
+  const sameVoice = s => s.v === song.v;                         // male singers with male singers, female with female
   const near = s => Math.abs(s.year - song.year) <= 6;
   const seenIds = seen ? seen.ids : new Set();
   // random order (every song equally likely); songs already shown as choices in this game go last
@@ -1334,12 +1339,16 @@ function buildOptions(song, n, diff, rng, seen){
       out.push(s); s.keys.forEach(k => used.add(k)); if (uniqueArtist) s.artists.forEach(a => usedArtists.add(a)); max--;
     }
   };
-  // same-singer decoys make it harder: easy none, normal some, hard up to half of the choices
-  const nSame = diff === 'easy' ? 0 : diff === 'normal' ? (n >= 9 ? 2 : n >= 6 ? 1 : (rng() < .5 ? 1 : 0)) : Math.floor(n / 2);
+  // Harder choices: other songs by the same singer, then singers of the same gender (and era).
+  //   easy:   no same-singer songs, about half the others by same-gender singers
+  //   normal: 2 by the same singer (1 with 4 choices), all others by same-gender singers, half of them from the same era
+  //   hard:   half by the same singer, all others by same-gender singers from the same era where possible
+  const nSame = diff === 'easy' ? 0 : diff === 'normal' ? (n >= 6 ? 2 : 1) : Math.floor(n / 2);
   take(mix(all.filter(sameArtist)), nSame, false);
   const rest = all.filter(s => !sameArtist(s));
-  if (diff === 'hard') take(mix(rest.filter(near)), 99, true);                                        // hard: same era first
-  else if (diff === 'normal') take(mix(rest.filter(near)), Math.ceil((n - 1 - out.length) / 2), true);  // normal: half same era
+  if (diff === 'hard'){ take(mix(rest.filter(s => sameVoice(s) && near(s))), 99, true); take(mix(rest.filter(sameVoice)), 99, true); }
+  else if (diff === 'normal'){ take(mix(rest.filter(s => sameVoice(s) && near(s))), Math.ceil((n - 1 - out.length) / 2), true); take(mix(rest.filter(sameVoice)), 99, true); }
+  else take(mix(rest.filter(sameVoice)), Math.floor((n - 1) / 2), true);
   take(mix(rest), 99, true);
   take(mix(all), 99, false);
   const opts = shuffle([song, ...out], rng);

@@ -1,6 +1,6 @@
 # 耳熟能詳 · 猜歌王
 
-聽一小段歌，猜出歌名。收錄 1337 首華語、台語、粵語、西洋、韓語、日語和其他語言的熱門歌曲，可以一個人玩，也能開房間跟朋友連線對戰。
+聽一小段歌，猜出歌名。收錄 1369 首華語、台語、粵語、西洋、韓語、日語和其他語言的熱門歌曲，可以一個人玩，也能開房間跟朋友連線對戰。
 
 **線上玩：https://tzuchunhsu.github.io/guess-song/**
 
@@ -27,11 +27,13 @@
 - **最後一首分數加倍**。
 - 同分時答對首數多的人贏，再同分比答對花的總時間。
 
-| 難度 | 片段 | 選項 | 限時 | 同歌手陷阱 | 答錯 |
+| 難度 | 片段 | 選項 | 限時 | 干擾選項 | 答錯 |
 | --- | --- | --- | --- | --- | --- |
-| 輕鬆 | 5 秒 | 4 選 1 | 20 秒 | 沒有 | 0 分 |
-| 普通 | 3 秒 | 6 選 1 | 15 秒 | 1 首 | 0 分 |
-| 地獄 | 1.5 秒 | 9 選 1 | 10 秒 | 一半 | 倒扣 200 |
+| 輕鬆 | 5 秒 | 4 選 1 | 20 秒 | 沒有同歌手，一半是同性別歌手 | 0 分 |
+| 普通 | 3 秒 | 6 選 1 | 15 秒 | 2 首同歌手，其他全是同性別歌手 | 0 分 |
+| 地獄 | 1.5 秒 | 9 選 1 | 10 秒 | 一半同歌手，其他是同性別、同年代 | 倒扣 200 |
+
+單人模式的難度用同一套干擾選項規則（選項數另外選）。歌手只有一兩首歌時，不夠的部分改用同性別歌手補上。
 
 斷線處理：手機睡著或網路中斷會自動重連；重新整理頁面後按「加入」回到房間，分數保留；房主斷線 20 秒，房間裡最早加入的人自動接手；網路擋住即時串流時改成每秒查詢。
 
@@ -69,6 +71,7 @@
 | `og.png`、`icon-*.png`、`apple-touch-icon.png`、`manifest.webmanifest` | 分享預覽圖、圖示、加到主畫面用 |
 | `src/template.html` | 遊戲畫面和單人模式程式 |
 | `src/battle.js` | 好友對戰、每日排行榜（Firebase REST API + 即時串流） |
+| `src/singers.txt` | 每位歌手的聲音類別（男／女／男團／女團／男女都有），出同性別干擾選項用；新增歌手要補上，否則建置會停下來提醒 |
 | `src/bank.txt` | 題庫，一行一首：`歌名(/別名)\|歌手(、合唱)\|年份`，用 `@zh` `@tw` `@yue` `@en` `@kr` `@jp` `@ot` 分類 |
 | `src/build.py` | 把題庫、簡繁對照、歌手別名、副歌時間、對戰程式組成 `index.html` |
 | `src/make_assets.py` | 產生分享預覽圖和圖示 |
@@ -91,5 +94,7 @@ python3 tests/run_battle.py index.html src/bank.txt         # 三人連線對戰
 python3 tests/run_battle_chorus.py index.html src/bank.txt  # 副歌模式對戰；加 --no-stream 測輪詢備援
 python3 tests/run_board.py index.html src/bank.txt          # 每日挑戰排行榜
 python3 tests/run_rand.py index.html src/bank.txt           # 出題隨機性與歌手分散
+python3 tests/run_options.py index.html src/bank.txt        # 干擾選項：同歌手、同性別、同年代
+python3 tests/run_room_names.py index.html src/bank.txt     # 房間名稱（含 test 這種 4 個字母的名字）
 python3 tests/run_v6.py index.html src/bank.txt             # Apple / Deezer 連不上時的備援
 ```
