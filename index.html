@@ -2171,18 +2171,18 @@ async function mpCreate(){
   const name = mpName();
   if (!name) return;
   if (poolFor(settings.cats, settings.y0, settings.y1).length < MIN_POOL) return toast('題目太少，放寬類別或年代');
-  const rn = ($('#mp-room').value || '').trim();
-  const named = rn ? mpCodeFor(rn) : null;
-  if (rn && (!named || !named.name)) return toast('房間名稱至少 2 個字，而且不能剛好是 4 碼房號');
+  const rn = [...($('#mp-room').value || '').normalize('NFKC').trim().replace(/\s+/g, ' ')].slice(0, 16).join('');
+  const named = rn ? mpCodeFor(rn) : null;      // a 4-letter name such as "test" simply becomes the room code TEST
+  if (rn && !named) return toast('房間名稱至少要 2 個字');
   mpBusy(true);
   try {
     const pid = mpPid();
     let code = null;
     if (named){
       const ex = await fb.get(`rooms/${named.code}`);
-      if (ex && mpRoomBusy(ex) && !(ex.p && ex.p[pid])) return toast(`「${named.name}」這個房間名稱正在使用中，換一個名稱`);
+      if (ex && mpRoomBusy(ex) && !(ex.p && ex.p[pid])) return toast(`「${rn}」這個房間名稱正在使用中，換一個名稱`);
       code = named.code;
-      store.set('mpRoomName', named.name);
+      store.set('mpRoomName', rn);
     } else {
       for (let i = 0; i < 6 && !code; i++){
         const c = Array.from(crypto.getRandomValues(new Uint8Array(4)), b => MP_ALPHA[b % MP_ALPHA.length]).join('');
@@ -2192,7 +2192,7 @@ async function mpCreate(){
     }
     if (!code) throw new Error('no code');
     const t0 = Date.now();
-    const room = await fb.put(`rooms/${code}`, Object.assign({ v: 1, bv: BANK_VER, host: pid, ts: SV_TS, st: 'lobby', cfg: mpCfgFromSettings(), p: { [pid]: { n: name, j: SV_TS, hb: SV_TS, s: 0, c: 0 } } }, named ? { nm: named.name } : {}));
+    const room = await fb.put(`rooms/${code}`, Object.assign({ v: 1, bv: BANK_VER, host: pid, ts: SV_TS, st: 'lobby', cfg: mpCfgFromSettings(), p: { [pid]: { n: name, j: SV_TS, hb: SV_TS, s: 0, c: 0 } } }, named ? { nm: rn } : {}));
     clockSample(t0, Date.now(), room && room.ts);
     mpEnter(code, pid);
   } catch(e){ toast('建立房間失敗，請確認網路後再試'); }
