@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14100d">
+<title>耳熟能詳 · 華語金曲猜歌王</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14100d; --card:#221b16; --card2:#2b221c;
+  --line:rgba(244,234,216,.10); --line2:rgba(244,234,216,.20);
+  --cream:#f4ead8; --muted:#a8977f; --dim:#6f6253;
+  --red:#ff5a3c; --gold:#f2c14e; --green:#3ecf8e;
+  --rs:min(54vw, 220px, 29vh);
+  --serif:"Noto Serif TC","Songti TC","STSong",serif;
+  --sans:"Noto Sans TC",-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;overflow-x:hidden}
+body{
+  background:var(--bg);color:var(--cream);font-family:var(--sans);min-height:100vh;min-height:100dvh;overflow-x:hidden;
+  background-image:
+    radial-gradient(900px 520px at 85% -8%, rgba(255,90,60,.17), transparent 62%),
+    radial-gradient(700px 480px at -15% 105%, rgba(242,193,78,.10), transparent 60%);
+  background-attachment:fixed;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.08;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:disabled{cursor:default}
+a{color:inherit}
+#app{position:relative;z-index:1;max-width:540px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 22px)}
+.screen{display:none}
+.screen.active{display:block;animation:fadein .35s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- home ---------- */
+.hero{position:relative;padding:26px 0 8px;min-height:250px}
+.hero-clip{position:absolute;top:-40px;right:-16px;width:260px;height:360px;overflow:hidden;pointer-events:none}
+.hero-disc{position:absolute;right:-96px;top:22px;width:300px;height:300px;pointer-events:none;opacity:.95}
+.disc{width:100%;height:100%;border-radius:50%;animation:spin 14s linear infinite;
+  background:repeating-radial-gradient(circle,#191512 0 1.5px,#241e1a 1.5px 3px);
+  box-shadow:0 30px 80px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05);display:grid;place-items:center}
+.disc-label{width:36%;height:36%;border-radius:50%;background:var(--red);display:grid;place-items:center;
+  font-family:var(--serif);font-weight:900;font-size:40px;color:var(--bg);box-shadow:inset 0 0 0 6px rgba(0,0,0,.12)}
+.hero-disc::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 20deg,transparent 0 8%,rgba(255,255,255,.09) 13%,transparent 20%,transparent 55%,rgba(255,255,255,.06) 61%,transparent 68%)}
+.kicker{display:inline-block;font-size:12.5px;letter-spacing:.18em;color:var(--gold);border:1px solid rgba(242,193,78,.4);padding:5px 10px;border-radius:99px;position:relative}
+.title{font-family:var(--serif);font-weight:900;font-size:clamp(64px,21vw,104px);line-height:.98;margin:16px 0 14px;letter-spacing:.02em;position:relative;
+  text-shadow:0 6px 30px rgba(0,0,0,.5)}
+.title em{font-style:normal;color:var(--red)}
+.sub{color:var(--muted);font-size:15px;line-height:1.7;margin:0;position:relative}
+.sub b{color:var(--cream)}
+.sec{font-size:12px;letter-spacing:.2em;color:var(--dim);font-weight:700;margin:26px 2px 10px}
+.modes{display:grid;gap:10px}
+.mode{display:flex;align-items:center;gap:14px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;transition:border-color .2s,background .2s,transform .1s}
+.mode:active{transform:scale(.99)}
+.mode[aria-checked="true"]{border-color:var(--red);background:linear-gradient(100deg,rgba(255,90,60,.16),rgba(255,90,60,.03))}
+.mode-no{font-family:var(--serif);font-weight:900;font-size:22px;color:var(--dim);width:30px}
+.mode[aria-checked="true"] .mode-no{color:var(--red)}
+.mode-body{flex:1;display:flex;flex-direction:column;gap:3px}
+.mode-body b{font-size:17px}
+.mode-body small{color:var(--muted);font-size:13px}
+.mode-best{font-size:12px;color:var(--gold);text-align:right;white-space:nowrap}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.seg button b{font-size:16px}
+.seg button small{font-size:11.5px;color:var(--muted)}
+.seg button.on{border-color:var(--gold);background:rgba(242,193,78,.12)}
+.seg button.on b{color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--line2);border-radius:99px;padding:8px 14px;font-size:14px;color:var(--muted)}
+.chips button small{opacity:.7;margin-left:4px;font-size:11px}
+.chips button.on{background:var(--cream);color:var(--bg);border-color:var(--cream);font-weight:700}
+.yr{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 14px 14px}
+.yr-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:0 2px}
+.yr-head b{font-family:var(--serif);font-weight:900;font-size:24px;color:var(--gold);font-variant-numeric:tabular-nums}
+.yr-head span{color:var(--muted);font-size:13px;text-align:right}
+.yr-head span.warn{color:var(--red);font-weight:700}
+.yr-slider{position:relative;height:40px;margin-top:6px}
+.yr-track{position:absolute;left:14px;right:14px;top:17px;height:6px;border-radius:9px;background:rgba(255,255,255,.1)}
+.yr-track i{position:absolute;top:0;bottom:0;left:0;right:0;background:linear-gradient(90deg,var(--gold),var(--red));border-radius:9px}
+.yr-slider input{position:absolute;left:0;top:0;width:100%;height:40px;margin:0;padding:0;background:none;-webkit-appearance:none;appearance:none;pointer-events:none;z-index:2}
+.yr-slider input#yr-b{z-index:3}
+.yr-slider input:focus{outline:none}
+.yr-slider input::-webkit-slider-runnable-track{background:none;height:40px;border:0}
+.yr-slider input::-moz-range-track{background:none;border:0}
+.yr-slider input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:28px;height:28px;margin-top:6px;border-radius:50%;background:var(--cream);border:5px solid var(--red);box-shadow:0 3px 10px rgba(0,0,0,.5);cursor:grab}
+.yr-slider input::-moz-range-thumb{pointer-events:auto;width:18px;height:18px;border-radius:50%;background:var(--cream);border:5px solid var(--red);cursor:grab}
+.yr-slider input:focus-visible::-webkit-slider-thumb{outline:2px solid var(--gold);outline-offset:2px}
+.yr-ends{display:flex;justify-content:space-between;color:var(--dim);font-size:11.5px;margin:0 6px 12px}
+#yr-presets{gap:7px}
+#yr-presets button{font-size:13px;padding:7px 11px}
+.start:disabled{opacity:.35;box-shadow:none}
+.chips.cats button{padding:9px 15px;font-size:15px}
+.chips.cats button::before{content:'＋ ';opacity:.6}
+.chips.cats button.on::before{content:'✓ ';opacity:1}
+.chips.levels{gap:7px}
+.chips.levels button{min-width:56px;padding:8px 10px;font-size:14px}
+.chips.levels button:disabled{opacity:.35}
+.stage-note{margin-top:12px}
+.tgt{color:var(--gold);font-weight:700;letter-spacing:0;font-size:12.5px}
+.tgt.ok{color:var(--green)}
+.net{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:12px 0 0;font-size:13px;color:var(--muted)}
+.net .dot{width:8px;height:8px;border-radius:50%;background:var(--dim);flex:none}
+.net.ok .dot{background:var(--green)}
+.net.bad{color:var(--red)}
+.net.bad .dot{background:var(--red)}
+.net.checking .dot{background:var(--gold);animation:blink .8s steps(2) infinite}
+.seg.seg2{grid-template-columns:1fr 1fr}
+.seg.seg5{grid-template-columns:repeat(5,1fr);gap:6px}
+.seg.seg5 button{padding:10px 2px}
+.chorus-tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--bg);background:var(--gold);border-radius:6px;padding:1px 6px;vertical-align:2px}
+#game.n9{--rs:min(34vw,148px,18vh)}
+#game.n9 .stage{padding-top:8px}
+#game.n9 .status{min-height:46px}
+#game.n9 .controls{margin:4px 0 10px}
+#game.n9 .ctl{padding:7px 8px}
+#game.n9 .options{grid-template-columns:repeat(3,1fr);gap:8px}
+#game.n9 .opt{padding:10px 6px;min-height:80px;border-radius:14px}
+#game.n9 .opt .t{font-size:17px;line-height:1.25}
+#game.n9 .opt .t.l{font-size:15px}
+#game.n9 .opt .t.xl{font-size:14px}
+.opt .t.xl{font-size:17px}
+#game.n9 .opt .a{font-size:11px}
+#game.n9 .opt .k{display:none}
+.daily-note{color:var(--muted);font-size:13.5px;line-height:1.6;background:var(--card);border:1px dashed var(--line2);border-radius:14px;padding:12px 14px;margin:18px 0 0}
+.start{display:block;width:100%;margin:26px 0 0;background:var(--red);color:#1a0d08;font-weight:900;font-size:18px;letter-spacing:.08em;border-radius:16px;padding:17px;
+  box-shadow:0 10px 30px rgba(255,90,60,.35);transition:transform .1s,filter .2s}
+.start:active{transform:scale(.98)}
+.start.ghost{background:transparent;color:var(--cream);border:1px solid var(--line2);box-shadow:none;margin-top:10px}
+.howto{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 16px}
+.howto summary{cursor:pointer;padding:12px 0;font-weight:700;list-style:none}
+.howto summary::-webkit-details-marker{display:none}
+.howto summary::after{content:"＋";float:right;color:var(--muted)}
+.howto[open] summary::after{content:"－"}
+.howto ul{margin:0 0 14px;padding-left:18px;color:var(--muted);font-size:14px;line-height:1.75}
+.howto li b{color:var(--cream)}
+.foot{margin-top:18px;color:var(--dim);font-size:12px;line-height:1.7;text-align:center}
+.link{color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:12px}
+
+/* ---------- game ---------- */
+.hud{display:flex;align-items:center;gap:12px;height:46px}
+.hud-quit{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);color:var(--muted);font-size:15px}
+.hud-mid{flex:1;display:flex;flex-direction:column;gap:2px}
+#hud-round{font-weight:700;font-size:15px}
+.hud-sub{display:flex;align-items:center;gap:10px;min-height:16px}
+.clock{font-size:13px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums}
+.clock.low{color:var(--red)}
+.lives{font-size:13px;letter-spacing:2px;color:var(--red);min-height:16px}
+.lives .lost{color:var(--dim);font-weight:700;letter-spacing:1px}
+.hearts.hit{display:inline-block;animation:heartHit .6s}
+@keyframes heartHit{0%,100%{transform:none}20%{transform:scale(1.35) rotate(-8deg)}40%{transform:scale(.9) rotate(6deg)}60%{transform:scale(1.15)}}
+.hud-score{text-align:right}
+#hud-score{font-family:var(--serif);font-weight:900;font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
+.combo{font-size:12px;color:var(--gold);font-weight:700;min-height:16px;margin-top:3px;white-space:nowrap}
+.combo.pop{animation:pop .35s ease}
+@keyframes pop{40%{transform:scale(1.35)}}
+.timer{height:5px;background:rgba(255,255,255,.07);border-radius:9px;overflow:hidden;margin:8px 0 0}
+.timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--gold),var(--red));transform-origin:left;border-radius:9px}
+.timer.low i{background:var(--red);animation:blink .5s steps(2) infinite}
+@keyframes blink{50%{opacity:.45}}
+.event{margin:10px auto 0;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:700;color:var(--bg);background:var(--gold);border-radius:99px;padding:6px 14px;width:max-content;max-width:100%;animation:slidein .5s cubic-bezier(.2,1.4,.4,1)}
+.event small{font-weight:500;opacity:.8}
+.event[data-kind="double"]{background:var(--red);color:#1a0d08}
+.event[data-kind="chest"]{background:#9be7c4}
+@keyframes slidein{from{transform:translateY(-12px) scale(.8);opacity:0}}
+.stage{display:flex;flex-direction:column;align-items:center;padding-top:14px}
+.record-wrap{position:relative;width:calc(var(--rs) + 26px);height:calc(var(--rs) + 26px)}
+.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:2.2}
+.ring-bg{stroke:rgba(255,255,255,.07)}
+.ring-fg{stroke:var(--gold);stroke-linecap:round;stroke-dasharray:301.6;stroke-dashoffset:301.6}
+.record{position:absolute;left:13px;top:13px;width:var(--rs);height:var(--rs);border-radius:50%;
+  background:repeating-radial-gradient(circle,#181412 0 1.4px,#25201c 1.4px 2.8px);
+  box-shadow:0 22px 60px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.06),inset 0 0 0 calc(var(--rs) * .06) #120f0d;
+  animation:spin 2.2s linear infinite;animation-play-state:paused;display:grid;place-items:center}
+.record.playing{animation-play-state:running}
+.record:focus-visible{outline:2px solid var(--gold);outline-offset:6px}
+.sheen{position:absolute;left:13px;top:13px;width:var(--rs);height:var(--rs);border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 30deg,transparent 0 7%,rgba(255,255,255,.10) 12%,transparent 19%,transparent 56%,rgba(255,255,255,.07) 62%,transparent 69%)}
+.label{position:relative;width:38%;height:38%;border-radius:50%;background:var(--red);overflow:hidden;display:grid;place-items:center;
+  transition:width .6s cubic-bezier(.2,1.2,.3,1),height .6s cubic-bezier(.2,1.2,.3,1);box-shadow:0 0 0 3px rgba(0,0,0,.25)}
+.label img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s}
+.label.show img{opacity:1}
+.label.big{width:70%;height:70%}
+.label .q{font-family:var(--serif);font-weight:900;font-size:calc(var(--rs) * .17);color:#1a0d08;line-height:1}
+.label .q.load{width:30%;height:30%;border-radius:50%;border:3px solid rgba(26,13,8,.25);border-top-color:#1a0d08;animation:spin .8s linear infinite;font-size:0}
+.hole{position:absolute;width:3.2%;height:3.2%;border-radius:50%;background:var(--bg);left:48.4%;top:48.4%}
+.label.big~.hole{opacity:0}
+.float-pts{position:absolute;left:0;right:0;top:38%;text-align:center;font-family:var(--serif);font-weight:900;font-size:34px;color:var(--gold);pointer-events:none;opacity:0;text-shadow:0 4px 18px rgba(0,0,0,.7)}
+.float-pts.go{animation:floatup 1.2s ease forwards}
+@keyframes floatup{0%{opacity:0;transform:translateY(10px) scale(.8)}20%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateY(-34px)}}
+.status{min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:14px;text-align:center;padding-top:6px}
+.eq{display:flex;gap:3px;height:16px;align-items:flex-end;opacity:0;transition:opacity .2s}
+.eq.on{opacity:1}
+.eq i{width:4px;background:var(--gold);border-radius:2px;height:30%;animation:eq .8s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:-.2s}.eq i:nth-child(3){animation-delay:-.5s}.eq i:nth-child(4){animation-delay:-.1s}.eq i:nth-child(5){animation-delay:-.35s}
+.eq:not(.on) i{animation:none}
+@keyframes eq{50%{height:100%}}
+.reveal{text-align:center;padding:8px 0 2px;min-height:58px;animation:fadein .35s ease}
+.rv-verdict{font-size:13px;font-weight:700;letter-spacing:.12em}
+.rv-verdict.ok{color:var(--green)}.rv-verdict.no{color:var(--red)}
+.rv-title{font-family:var(--serif);font-weight:900;font-size:24px;margin:4px 0 2px}
+.rv-meta{color:var(--muted);font-size:13.5px}
+.rv-flag{margin-top:6px}
+.rv-meta a{color:var(--gold);text-decoration:none;margin-left:6px;white-space:nowrap}
+.controls{display:flex;gap:8px;margin:6px 0 12px}
+.ctl{flex:1;border:1px solid var(--line2);border-radius:14px;padding:9px 10px;font-size:14.5px;display:flex;flex-direction:column;align-items:center;gap:1px;transition:opacity .2s}
+.ctl small{font-size:11px;color:var(--muted)}
+.ctl:disabled{opacity:.35}
+.ctl-ext{flex:1.6;border-color:rgba(242,193,78,.45)}
+.ctl-ext b{color:var(--gold)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:9px;transition:opacity .25s}
+.options.locked{opacity:.5;pointer-events:none}
+.opt{position:relative;text-align:center;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 12px;min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .2s,border-color .2s,opacity .2s,transform .1s}
+.opt:active{transform:scale(.98)}
+.opt .t{font-weight:700;font-size:20px;line-height:1.3;word-break:break-word}
+.opt .a{font-size:12.5px;color:var(--muted)}
+.opt .k{position:absolute;right:9px;top:7px;font-size:10px;color:var(--dim)}
+.opt.removed{opacity:.18;pointer-events:none}
+.opt.removed .t{text-decoration:line-through}
+.opt.correct{background:rgba(62,207,142,.16);border-color:var(--green)}
+.opt.correct .t{color:var(--green)}
+.opt.wrong{background:rgba(255,90,60,.14);border-color:var(--red)}
+.opt.dim{opacity:.4}
+.options.done{pointer-events:none}
+.items{display:flex;gap:8px;margin-top:12px}
+.item{flex:1;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid var(--line);padding:8px 6px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--cream)}
+.item b{background:var(--gold);color:var(--bg);font-size:11px;border-radius:99px;min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 5px}
+.item:disabled{opacity:.3}
+.item.bump{animation:pop .45s ease}
+.next{margin-top:14px}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.kbd-hint{display:none}
+@media (hover:hover) and (pointer:fine){.kbd-hint{display:block;text-align:center;color:var(--dim);font-size:11.5px;margin-top:14px}}
+
+/* ---------- result ---------- */
+.result-head{text-align:center;padding:24px 0 6px;position:relative}
+.result-head .kicker{margin-bottom:14px}
+.rank{font-family:var(--serif);font-weight:900;font-size:clamp(40px,12vw,58px);line-height:1.1;margin:6px 0 6px}
+.rank-sub{color:var(--muted);font-size:14.5px;margin:0 0 18px}
+.bigscore{font-family:var(--serif);font-weight:900;font-size:64px;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.bigscore small{font-size:16px;color:var(--muted);font-family:var(--sans);font-weight:500;margin-left:4px}
+.newrec{display:inline-block;margin-top:10px;background:var(--red);color:#1a0d08;font-weight:900;font-size:13px;padding:4px 10px;border-radius:8px;transform:rotate(-3deg)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center}
+.stat b{display:block;font-size:22px;font-family:var(--serif);font-weight:900}
+.stat small{color:var(--muted);font-size:12px}
+.grid-emoji{font-size:21px;letter-spacing:2px;margin:18px 0 4px;white-space:nowrap}
+.share{margin-top:10px}
+.songlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.song{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 10px}
+.song img,.song .noart{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--card2);flex:none}
+.song .info{flex:1;min-width:0}
+.song .info b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song .info small{color:var(--muted);font-size:12.5px}
+.song .info small a{color:var(--gold);text-decoration:none}
+.song .mark{font-size:18px;width:22px;text-align:center}
+.song .play{width:38px;height:38px;border-radius:50%;border:1px solid var(--line2);font-size:13px;flex:none}
+.song .play.on{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+
+/* ---------- modal & toast ---------- */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(10,8,6,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:grid;place-items:center;padding:24px}
+.modal[hidden]{display:none}
+.modal-card{width:100%;max-width:380px;background:#221b16;border:1px solid var(--line2);border-radius:20px;padding:22px;animation:fadein .25s ease}
+.modal-card h3{margin:0 0 8px;font-family:var(--serif);font-size:22px}
+.modal-card p{margin:0 0 18px;color:var(--muted);font-size:14.5px;line-height:1.7;white-space:pre-line}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:13px;border-radius:12px;border:1px solid var(--line2);font-weight:700}
+.modal-actions button.primary{background:var(--red);border-color:var(--red);color:#1a0d08}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 26px);transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:90vw}
+.toast{background:var(--cream);color:var(--bg);font-weight:700;font-size:14px;padding:10px 16px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:toast 2.4s ease forwards;text-align:center}
+@keyframes toast{0%{opacity:0;transform:translateY(12px)}10%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
+@media (max-height:700px){:root{--rs:min(44vw,170px,24vh)}.opt{min-height:72px;padding:10px}#game.n9 .opt{min-height:70px}.status{min-height:44px}}
+@media (prefers-reduced-motion:reduce){.disc,.record{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ================= HOME ================= -->
+<section id="home" class="screen active" aria-label="主選單">
+  <div class="hero">
+    <div class="hero-clip" aria-hidden="true"><div class="hero-disc"><div class="disc"><div class="disc-label">耳</div></div></div></div>
+    <div class="kicker">華語金曲 · 猜歌王</div>
+    <h1 class="title">耳熟<br><em>能詳</em></h1>
+    <p class="sub">聽一小段旋律，猜出是哪首歌。<br>收錄 <b id="bank-count">0</b> 首華語、台語、粵語、西洋、韓語、日語和其他語言的熱門金曲。</p>
+  </div>
+
+  <h2 class="sec">選擇模式</h2>
+  <div class="modes" role="radiogroup" aria-label="模式">
+    <button class="mode" role="radio" data-mode="classic" aria-checked="true">
+      <span class="mode-no">01</span>
+      <span class="mode-body"><b>經典十題</b><small>10 首歌，拚速度、拚連擊</small></span>
+      <span class="mode-best" id="best-classic"></span>
+    </button>
+    <button class="mode" role="radio" data-mode="survival" aria-checked="false">
+      <span class="mode-no">02</span>
+      <span class="mode-body"><b>生存模式</b><small>3 條命，越往後片段越短</small></span>
+      <span class="mode-best" id="best-survival"></span>
+    </button>
+    <button class="mode" role="radio" data-mode="daily" aria-checked="false">
+      <span class="mode-no">03</span>
+      <span class="mode-body"><b>每日挑戰</b><small>每天同一組 5 首，可分享成績</small></span>
+      <span class="mode-best" id="best-daily"></span>
+    </button>
+    <button class="mode" role="radio" data-mode="stage" aria-checked="false">
+      <span class="mode-no">04</span>
+      <span class="mode-body"><b>闖關模式</b><small>10 關，每關達到目標分數才能進下一關</small></span>
+      <span class="mode-best" id="best-stage"></span>
+    </button>
+  </div>
+
+  <div id="opts-wrap">
+    <h2 class="sec">題目類別 · 可複選</h2>
+    <div class="chips cats" id="chips-cat"></div>
+    <div id="stage-wrap" hidden>
+      <h2 class="sec">從第幾關開始</h2>
+      <div class="chips levels" id="chips-level"></div>
+      <p class="daily-note stage-note" id="stage-note"></p>
+    </div>
+    <h2 class="sec">出題片段</h2>
+    <div class="seg seg2" id="seg-clip">
+      <button data-clip="random"><b>隨機片段</b><small>整段試聽隨機截一段</small></button>
+      <button data-clip="chorus"><b>只出副歌</b><small>從副歌開始播，比較好猜</small></button>
+    </div>
+    <div id="grp-free">
+    <h2 class="sec">難度</h2>
+    <div class="seg" id="seg-diff">
+      <button data-diff="easy"><b>輕鬆</b><small>5 秒片段</small></button>
+      <button data-diff="normal"><b>普通</b><small>3 秒 · 混同歌手</small></button>
+      <button data-diff="hard"><b>地獄</b><small>1.5 秒 · 同歌手陷阱</small></button>
+    </div>
+    <h2 class="sec">選項數量</h2>
+    <div class="seg" id="seg-n">
+      <button data-n="4"><b>4 選 1</b><small>分數 ×1</small></button>
+      <button data-n="6"><b>6 選 1</b><small>分數 ×1.15</small></button>
+      <button data-n="9"><b>9 選 1</b><small>分數 ×1.3</small></button>
+    </div>
+    <h2 class="sec">時間限制 · 答得越快分數越高</h2>
+    <div class="seg seg5" id="seg-time">
+      <button data-t="0"><b>不限</b><small>慢慢想</small></button>
+      <button data-t="10"><b>10</b><small>秒</small></button>
+      <button data-t="15"><b>15</b><small>秒</small></button>
+      <button data-t="20"><b>20</b><small>秒</small></button>
+      <button data-t="30"><b>30</b><small>秒</small></button>
+    </div>
+    </div>
+    <h2 class="sec">年代範圍</h2>
+    <div class="yr">
+      <div class="yr-head"><b id="yr-label"></b><span id="yr-count"></span></div>
+      <div class="yr-slider">
+        <div class="yr-track"><i id="yr-fill"></i></div>
+        <input type="range" id="yr-a" aria-label="起始年份">
+        <input type="range" id="yr-b" aria-label="結束年份">
+      </div>
+      <div class="yr-ends"><span id="yr-min"></span><span>拖動兩端調整年份</span><span id="yr-max"></span></div>
+      <div class="chips" id="yr-presets"></div>
+    </div>
+  </div>
+  <p class="daily-note" id="daily-note" hidden>每日挑戰固定華語歌、「普通」難度、9 選 1、20 秒、全年代、隨機片段。今天每個人聽到的是同一組 5 首歌，片段位置也一樣。</p>
+
+  <button class="start" id="btn-start">開始遊戲</button>
+
+  <details class="howto">
+    <summary>怎麼玩</summary>
+    <ul>
+      <li>點<b>唱片</b>播放一小段試聽，從選項中選出歌名。</li>
+      <li><b>時間限制</b>可以在首頁調整（不限、10、15、20、30 秒），從片段開始播放起算；<b>答得越快分數越高</b>，不用延長就答對最划算；<b>連續答對</b>有連擊加成，最高 ×2。</li>
+      <li><b>只出副歌</b>：先分析試聽，找出音樂明顯拉高、最飽滿、旋律重複的段落，從副歌開頭播；沒把握的歌會直接跳過。聽到不是副歌可以按「這段不是副歌」回報，那首就不會再出。</li>
+      <li>聽不出來可以按<b>「聽長一點」</b>，但這題分數會打折（×0.6、×0.35）。</li>
+      <li>每局有三種道具：<b>刪去一半</b>錯誤選項、<b>免費延長</b>片段、<b>換一首</b>。</li>
+      <li>隨機事件：🔥 雙倍分數、⚡ 極速題（片段減半 ×1.5）、🎁 寶箱題（答對送道具）。</li>
+      <li>可以複選<b>題目類別</b>（華語、台語、粵語、西洋、韓語、日語、其他語言），自訂<b>年代範圍</b>和<b>選項數量</b>（4／6／9 個，選項越多分數越高）。</li>
+      <li><b>闖關模式</b>：共 10 關，每關 5 首，本關分數達到目標才能進下一關；越後面片段越短、選項越多、時間越緊。過過的關卡可以直接選來挑戰。</li>
+      <li><b>生存模式</b>：答錯扣一條命；每答對 5 首升一級，片段變短；每答對 10 首回一條命。</li>
+      <li>每次的歌單、片段位置、干擾選項都是隨機的，最近玩過的歌會排到後面。</li>
+    </ul>
+  </details>
+  <p class="foot">
+    <button class="link" id="btn-beep">🔊 測試聲音</button> · <button class="link" id="btn-sfx">音效：開</button><br>
+    試聽音源來自 Apple Music 與 Deezer 的公開 30 秒試聽，需要連網。
+  </p>
+</section>
+
+<!-- ================= GAME ================= -->
+<section id="game" class="screen" aria-label="遊戲">
+  <header class="hud">
+    <button class="hud-quit" id="btn-quit" aria-label="離開">✕</button>
+    <div class="hud-mid"><div id="hud-round">第 1 首</div><div class="hud-sub"><span id="hud-lives" class="lives"></span><span id="hud-time" class="clock"></span></div></div>
+    <div class="hud-score"><div id="hud-score">0</div><div id="hud-combo" class="combo"></div></div>
+  </header>
+  <div class="timer" id="timer"><i id="timer-fill"></i></div>
+  <div class="event" id="event" hidden></div>
+  <div class="stage">
+    <div class="record-wrap" id="record-wrap">
+      <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" class="ring-bg"/><circle cx="50" cy="50" r="48" class="ring-fg" id="ring-fg"/></svg>
+      <button class="record" id="record" aria-label="播放片段">
+        <span class="label" id="label"><img id="art" alt=""><span class="q" id="label-q">?</span></span>
+        <span class="hole"></span>
+      </button>
+      <span class="sheen"></span>
+      <div class="float-pts" id="float-pts"></div>
+    </div>
+    <div class="status" id="status">
+      <div class="eq" id="eq"><i></i><i></i><i></i><i></i><i></i></div>
+      <div id="status-text">載入中…</div>
+    </div>
+    <div class="reveal" id="reveal" hidden>
+      <div class="rv-verdict" id="rv-verdict"></div>
+      <div class="rv-title" id="rv-title"></div>
+      <div class="rv-meta" id="rv-meta"></div>
+      <button class="link rv-flag" id="btn-notchorus" hidden>這段不是副歌？按這裡回報</button>
+    </div>
+  </div>
+  <div class="controls" id="controls">
+    <button class="ctl" id="btn-replay" disabled>↺ 重播</button>
+    <button class="ctl ctl-ext" id="btn-extend" disabled><b>＋ 聽長一點</b><small id="ext-sub"></small></button>
+  </div>
+  <div class="options locked" id="options"></div>
+  <div class="items" id="items">
+    <button class="item" data-item="cut">✂ 刪去一半 <b>1</b></button>
+    <button class="item" data-item="free">⏩ 免費延長 <b>1</b></button>
+    <button class="item" data-item="skip">↻ 換一首 <b>1</b></button>
+  </div>
+  <button class="start next" id="btn-next" hidden>下一首 →</button>
+  <div class="kbd-hint">空白鍵 播放 · 1–9 選答案 · E 聽長一點 · Enter 下一首</div>
+  <p class="foot"><button class="link" id="btn-diag">沒聲音？點這裡檢查</button></p>
+</section>
+
+<!-- ================= RESULT ================= -->
+<section id="result" class="screen" aria-label="結果">
+  <div class="result-head">
+    <div class="kicker" id="res-kicker"></div>
+    <div class="rank" id="res-rank"></div>
+    <p class="rank-sub" id="res-rank-sub"></p>
+    <div class="bigscore" id="res-score">0</div>
+    <div id="res-newrec"></div>
+    <div class="grid-emoji" id="res-grid"></div>
+    <div class="stats" id="res-stats"></div>
+    <button class="start ghost share" id="btn-share" hidden>複製成績分享</button>
+  </div>
+  <h2 class="sec">這局的歌 · 點 ▶ 重聽</h2>
+  <ul class="songlist" id="res-list"></ul>
+  <button class="start" id="btn-again">再玩一局</button>
+  <button class="start ghost" id="btn-home">回主選單</button>
+</section>
+</div>
+
+<div class="modal" id="modal" hidden><div class="modal-card" role="dialog" aria-modal="true"><h3 id="modal-title"></h3><p id="modal-text"></p><div class="modal-actions" id="modal-actions"></div></div></div>
+<div id="toast" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const BANK_RAW = "月亮代表我的心|鄧麗君|1977|zh\n甜蜜蜜|鄧麗君|1979|zh\n小城故事|鄧麗君|1979|zh\n何日君再來|鄧麗君|1978|zh\n但願人長久|鄧麗君|1983|zh\n我只在乎你|鄧麗君|1987|zh\n恰似你的溫柔|蔡琴|1979|zh\n被遺忘的時光|蔡琴|1979|zh\n一剪梅|費玉清|1983|zh\n酒干倘賣無|蘇芮|1983|zh\n一樣的月光|蘇芮|1983|zh\n童年|羅大佑|1982|zh\n光陰的故事|羅大佑|1982|zh\n鹿港小鎮|羅大佑|1982|zh\n戀曲1990|羅大佑|1989|zh\n掌聲響起|鳳飛飛|1986|zh\n冬天裡的一把火|費翔|1987|zh\n外面的世界|齊秦|1987|zh\n大約在冬季|齊秦|1987|zh\n一場遊戲一場夢|王傑|1987|zh\n忘了你忘了我|王傑|1988|zh\n我的未來不是夢|張雨生|1988|zh\n天天想你|張雨生|1988|zh\n大海|張雨生|1992|zh\n夢醒時分|陳淑樺|1989|zh\n再回首|姜育恆|1988|zh\n其實你不懂我的心|童安格|1988|zh\n我想有個家|潘美辰|1988|zh\n青蘋果樂園|小虎隊|1989|zh\n愛|小虎隊|1991|zh\n我很醜可是我很溫柔|趙傳|1988|zh\n我是一隻小小鳥|趙傳|1990|zh\n哭砂|黃鶯鶯|1990|zh\n讓我一次愛個夠|庾澄慶|1990|zh\n情非得已|庾澄慶|2001|zh\n你怎麼捨得我難過|黃品源|1990|zh\n對你愛不完|郭富城|1990|zh\n認錯|優客李林|1991|zh\n瀟灑走一回|葉蒨文|1991|zh\n今夜你會不會來|黎明|1991|zh\n讓我歡喜讓我憂|周華健|1991|zh\n花心|周華健|1993|zh\n風雨無阻|周華健|1994|zh\n朋友|周華健|1997|zh\n謝謝你的愛|劉德華|1992|zh\n忘情水|劉德華|1994|zh\n冰雨|劉德華|1997|zh\n中國人|劉德華|1997|zh\n水手|鄭智化|1992|zh\n星星點燈|鄭智化|1992|zh\n把悲傷留給自己|陳昇|1992|zh\n鬼迷心竅|李宗盛|1992|zh\n山丘|李宗盛|2013|zh\n冬季到台北來看雨|孟庭葦|1993|zh\n新鴛鴦蝴蝶夢|黃安|1993|zh\n吻別|張學友|1993|zh\n一路上有你|張學友|1993|zh\n心如刀割|張學友|1993|zh\n愛如潮水|張信哲|1993|zh\n過火|張信哲|1995|zh\n白月光|張信哲|1998|zh\n用心良苦|張宇|1993|zh\n一言難盡|張宇|1995|zh\n月亮惹的禍|張宇|1998|zh\n霧裡看花|那英|1993|zh\n征服|那英|1998|zh\n相約九八|那英、王菲|1998|zh\n領悟|辛曉琪|1994|zh\n味道|辛曉琪|1995|zh\n新不了情|萬芳|1994|zh\n浪人情歌|伍佰|1994|zh\n挪威的森林|伍佰|1996|zh\nLast Dance|伍佰|1996|zh\n突然的自我|伍佰|2003|zh\n我願意|王菲|1994|zh\n人間|王菲|1997|zh\n紅豆|王菲|1998|zh\n傳奇|王菲|2010|zh\n匆匆那年|王菲|2014|zh\n因為愛情|陳奕迅、王菲|2008|zh\n如果雲知道|許茹芸|1996|zh\n獨角戲|許茹芸|1996|zh\n城裡的月光|許美靜|1996|zh\n火柴天堂|熊天平|1996|zh\n心太軟|任賢齊|1996|zh\n對面的女孩看過來|任賢齊|1998|zh\n姊妹/姐妹|張惠妹|1996|zh\n聽海|張惠妹|1997|zh\n我可以抱你嗎|張惠妹|1997|zh\n記得|張惠妹|2001|zh\n愛很簡單|陶喆|1997|zh\n小鎮姑娘|陶喆|1997|zh\n普通朋友|陶喆|1999|zh\n愛我別走|張震嶽|1997|zh\n思念是一種病|張震嶽、蔡健雅|2007|zh\n陰天|莫文蔚|1998|zh\n雨蝶|李翊君|1998|zh\n很愛很愛你|劉若英|1998|zh\n後來|劉若英|2000|zh\n親愛的你怎麼不在我身邊|江美琪|1999|zh\n擁抱|五月天|1999|zh\n溫柔|五月天|2000|zh\n你不是真正的快樂|五月天|2003|zh\n倔強|五月天|2004|zh\n知足|五月天|2005|zh\n戀愛ING|五月天|2006|zh\n突然好想你|五月天|2008|zh\n後來的我們|五月天|2016|zh\n那些花兒|朴樹|1999|zh\n平凡之路|朴樹|2014|zh\n至少還有你|林憶蓮|2000|zh\n黃昏|周傳雄|2000|zh\n有多少愛可以重來|迪克牛仔|2000|zh\n最熟悉的陌生人|蕭亞軒|2000|zh\n月光愛人|李玟|2000|zh\n天黑黑|孫燕姿|2000|zh\n開始懂了|孫燕姿|2000|zh\n綠光|孫燕姿|2001|zh\n遇見|孫燕姿|2003|zh\n我懷念的|孫燕姿|2006|zh\n勇氣|梁靜茹|2000|zh\n分手快樂|梁靜茹|2002|zh\n寧夏|梁靜茹|2004|zh\n可惜不是你|梁靜茹|2005|zh\n暖暖|梁靜茹|2006|zh\n可愛女人|周杰倫|2000|zh\n星晴|周杰倫|2000|zh\n龍捲風|周杰倫|2000|zh\n簡單愛|周杰倫|2001|zh\n雙截棍/雙節棍|周杰倫|2001|zh\n安靜|周杰倫|2001|zh\n開不了口|周杰倫|2001|zh\n半島鐵盒|周杰倫|2002|zh\n晴天|周杰倫|2003|zh\n東風破|周杰倫|2003|zh\n以父之名|周杰倫|2003|zh\n七里香|周杰倫|2004|zh\n擱淺|周杰倫|2004|zh\n夜曲|周杰倫|2005|zh\n一路向北|周杰倫|2005|zh\n青花瓷|周杰倫|2007|zh\n彩虹|周杰倫|2007|zh\n蒲公英的約定|周杰倫|2007|zh\n不能說的祕密/不能說的秘密|周杰倫|2007|zh\n稻香|周杰倫|2008|zh\n說好的幸福呢|周杰倫|2008|zh\n告白氣球|周杰倫|2016|zh\n等你下課|周杰倫|2018|zh\n說好不哭|周杰倫|2019|zh\n流星雨|F4|2001|zh\n第一次|光良|2001|zh\n童話|光良|2005|zh\n唯一|王力宏|2001|zh\n心中的日月|王力宏|2004|zh\n大城小愛|王力宏|2005|zh\n落葉歸根|王力宏|2007|zh\n你不知道的事|王力宏|2010|zh\n戀人未滿|S.H.E|2001|zh\nSuper Star|S.H.E|2003|zh\n不想長大|S.H.E|2005|zh\n中國話|S.H.E|2007|zh\n死了都要愛|信樂團|2002|zh\n你的背包|陳奕迅|2002|zh\n十年|陳奕迅|2003|zh\n好久不見|陳奕迅|2007|zh\n愛情轉移|陳奕迅|2007|zh\n紅玫瑰|陳奕迅|2007|zh\n你要的愛|戴佩妮|2002|zh\n癡心絕對/痴心絕對|李聖傑|2002|zh\n說愛你|蔡依林|2003|zh\n看我72變|蔡依林|2003|zh\n倒帶|蔡依林|2004|zh\n愛情36計|蔡依林|2004|zh\n舞孃/舞娘|蔡依林|2006|zh\n日不落|蔡依林|2007|zh\n大藝術家|蔡依林|2012|zh\n最初的夢想|范瑋琪|2003|zh\n江南|林俊傑|2004|zh\n美人魚|林俊傑|2004|zh\n曹操|林俊傑|2006|zh\n小酒窩|林俊傑|2008|zh\n她說|林俊傑|2010|zh\n修煉愛情|林俊傑|2013|zh\n不為誰而作的歌|林俊傑|2015|zh\n旅行的意義|陳綺貞|2004|zh\n歐若拉|張韶涵|2004|zh\n隱形的翅膀|張韶涵|2006|zh\n愛你|王心凌|2004|zh\n快樂崇拜|潘瑋柏、張韶涵|2004|zh\n我們的愛|飛兒樂團|2004|zh\n不得不愛|潘瑋柏、弦子|2005|zh\n曖昧|楊丞琳|2005|zh\n雨愛|楊丞琳|2009|zh\n你是我的眼|蕭煌奇|2005|zh\n小情歌|蘇打綠|2006|zh\n寶貝|張懸|2006|zh\n三國戀|Tank|2006|zh\n我相信|楊培安|2006|zh\n戀愛達人|羅志祥|2008|zh\n我愛你|盧廣仲|2008|zh\n魚仔|盧廣仲|2017|zh\n洋蔥|楊宗緯|2008|zh\n說謊|林宥嘉|2009|zh\n王妃|蕭敬騰|2009|zh\n沒那麼簡單|黃小琥|2009|zh\n紅色高跟鞋|蔡健雅|2009|zh\n身騎白馬|徐佳瑩|2009|zh\n失落沙洲|徐佳瑩|2009|zh\n給我一個理由忘記|A-Lin|2010|zh\n魔鬼中的天使|田馥甄|2011|zh\n你就不要想起我|田馥甄|2011|zh\n小幸運|田馥甄|2015|zh\n我的歌聲裡|曲婉婷|2012|zh\n泡沫|鄧紫棋|2012|zh\n光年之外|鄧紫棋|2016|zh\n董小姐|宋冬野|2013|zh\n演員|薛之謙|2015|zh\n你，好不好？|周興哲|2015|zh\n成都|趙雷|2016|zh\n消愁|毛不易|2017|zh\n年少有為|李榮浩|2018|zh\n愛人錯過|告五人|2019|zh\n如果可以|韋禮安|2021|zh\n千言萬語|鄧麗君|1972|zh\n在水一方|鄧麗君|1980|zh\n我是一片雲|鳳飛飛|1977|zh\n追夢人|鳳飛飛|1991|zh\n橄欖樹|齊豫|1979|zh\n龍的傳人|李建復|1980|zh\n故鄉的雲|費翔|1987|zh\n跟著感覺走|蘇芮|1988|zh\n牽手|蘇芮|1993|zh\n原來的我|齊秦|1988|zh\n安妮|王傑|1989|zh\n滾滾紅塵|陳淑樺|1990|zh\n跟往事乾杯|姜育恆|1990|zh\n我是不是該安靜的走開|郭富城|1990|zh\n凡人歌|李宗盛|1991|zh\n失戀陣線聯盟|草蜢|1991|zh\n青青河邊草|高勝美|1992|zh\n千年等一回|高勝美|1992|zh\n其實不想走|周華健|1993|zh\n刀劍如夢|周華健|1994|zh\n她來聽我的演唱會|張學友|1993|zh\n風中有朵雨做的雲|孟庭葦|1993|zh\n九百九十九朵玫瑰|邰正宵|1993|zh\n最浪漫的事|趙詠華|1994|zh\n一天到晚游泳的魚|張雨生|1994|zh\n雪人|范曉萱|1996|zh\n愛的初體驗|張震嶽|1997|zh\n笨小孩|劉德華|1997|zh\n小薇|黃品源|1997|zh\nBad Boy|張惠妹|1997|zh\n傷心太平洋|任賢齊|1998|zh\n當|動力火車|1998|zh\n棋子|王菲|1998|zh\n白天不懂夜的黑|那英|1998|zh\n愛就一個字|張信哲|1999|zh\n心動|林曉培|1999|zh\n天涯|任賢齊|2000|zh\n他不愛我|莫文蔚|2000|zh\n盛夏的果實|莫文蔚|2000|zh\n原來你什麼都不要|張惠妹|2001|zh\n流年|王菲|2001|zh\n愛在西元前|周杰倫|2001|zh\n屋頂|周杰倫、溫嵐|2001|zh\n風箏|孫燕姿|2001|zh\n人生海海|五月天|2001|zh\n愛的就是你|王力宏|2001|zh\n回到過去|周杰倫|2002|zh\n黑色柳丁|陶喆|2002|zh\n流沙|陶喆|2002|zh\n練習|劉德華|2002|zh\n軌跡|周杰倫|2003|zh\n布拉格廣場|蔡依林|2003|zh\n我知道你很難過|蔡依林|2003|zh\n愛你不是兩三天|梁靜茹|2003|zh\n半糖主義|S.H.E|2003|zh\n春泥|庾澄慶|2003|zh\n從開始到現在|張信哲|2003|zh\n黑色毛衣|周杰倫|2004|zh\n天使|五月天|2004|zh\n雨天|孫燕姿|2004|zh\nLydia|飛兒樂團|2004|zh\n離歌|信樂團|2004|zh\n手放開|李聖傑|2004|zh\n髮如雪|周杰倫|2005|zh\n楓|周杰倫|2005|zh\n就是愛你|陶喆|2005|zh\n恭喜發財|劉德華|2005|zh\n睫毛彎彎|王心凌|2005|zh\n遺失的美好|張韶涵|2005|zh\n一個像夏天一個像秋天|范瑋琪|2005|zh\n青花|周傳雄|2005|zh\n千里之外|周杰倫、費玉清|2006|zh\n菊花台|周杰倫|2006|zh\n聽媽媽的話|周杰倫|2006|zh\n本草綱目|周杰倫|2006|zh\n退後|周杰倫|2006|zh\n一千年以後|林俊傑|2006|zh\n盛夏光年|五月天|2006|zh\n精舞門|羅志祥|2006|zh\n認真的雪|薛之謙|2006|zh\n牛仔很忙|周杰倫|2007|zh\n離開地球表面|五月天|2007|zh\n崇拜|梁靜茹|2007|zh\n逆光|孫燕姿|2007|zh\n改變自己|王力宏|2007|zh\n淘汰|陳奕迅|2007|zh\n無與倫比的美麗|蘇打綠|2007|zh\n給我一首歌的時間|周杰倫|2008|zh\n醉赤壁|林俊傑|2008|zh\n期待愛|林俊傑、金莎|2008|zh\n如煙|五月天|2008|zh\n不要說話|陳奕迅|2008|zh\n下一個天亮|郭靜|2008|zh\n背對背擁抱|林俊傑|2009|zh\n想自由|林宥嘉|2009|zh\n怎麼說我不愛你|蕭敬騰|2009|zh\n偏愛|張芸京|2009|zh\n最炫民族風|鳳凰傳奇|2009|zh\n煙花易冷|周杰倫|2010|zh\n寂寞寂寞就好|田馥甄|2010|zh\n穩穩的幸福|陳奕迅|2010|zh\n那些你很冒險的夢|林俊傑|2011|zh\n學不會|林俊傑|2011|zh\n諾亞方舟|五月天|2011|zh\n你給我聽好|陳奕迅|2011|zh\n給未來的自己|梁靜茹|2011|zh\n紅塵客棧|周杰倫|2012|zh\n傷心的人別聽慢歌|五月天|2013|zh\n醜八怪|薛之謙|2013|zh\n李白|李榮浩|2013|zh\n聽見下雨的聲音|魏如昀|2013|zh\n算什麼男人|周杰倫|2014|zh\n可惜沒如果|林俊傑|2014|zh\n克卜勒|孫燕姿|2014|zh\n女孩|韋禮安|2014|zh\n小蘋果|筷子兄弟|2014|zh\n尋人啟事|徐佳瑩|2015|zh\n一次就好|楊宗緯|2015|zh\n多遠都要在一起|鄧紫棋|2015|zh\n來自天堂的魔鬼|鄧紫棋|2015|zh\n讓我留在你身邊|陳奕迅|2015|zh\n謝謝妳愛我|謝和弦|2015|zh\n床邊故事|周杰倫|2016|zh\n好好|五月天|2016|zh\n如果我們不曾相遇|五月天|2016|zh\n剛剛好|薛之謙|2016|zh\n以後別做朋友|周興哲|2016|zh\n帥到分手|周湯豪|2016|zh\n像我這樣的人|毛不易|2017|zh\n怪美的|蔡依林|2018|zh\n玫瑰少年|蔡依林|2018|zh\n倒數|鄧紫棋|2018|zh\n怎麼了|周興哲|2018|zh\n麻雀|李榮浩|2019|zh\nMojito|周杰倫|2020|zh\n想見你想見你想見你|八三夭|2020|zh\n刻在我心底的名字|盧廣仲|2020|zh\n孤勇者|陳奕迅|2021|zh\n最偉大的作品|周杰倫|2022|zh\n我要的幸福|孫燕姿|2000|zh\n火力全開|王力宏|2008|zh\n不該|周杰倫、張惠妹|2016|zh\n涼涼|楊宗緯、張碧晨|2017|zh\n披星戴月的想你|告五人|2019|zh\n北方的狼|齊秦|1985|zh\n夜來香|鄧麗君|1978|zh\n戀愛症候群|黃舒駿|1989|zh\n你走你的路|陳淑樺|1989|zh\n紅蜻蜓|小虎隊|1990|zh\n東方之珠|羅大佑|1991|zh\n笑紅塵|陳淑樺|1992|zh\n愛要怎麼說出口|趙傳|1992|zh\n祝福|張學友|1993|zh\n別怕我傷心|張信哲|1993|zh\n當愛已成往事|張國榮|1993|zh\n愛的代價|張艾嘉|1993|zh\n你看你看月亮的臉|孟庭葦|1993|zh\n夜夜夜夜|齊秦|1993|zh\n那有一天不想你|黎明|1994|zh\n特別的愛給特別的你|伍思凱|1994|zh\n一千個傷心的理由|張學友|1995|zh\n今天|劉德華|1995|zh\n為愛癡狂/為愛痴狂|劉若英|1995|zh\n你把我灌醉|黃大煒|1995|zh\n是不是這樣的夜晚你才會這樣的想起我|吳宗憲|1995|zh\n情書|張學友|1996|zh\n忘記你我做不到|張學友|1996|zh\n信仰|張信哲|1996|zh\n健康歌|范曉萱|1996|zh\n三天三夜|張惠妹|1997|zh\n女人花|梅艷芳|1997|zh\n單身情歌|林志炫|1997|zh\n掌心|無印良品|1997|zh\n任逍遙|任賢齊|1998|zh\n我是一隻魚|任賢齊|1998|zh\n我是女生|徐懷鈺|1998|zh\n忽然之間|莫文蔚|1999|zh\n膽小鬼|梁詠琪|2000|zh\n男人哭吧不是罪|劉德華|2000|zh\n曲終人散|張宇|2000|zh\n美麗新世界|S.H.E|2001|zh\n熱帶雨林|S.H.E|2002|zh\n他一定很愛你|阿杜|2002|zh\n相見恨晚|彭佳慧|2002|zh\n記事本|陳慧琳|2002|zh\n斷了的弦|周杰倫|2003|zh\n我難過|5566|2003|zh\n那就這樣吧|動力火車|2003|zh\n園遊會|周杰倫|2004|zh\n2002年的第一場雪|刀郎|2004|zh\n兩隻蝴蝶|龐龍|2004|zh\n特務J|蔡依林|2005|zh\n花田錯|王力宏|2005|zh\n下雨天|南拳媽媽|2005|zh\n特別的人|方大同|2005|zh\n背叛|曹格|2005|zh\n當你孤單你會想起誰|張棟樑|2005|zh\n霍元甲|周杰倫|2006|zh\n愛愛愛|方大同|2006|zh\n大舌頭|吳克群|2006|zh\n我可以|蔡旻佑|2006|zh\n我愛台妹|熱狗|2006|zh\n最長的電影|周杰倫|2007|zh\n甜甜的|周杰倫|2007|zh\n陽光宅男|周杰倫|2007|zh\n私奔到月球|五月天、陳綺貞|2007|zh\n豆漿油條|林俊傑|2007|zh\n一首簡單的歌|王力宏|2007|zh\n為你寫詩|吳克群|2007|zh\n花海|周杰倫|2008|zh\n天后|陳勢安|2008|zh\n國境之南|范逸臣|2008|zh\n檸檬草的味道|蔡依林|2009|zh\n春天裡|汪峰|2009|zh\n還是要幸福|田馥甄|2010|zh\n愛笑的眼睛|林俊傑|2010|zh\n老男孩|筷子兄弟|2010|zh\n乾杯|五月天|2011|zh\n我不願讓你一個人|五月天|2011|zh\n那些年|胡夏|2011|zh\n貝加爾湖畔|李健|2011|zh\n達爾文|蔡健雅|2011|zh\n明明就|周杰倫|2012|zh\n因你而在|林俊傑|2013|zh\n你還要我怎樣|薛之謙|2013|zh\n模特|李榮浩|2013|zh\n我好想你|蘇打綠|2013|zh\n我呸|蔡依林|2014|zh\n喜歡你|鄧紫棋|2014|zh\n手寫的從前|周杰倫|2015|zh\n陪你度過漫長歲月|陳奕迅|2015|zh\n紳士|薛之謙|2015|zh\n你曾是少年|S.H.E|2015|zh\n步步|五月天|2016|zh\n大魚|周深|2016|zh\n大風吹|草東沒有派對|2016|zh\n偉大的渺小|林俊傑|2017|zh\n如果雨之後|周興哲|2017|zh\n愛了很久的朋友|田馥甄|2018|zh\n如願|王菲|2021|zh\n給你一瓶魔法藥水|告五人|2021|zh\n想和你看五月的晚霞|陳華|2023|zh\n往事只能回味|尤雅|1970|zh\n三月裡的小雨|劉文正|1979|zh\n雨中即景|王夢麟|1981|zh\n月琴|鄭怡|1983|zh\n台北的天空|王芷蕾|1986|zh\n一無所有|崔健|1986|zh\n魯冰花|甄妮|1989|zh\n我是不是你最疼愛的人|潘越雲|1989|zh\n我曾用心愛著你|潘美辰|1990|zh\n為你我受冷風吹|林憶蓮|1991|zh\n十七歲的雨季|林志穎|1992|zh\n你知道我在等你們分手嗎|張洪量|1993|zh\n濤聲依舊|毛寧|1993|zh\n把根留住|童安格|1993|zh\n同桌的你|老狼|1994|zh\n愛我的人和我愛的人|裘海正|1994|zh\n太傻|巫啟賢|1994|zh\n不再讓你孤單|陳昇|1996|zh\n你愛我像誰|張衛健|1997|zh\n鴨子|蘇慧倫|1998|zh\n男人不該讓女人流淚|蘇永康|1998|zh\n還是會寂寞|陳綺貞|1998|zh\n約定|周蕙|1999|zh\n因為愛所以愛|謝霆鋒|1999|zh\n三萬英呎|迪克牛仔|2001|zh\n星期五晚上|Energy|2002|zh\n葉子|阿桑|2003|zh\n紅顏|胡彥斌|2003|zh\n一輩子的孤單|劉若英|2003|zh\n天高地厚|信樂團|2003|zh\n孤單北半球|林依晨|2004|zh\n獨家記憶|陳小春|2004|zh\n揮著翅膀的女孩|容祖兒|2004|zh\n陪我看日出|蔡淳佳|2004|zh\n想太多|李玖哲|2004|zh\n對的人|戴愛玲|2005|zh\n那年夏天寧靜的海|黃義達|2005|zh\n怎樣|戴佩妮|2005|zh\n只對你有感覺|飛輪海、田馥甄|2007|zh\n我愛他|丁噹|2008|zh\n畫心|張靚穎|2008|zh\n地球上最浪漫的一首歌|黃鴻升|2009|zh\n心牆|郭靜|2009|zh\n煎熬|李佳薇|2010|zh\n夜空中最亮的星|逃跑計劃|2011|zh\n時間都去哪兒了|王錚亮|2014|zh\n南山南|馬頔|2014|zh\n愛我還是他|陶喆|2002|zh\n飄向北方|黃明志、王力宏|2016|zh\n我們不一樣|大壯|2017|zh\n有一種悲傷|A-Lin|2018|zh\n學貓叫|小潘潘、小峰峰|2018|zh\n空空如也|任然|2018|zh\n少年|夢然|2019|zh\n起風了|吳青峰|2019|zh\n綠色|陳雪凝|2019|zh\n你的答案|阿冗|2019|zh\nWithout You|高爾宣|2019|zh\nCHANGE|瘦子E.SO|2020|zh\n我這個人|艾怡良|2021|zh\n好不容易|告五人|2021|zh\n嘉賓|張遠|2021|zh\n從前說|小阿七|2021|zh\n想知道你在想什麼|周興哲|2022|zh\n烏梅子醬|李榮浩|2022|zh\n訣愛|詹雯婷|2022|zh\n眼淚記得你|孫盛希|2022|zh\n離開的一路上|理想混蛋|2023|zh\n我會等|承桓|2023|zh\n在加納共和國離婚|菲道爾、大穎|2023|zh\n字字句句|盧盧快閉嘴|2023|zh\n若月亮沒來/若是月亮還沒來|王宇宙Leto、喬浚丞|2024|zh\nI Hate Myself Sometimes|派偉俊、李浩瑋|2024|zh\n一起寂寞|邱鋒澤、艾薇|2024|zh\n都是 weather 你/都是weather你|JOYCE就以斯|2024|zh\n愛情的大壞蛋|美秀集團|2024|zh\n跳樓機|LBI利比|2025|zh\n有一種遺憾叫我們|于冬然|2025|zh\n一生有你|水木年華|2001|zh\n青春紀念冊|可米小子|2002|zh\n藍蓮花|許巍|2002|zh\n你那麼愛她|李聖傑|2003|zh\n一個人生活|林凡|2004|zh\n最近|李聖傑|2005|zh\n愛，一直存在/愛一直存在|梁文音|2008|zh\n有何不可|許嵩|2009|zh\n逆戰|張杰|2012|zh\n煙火裡的塵埃|華晨宇|2013|zh\n時間煮雨|郁可唯|2014|zh\n歲月神偷|金玟岐|2014|zh\n星辰大海|黃霄雲|2021|zh\n今天不回家|姚蘇蓉|1969|zh\n諾言|劉文正|1975|zh\n南海姑娘|鄧麗君|1977|zh\n路邊的野花不要採|鄧麗君|1977|zh\n月朦朧鳥朦朧|鳳飛飛|1978|zh\n外婆的澎湖灣|潘安邦|1979|zh\n鄉間的小路|葉佳修|1979|zh\n蘭花草|銀霞|1979|zh\n美酒加咖啡|鄧麗君|1979|zh\n又見炊煙|鄧麗君|1980|zh\n你怎麼說|鄧麗君|1980|zh\n你的眼神|蔡琴|1980|zh\n閃亮的日子|劉文正|1980|zh\n獨上西樓|鄧麗君|1983|zh\n是否|蘇芮|1983|zh\n償還|鄧麗君|1984|zh\n最後一夜|蔡琴|1984|zh\n你的樣子|羅大佑|1984|zh\n愛人|鄧麗君|1985|zh\n海上花|甄妮|1986|zh\n驛動的心|姜育恆|1987|zh\n不讓我的眼淚陪我過夜|齊秦|1988|zh\n晚安曲|費玉清|1988|zh\n是否我真的一無所有|王傑|1989|zh\n明天你是否依然愛我|童安格|1990|zh\n愛上一個不回家的人|林憶蓮|1990|zh\n沒有煙抽的日子|張雨生|1990|zh\n蝴蝶飛呀|小虎隊|1990|zh\n渡口|蔡琴|1990|zh\n奉獻|蘇芮|1990|zh\n風中的承諾|李翊君|1990|zh\n來生緣|劉德華|1991|zh\n每天愛你多一些|張學友|1991|zh\n漂洋過海來看你|金智娟|1991|zh\n那麼愛你為什麼|黃品源|1992|zh\n熱情的沙漠|庾澄慶|1992|zh\n問|陳淑樺|1993|zh\n梅花三弄|姜育恆|1993|zh\n北京一夜|陳昇、劉佳慧|1993|zh\n我真的受傷了|張學友|1993|zh\n情網|張學友|1993|zh\n孤枕難眠|周華健|1993|zh\n執迷不悔|王菲|1993|zh\n檸檬樹|蘇慧倫|1994|zh\n夢一場|那英|1994|zh\n別問我是誰|王馨平|1994|zh\n太委屈|陶晶瑩|1995|zh\n天下有情人|周華健、齊豫|1995|zh\n廣島之戀|莫文蔚、張洪量|1995|zh\n青藏高原|李娜|1995|zh\n剪愛|張惠妹|1996|zh\n愛你一萬年|伍佰|1996|zh\n你快樂所以我快樂|王菲|1996|zh\n天意|劉德華|1997|zh\n你最珍貴|張學友、高慧君|1997|zh\n有沒有一首歌會讓你想起我|周華健|1997|zh\n春天花會開|任賢齊|1997|zh\n愛像太平洋|任賢齊|1998|zh\n雨一直下|張宇|1998|zh\n好漢歌|劉歡|1998|zh\n瘋狂世界|五月天|1999|zh\n白鴿|伍佰|1999|zh\n缺口|庾澄慶|1999|zh\n成全|劉若英|1999|zh\n如果這都不算愛|張學友|1999|zh\n浪花一朵朵|任賢齊|1999|zh\n我要我們在一起|范曉萱|1999|zh\n不想讓你知道|周蕙|1999|zh\n下沙|游鴻明|1999|zh\n白樺林|朴樹|1999|zh\n黑色幽默|周杰倫|2000|zh\n伊斯坦堡|周杰倫|2000|zh\n愛情萬歲|五月天|2000|zh\nK歌之王|陳奕迅|2000|zh\n一笑而過|那英|2000|zh\n蒙娜麗莎的眼淚|林志炫|2000|zh\n威廉古堡|周杰倫|2001|zh\n依然愛你|王力宏|2001|zh\n如果你也聽說|張惠妹|2001|zh\n刀馬旦|李玟|2001|zh\n痛哭的人|伍佰|2001|zh\n情深深雨濛濛|趙薇|2001|zh\n爺爺泡的茶|周杰倫|2002|zh\n龍拳|周杰倫|2002|zh\n對不起|周杰倫|2002|zh\n找自己|陶喆|2002|zh\n我不難過|孫燕姿|2002|zh\n我也很想他|孫燕姿|2002|zh\n愛情證書|孫燕姿|2002|zh\n會呼吸的痛|梁靜茹|2002|zh\n一個人的精彩|蕭亞軒|2002|zh\n太聰明|陳綺貞|2002|zh\n半獸人|周杰倫|2003|zh\n飛機場的10:30|陶喆|2003|zh\nMelody|陶喆|2003|zh\n波斯貓|S.H.E|2003|zh\n彩虹的微笑|王心凌|2003|zh\n陌生人|蔡健雅|2003|zh\n忠孝東路走九遍|動力火車|2003|zh\n壁虎漫步|潘瑋柏|2003|zh\n生如夏花|朴樹|2003|zh\n你快回來|孫楠|2003|zh\n外婆|周杰倫|2004|zh\n借口|周杰倫|2004|zh\n止戰之殤|周杰倫|2004|zh\n人質|張惠妹|2004|zh\n我最親愛的|張惠妹|2004|zh\n假如|信樂團|2004|zh\n那年的情書|江美琪|2004|zh\n放生|范逸臣|2004|zh\n飛得更高|汪峰|2004|zh\n衝動的懲罰|刀郎|2004|zh\n你是我的玫瑰花|龐龍|2004|zh\n珊瑚海|周杰倫、Lara|2005|zh\n愛錯|王力宏|2005|zh\n需要人陪|王力宏|2005|zh\n寂寞的季節|陶喆|2005|zh\n妥協|蔡依林|2005|zh\n電台情歌|莫文蔚|2005|zh\n愛轉角|羅志祥|2005|zh\n第一次愛的人|王心凌|2005|zh\n寓言|張韶涵|2005|zh\n類似愛情|蕭亞軒|2005|zh\n千年之戀|飛兒樂團|2005|zh\n怒放的生命|汪峰|2005|zh\n月亮之上|鳳凰傳奇|2005|zh\n六月的雨|胡歌|2005|zh\n第幾個100天|林俊傑|2006|zh\nKiss Goodbye|王力宏|2006|zh\n燕尾蝶|梁靜茹|2006|zh\n左邊|楊丞琳|2006|zh\n到不了|范瑋琪|2006|zh\n今天你要嫁給我|陶喆、蔡依林|2006|zh\n明明很愛你|品冠、梁靜茹|2006|zh\n你被寫在我的歌裡|蘇打綠、Ella|2006|zh\n最重要的小事|五月天|2007|zh\n殺手|林俊傑|2007|zh\n大眠|王心凌|2007|zh\n被風吹過的夏天|林俊傑、金莎|2008|zh\n不潮不用花錢|林俊傑|2008|zh\n帶我走|楊丞琳|2008|zh\n馬德里不思議|蔡依林|2009|zh\n情歌|梁靜茹|2009|zh\n喜歡|張懸|2009|zh\n早安晨之美|盧廣仲|2009|zh\n三人遊|方大同|2009|zh\n說了再見|周杰倫|2010|zh\n超人不會飛|周杰倫|2010|zh\n小手拉大手|梁靜茹|2010|zh\n阿飛的小蝴蝶|蕭敬騰|2010|zh\n不只是朋友|黃小琥|2010|zh\n荷塘月色|鳳凰傳奇|2010|zh\n愛的飛行日記|周杰倫|2011|zh\n孤獨患者|陳奕迅|2011|zh\n頑固|五月天|2011|zh\n星空|五月天|2011|zh\n第二人生|五月天|2011|zh\n笑忘歌|五月天|2011|zh\n浪費|林宥嘉|2011|zh\n失戀無罪|A-Lin|2011|zh\n南方姑娘|趙雷|2011|zh\n大笨鐘|周杰倫|2012|zh\n安和橋|宋冬野|2013|zh\n幸福了 然後呢/幸福了然後呢|A-Lin|2014|zh\n其實都沒有|楊宗緯|2015|zh\n任意門|五月天|2016|zh\n生存以上生活以下|五月天|2016|zh\n派對動物|五月天|2016|zh\n年輪說|楊丞琳|2016|zh\n剛好遇見你|李玉剛|2016|zh\n連名帶姓|張惠妹|2017|zh\n淋雨一直走|張韶涵|2017|zh\n還是會|韋禮安|2017|zh\n動物世界|薛之謙|2017|zh\n體面|于文文|2017|zh\n說散就散|袁婭維|2017|zh\n不愛我就拉倒|周杰倫|2018|zh\n慢慢喜歡你|莫文蔚|2018|zh\n平凡的一天|毛不易|2018|zh\n句號|鄧紫棋|2019|zh\n像魚|王貳浪|2019|zh\n野狼disco|寶石Gem|2019|zh\n交換餘生|林俊傑|2020|zh\n很久以後|鄧紫棋|2020|zh\n還在流浪|周杰倫|2022|zh\n紅顏如霜|周杰倫|2022|zh\n親愛的對象|蔡依林|2023|zh\n遲到|劉文正|1979|zh\n情字這條路|潘越雲|1989|zh\n跟你說聽你說|陳淑樺|1989|zh\n你是我胸口永遠的痛|王傑|1989|zh\n我終於失去了你|趙傳|1990|zh\n往事隨風|齊秦|1993|zh\n夜太黑|林憶蓮|1993|zh\n割愛|萬芳|1993|zh\n寬容|張信哲|1994|zh\n羞答答的玫瑰靜悄悄地開|孟庭葦|1994|zh\n分享|伍思凱|1994|zh\n親密愛人|梅艷芳|1991|zh\n神話情話|周華健、齊豫|1995|zh\n祝你一路順風|吳奇隆|1995|zh\nSusan說|陶喆|1997|zh\n比我幸福|陳曉東|1998|zh\n最近比較煩|周華健、李宗盛、黃品源|1998|zh\n當愛在靠近|劉若英|1998|zh\nDiDaDi|李玟|1998|zh\n有一個姑娘|趙薇|1999|zh\n日光機場|許茹芸|2000|zh\nForever Love|王力宏|2001|zh\n堅持到底|阿杜|2002|zh\nOne Night in 北京|信樂團|2002|zh\n散了吧|林志炫|2003|zh\n如果沒有你|莫文蔚|2003|zh\n街角的祝福|戴佩妮|2003|zh\n夏夜晚風|伍佰|2003|zh\n孫悟空|五月天|2004|zh\n一支獨秀|羅志祥|2004|zh\n給你們|張宇|2004|zh\n魚|陳綺貞|2005|zh\n別找我麻煩|蔡健雅|2006|zh\n看得最遠的地方|張韶涵|2006|zh\n西海情歌|刀郎|2006|zh\n100種生活|盧廣仲|2008|zh\n神秘嘉賓|林宥嘉|2008|zh\n差不多先生|熱狗|2008|zh\n清明雨上|許嵩|2008|zh\n自由飛翔|鳳凰傳奇|2008|zh\n我還想她|林俊傑|2009|zh\n親愛的那不是愛情|張韶涵|2009|zh\n你在煩惱什麼|蘇打綠|2009|zh\n風吹麥浪|李健|2009|zh\n空白格|蔡健雅|2010|zh\n對的時間點|林俊傑|2013|zh\n默|那英|2015|zh\n不將就|李榮浩|2015|zh\n年輪|張碧晨|2015|zh\n像風一樣|薛之謙|2017|zh\n牧馬城市|毛不易|2017|zh\n你的酒館對我打了烊|陳雪凝|2018|zh\n我是如此相信|周杰倫|2019|zh\n透明|鄧紫棋|2019|zh\n飛鳥和蟬|任然|2020|zh\n與我無關|阿冗|2020|zh\n天外來物|薛之謙|2020|zh\n不刪|井朧|2021|zh\n在這座城市遺失了你|告五人|2021|zh\n摯友|A-Lin|2021|zh\n我很好騙|動力火車|2021|zh\n錯位時空|艾辰|2021|zh\n最後一堂課|周興哲|2022|zh\n怪獸|徐懷鈺|1999|zh\n好想好好愛你|周蕙|2001|zh\n體溫|周蕙|2002|zh\n風鈴|周蕙|2003|zh\n可不可以不勇敢|范瑋琪|2009|zh\n喜歡兩個人|彭佳慧|2009|zh\n給自己的歌|李宗盛|2010|zh\n星月神話|金莎|2010|zh\n後會無期|鄧紫棋|2014|zh\n言不由衷|徐佳瑩|2015|zh\n夜的第七章|周杰倫|2006|zh\n迷迭香|周杰倫|2006|zh\n我不配|周杰倫|2007|zh\nAlways Online|林俊傑|2008|zh\n愛拼才會贏|葉啟田|1988|tw\n愛人醉落去|葉啟田|1987|tw\n心事誰人知|沈文程|1982|tw\n媽媽請你也保重|文夏|1957|tw\n愛情的騙子我問你/愛情騙子我問你|陳小雲|1985|tw\n愛情恰恰|陳小雲|1992|tw\n舞女|陳小雲|1984|tw\n家後|江蕙|2001|tw\n酒後的心聲|江蕙|1992|tw\n惜別的海岸|江蕙|1984|tw\n半醉半清醒|江蕙|1999|tw\n落雨聲|江蕙|1999|tw\n金包銀|蔡秋鳳|1989|tw\n歡喜就好|陳雷|1990|tw\n向前走|林強|1990|tw\n車站|張秀卿|1992|tw\n你是我的花朵|伍佰|1996|tw\n樹枝孤鳥|伍佰|1998|tw\n鼓聲若響|陳昇|1997|tw\n海海人生|陳盈潔|1997|tw\n追追追|黃妃|1999|tw\n志明與春嬌|五月天|1999|tw\n憨人|五月天|2000|tw\n阿嬤的話|蕭煌奇|2007|tw\n姐姐|謝金燕|2010|tw\n浪子回頭|茄子蛋|2017|tw\n思慕的人|洪一峰|1957|tw\n黃昏的故鄉|文夏|1958|tw\n孤女的願望|陳芬蘭|1959|tw\n快樂的出帆|陳芬蘭|1961|tw\n舊情綿綿|洪一峰|1962|tw\n愛情一斤值外多/愛一斤是值外多|洪榮宏|1985|tw\n一卡皮箱|洪榮宏|1986|tw\n男性的本領|葉啟田|1986|tw\n內山姑娘要出嫁|葉啟田|1987|tw\n誰人甲我比|吳淑敏|1989|tw\n春風少年兄|林強|1990|tw\n藝界人生|江蕙|1992|tw\n風飛沙|陳盈潔|1992|tw\n傷心酒店|江蕙、施文彬|1993|tw\n苦戀夢|陳小雲|1993|tw\n雙人枕頭|王識賢|1995|tw\n船過水無痕|蔡小虎|1996|tw\n世界第一等|劉德華|1997|tw\n傷心的所在|施文彬|1997|tw\n叫你一聲My Love|施文彬|1998|tw\n空襲警報|伍佰|1998|tw\n流浪到淡水|金門王、李炳輝|1998|tw\n博杯|江蕙|2006|tw\n我問天|翁立友|2006|tw\n紅線|江蕙|2002|tw\n好膽你就來|阿密特|2009|tw\n當時欲嫁|江蕙|2010|tw\n末班車|蕭煌奇|2012|tw\n島嶼天光|滅火器|2014|tw\n浪流連|茄子蛋|2018|tw\n萬千花蕊慈母悲哀|珂拉琪|2021|tw\n愛情限時批|伍佰、萬芳|1998|tw\n無字的情批|黃乙玲|1999|tw\n愛到無命不知驚|王識賢|2001|tw\n夢中的情話|江蕙、阿杜|2002|tw\n雲中月圓|王識賢、孫淑媚|2004|tw\n人生的歌|黃乙玲|2005|tw\n練舞功|謝金燕|2005|tw\n甲你攬牢牢|江蕙|2008|tw\n晚安台灣|滅火器|2008|tw\n心裡有針|蕭煌奇|2009|tw\n嗶嗶嗶|謝金燕|2010|tw\n心花開|李千娜|2014|tw\n癡情的男子漢/癡情男子漢|玖壹壹|2014|tw\n棉照被|許富凱|2015|tw\n長途夜車|滅火器|2017|tw\n閣愛妳一擺/閣愛你一擺|茄子蛋|2017|tw\n鄉下來的|玖壹壹|2018|tw\n愛情你比我想的閣較偉大|茄子蛋|2021|tw\n必巡|曾瑋中|2022|tw\n運轉人生|邱軍|2024|tw\n若無你我欲去佗位|黃奇斌|2025|tw\n燒肉粽|郭金發|1960|tw\n望月想愛人|洪榮宏|1985|tw\n一支小雨傘|洪榮宏、江淑娜|1986|tw\n愛人跟人走|陳小雲|1990|tw\n講什麼山盟海誓|黃乙玲|1990|tw\n風吹的願望|江蕙|1994|tw\n含淚跳恰恰|謝金燕|1995|tw\n九號球|五月天|1999|tw\n垃圾車|五月天|1999|tw\n雪中花|王識賢、孫淑媚|2005|tw\n一片天|王識賢|2005|tw\n炮仔聲|江蕙|2007|tw\n愛著啊|江蕙|2009|tw\n夜市人生|翁立友|2009|tw\n一級棒|謝金燕|2013|tw\n下輩子|玖壹壹|2014|tw\n憨阿嬤|江蕙|2014|tw\n癡情玫瑰花|Under Lover|2015|tw\n伊的身邊已經有別人|許富凱|2016|tw\n電火王|美秀集團|2019|tw\n想要彈同調|鳳飛飛|1990|tw\n你講的話|江蕙|2013|tw\n再會中港路|玖壹壹|2014|tw\n打鐵|玖壹壹|2015|tw\n捲菸|美秀集團|2019|tw\n一生只督妳一人|玖壹壹|2023|tw\nCan't Help Falling in Love|Elvis Presley|1961|en\nYesterday|The Beatles|1965|en\nHey Jude|The Beatles|1968|en\nYesterday Once More|Carpenters|1973|en\nBohemian Rhapsody|Queen|1975|en\nDancing Queen|ABBA|1976|en\nHotel California|Eagles|1976|en\nWe Will Rock You|Queen|1977|en\nHow Deep Is Your Love|Bee Gees|1977|en\nDon't Stop Believin'|Journey|1981|en\nBillie Jean|Michael Jackson|1982|en\nBeat It|Michael Jackson|1982|en\nThriller|Michael Jackson|1982|en\nAfrica|Toto|1982|en\nEye of the Tiger|Survivor|1982|en\nGirls Just Want to Have Fun|Cyndi Lauper|1983|en\nLast Christmas|Wham!|1984|en\nTake On Me|a-ha|1985|en\nSweet Child O' Mine|Guns N' Roses|1987|en\nLike a Prayer|Madonna|1989|en\nRight Here Waiting|Richard Marx|1989|en\nHeal the World|Michael Jackson|1991|en\nSmells Like Teen Spirit|Nirvana|1991|en\n(Everything I Do) I Do It for You/I Do It for You|Bryan Adams|1991|en\nI Will Always Love You|Whitney Houston|1992|en\n25 Minutes|Michael Learns to Rock|1993|en\nHero|Mariah Carey|1993|en\nAll I Want for Christmas Is You|Mariah Carey|1994|en\nWonderwall|Oasis|1995|en\nWannabe|Spice Girls|1996|en\nAs Long As You Love Me|Backstreet Boys|1997|en\nMy Heart Will Go On|Celine Dion|1997|en\nTruly Madly Deeply|Savage Garden|1997|en\n...Baby One More Time/Baby One More Time|Britney Spears|1998|en\nI Want It That Way|Backstreet Boys|1999|en\nMy Love|Westlife|2000|en\nIt's My Life|Bon Jovi|2000|en\nYellow|Coldplay|2000|en\nComplicated|Avril Lavigne|2002|en\nSk8er Boi|Avril Lavigne|2002|en\nNumb|Linkin Park|2003|en\nToxic|Britney Spears|2003|en\nTake Me to Your Heart|Michael Learns to Rock|2004|en\nYou Raise Me Up|Westlife|2005|en\nUmbrella|Rihanna|2007|en\nViva la Vida|Coldplay|2008|en\nPoker Face|Lady Gaga|2008|en\nLove Story|Taylor Swift|2008|en\nHalo|Beyoncé|2008|en\nI'm Yours|Jason Mraz|2008|en\nBad Romance|Lady Gaga|2009|en\nI Gotta Feeling|The Black Eyed Peas|2009|en\nFireflies|Owl City|2009|en\nJust the Way You Are|Bruno Mars|2010|en\nMarry You|Bruno Mars|2010|en\nRolling in the Deep|Adele|2010|en\nFirework|Katy Perry|2010|en\nBaby|Justin Bieber|2010|en\nWaka Waka/Waka Waka (This Time for Africa)|Shakira|2010|en\nSomeone Like You|Adele|2011|en\nMoves Like Jagger|Maroon 5|2011|en\nRadioactive|Imagine Dragons|2012|en\nRoar|Katy Perry|2013|en\nCounting Stars|OneRepublic|2013|en\nHappy|Pharrell Williams|2013|en\nAll of Me|John Legend|2013|en\nWake Me Up|Avicii|2013|en\nUptown Funk|Mark Ronson、Bruno Mars|2014|en\nShake It Off|Taylor Swift|2014|en\nBlank Space|Taylor Swift|2014|en\nSugar|Maroon 5|2014|en\nThinking Out Loud|Ed Sheeran|2014|en\nStay With Me|Sam Smith|2014|en\nHello|Adele|2015|en\nSee You Again|Wiz Khalifa、Charlie Puth|2015|en\nSorry|Justin Bieber|2015|en\nFaded|Alan Walker|2015|en\nCloser|The Chainsmokers|2016|en\nShape of You|Ed Sheeran|2017|en\nPerfect|Ed Sheeran|2017|en\nBeliever|Imagine Dragons|2017|en\nAttention|Charlie Puth|2017|en\nHavana|Camila Cabello|2017|en\nShallow|Lady Gaga、Bradley Cooper|2018|en\nSunflower|Post Malone、Swae Lee|2018|en\nSomeone You Loved|Lewis Capaldi|2018|en\nbad guy|Billie Eilish|2019|en\nBlinding Lights|The Weeknd|2019|en\nLevitating|Dua Lipa|2020|en\ndrivers license|Olivia Rodrigo|2021|en\nAs It Was|Harry Styles|2022|en\nAnti-Hero|Taylor Swift|2022|en\nFlowers|Miley Cyrus|2023|en\nEspresso|Sabrina Carpenter|2024|en\nDie With A Smile|Lady Gaga、Bruno Mars|2024|en\nStand by Me|Ben E. King|1961|en\nWhat a Wonderful World|Louis Armstrong|1967|en\nMy Way|Frank Sinatra|1969|en\nLet It Be|The Beatles|1970|en\nImagine|John Lennon|1971|en\nTake Me Home, Country Roads|John Denver|1971|en\nDon't Stop Me Now|Queen|1979|en\nEvery Breath You Take|The Police|1983|en\nTotal Eclipse of the Heart|Bonnie Tyler|1983|en\nCareless Whisper|George Michael|1984|en\nWake Me Up Before You Go-Go|Wham!|1984|en\nTime After Time|Cyndi Lauper|1984|en\nI Want to Break Free|Queen|1984|en\nLivin' on a Prayer|Bon Jovi|1986|en\nLivin' la Vida Loca|Ricky Martin|1999|en\nMambo No. 5|Lou Bega|1999|en\nIn the End|Linkin Park|2000|en\nOops!... I Did It Again|Britney Spears|2000|en\nLose Yourself|Eminem|2002|en\nBoulevard of Broken Dreams|Green Day|2004|en\nHips Don't Lie|Shakira|2006|en\nBleeding Love|Leona Lewis|2007|en\nParty Rock Anthem|LMFAO|2011|en\nCall Me Maybe|Carly Rae Jepsen|2012|en\nLet It Go|Idina Menzel|2013|en\nChandelier|Sia|2014|en\nLove Yourself|Justin Bieber|2015|en\nCheap Thrills|Sia|2016|en\nDance Monkey|Tones and I|2019|en\nOld Town Road|Lil Nas X|2019|en\nSeñorita|Shawn Mendes、Camila Cabello|2019|en\nCruel Summer|Taylor Swift|2019|en\nWatermelon Sugar|Harry Styles|2020|en\nStay|The Kid LAROI、Justin Bieber|2021|en\nBeautiful Things|Benson Boone|2024|en\nBirds of a Feather|Billie Eilish|2024|en\nGolden|HUNTR/X|2025|en\nSoda Pop|Saja Boys|2025|en\nOrdinary|Alex Warren|2025|en\nTell Me|Wonder Girls|2007|kr\nNobody|Wonder Girls|2008|kr\nHaru Haru/하루하루|BIGBANG|2008|kr\nGee|少女時代|2009|kr\nGenie/소원을 말해봐|少女時代|2009|kr\nSorry, Sorry/Sorry Sorry|Super Junior|2009|kr\nMister|KARA|2009|kr\nBo Peep Bo Peep|T-ara|2009|kr\nGood Day/좋은 날|IU|2010|kr\nMr. Simple|Super Junior|2011|kr\nI Am the Best/내가 제일 잘 나가|2NE1|2011|kr\nRoly-Poly/롤리폴리|T-ara|2011|kr\nGangnam Style/강남스타일|PSY|2012|kr\nFantastic Baby|BIGBANG|2012|kr\nGrowl/으르렁|EXO|2013|kr\nBang Bang Bang/뱅뱅뱅|BIGBANG|2015|kr\nTT|TWICE|2016|kr\nCheer Up|TWICE|2016|kr\nStay With Me|Chanyeol、Punch|2016|kr\nAlways|Yoon Mi-rae|2016|kr\nDNA|BTS|2017|kr\nAs If It's Your Last/마지막처럼|BLACKPINK|2017|kr\nRed Flavor/빨간 맛|Red Velvet|2017|kr\nDDU-DU DDU-DU/뚜두뚜두|BLACKPINK|2018|kr\nFake Love|BTS|2018|kr\nWhat Is Love?|TWICE|2018|kr\nLove Shot|EXO|2018|kr\nBoy With Luv/작은 것들을 위한 시|BTS|2019|kr\nKill This Love|BLACKPINK|2019|kr\nFancy|TWICE|2019|kr\nPsycho|Red Velvet|2019|kr\nDynamite|BTS|2020|kr\nHow You Like That|BLACKPINK|2020|kr\nButter|BTS|2021|kr\nCelebrity|IU|2021|kr\nNext Level|aespa|2021|kr\nPink Venom|BLACKPINK|2022|kr\nHype Boy|NewJeans|2022|kr\nDitto|NewJeans|2022|kr\nLOVE DIVE|IVE|2022|kr\nANTIFRAGILE|LE SSERAFIM|2022|kr\nSuper Shy|NewJeans|2023|kr\nI AM|IVE|2023|kr\nSeven|Jung Kook|2023|kr\nSupernova|aespa|2024|kr\nAPT.|ROSÉ、Bruno Mars|2024|kr\nLies/거짓말|BIGBANG|2007|kr\nAbracadabra|Brown Eyed Girls|2009|kr\nRing Ding Dong/링딩동|SHINee|2009|kr\nBad Girl Good Girl|miss A|2010|kr\nLucifer|SHINee|2010|kr\nRun Devil Run|少女時代|2010|kr\nLonely|2NE1|2011|kr\nBubble Pop!/Bubble Pop|HyunA|2011|kr\nCall Me Baby|EXO|2015|kr\nLion Heart|少女時代|2015|kr\nWhistle/휘파람|BLACKPINK|2016|kr\nBOOMBAYAH/붐바야|BLACKPINK|2016|kr\nVery Nice/아주 NICE|SEVENTEEN|2016|kr\nSpring Day/봄날|BTS|2017|kr\nIDOL|BTS|2018|kr\nLove Scenario/사랑을 했다|iKON|2018|kr\nLALISA|LISA|2021|kr\nMONEY|LISA|2021|kr\nOn The Ground|ROSÉ|2021|kr\nELEVEN|IVE|2021|kr\nTOMBOY|(G)I-DLE|2022|kr\nFEARLESS|LE SSERAFIM|2022|kr\nAttention|NewJeans|2022|kr\nOMG|NewJeans|2023|kr\nFLOWER/꽃|JISOO|2023|kr\nQueencard/퀸카|(G)I-DLE|2023|kr\nDrama|aespa|2023|kr\nMagnetic|ILLIT|2024|kr\nWhiplash|aespa|2024|kr\nSmall girl|李泳知、D.O.|2024|kr\nSPOT!|ZICO、JENNIE|2024|kr\n上を向いて歩こう|坂本九|1961|jp\nPlastic Love|竹内まりや|1984|jp\n紅|X JAPAN|1989|jp\nラブ・ストーリーは突然に|小田和正|1991|jp\n負けないで|ZARD|1993|jp\nLOVE LOVE LOVE|DREAMS COME TRUE|1995|jp\n残酷な天使のテーゼ|高橋洋子|1995|jp\nチェリー|スピッツ|1996|jp\nLA・LA・LA LOVE SONG|久保田利伸|1996|jp\nCAN YOU CELEBRATE?/Can You Celebrate|安室奈美恵|1997|jp\n長い間|Kiroro|1998|jp\nAutomatic|宇多田ヒカル|1998|jp\nFirst Love|宇多田ヒカル|1999|jp\n丸の内サディスティック|椎名林檎|1999|jp\nSEASONS|浜崎あゆみ|2000|jp\n涙そうそう|夏川りみ|2001|jp\n雪の華|中島美嘉|2003|jp\nさくらんぼ|大塚愛|2003|jp\n瞳をとじて|平井堅|2004|jp\nLove so sweet|嵐|2007|jp\nHappiness|嵐|2007|jp\nキセキ|GReeeeN|2008|jp\nありがとう|いきものがかり|2010|jp\n前前前世|RADWIMPS|2016|jp\nLemon|米津玄師|2018|jp\nマリーゴールド|あいみょん|2018|jp\n夜に駆ける|YOASOBI|2019|jp\n紅蓮華|LiSA|2019|jp\nPretender|Official髭男dism|2019|jp\n白日|King Gnu|2019|jp\n炎|LiSA|2020|jp\nうっせぇわ|Ado|2020|jp\nドライフラワー|優里|2020|jp\n死ぬのがいいわ|藤井風|2020|jp\nKICK BACK|米津玄師|2022|jp\n新時代|Ado|2022|jp\nSubtitle|Official髭男dism|2022|jp\n残響散歌|Aimer|2022|jp\nアイドル/Idol|YOASOBI|2023|jp\nBling-Bang-Bang-Born|Creepy Nuts|2024|jp\n島唄|THE BOOM|1992|jp\nTomorrow never knows|Mr.Children|1994|jp\n春よ、来い|松任谷由実|1994|jp\n硝子の少年|KinKi Kids|1997|jp\n未来へ|Kiroro|1998|jp\nButter-Fly|和田光司|1999|jp\nEverything|MISIA|2000|jp\nTSUNAMI|サザンオールスターズ|2000|jp\n天体観測|BUMP OF CHICKEN|2001|jp\nultra soul|B'z|2001|jp\n世界に一つだけの花|SMAP|2003|jp\n栄光の架橋|ゆず|2004|jp\n粉雪|レミオロメン|2005|jp\nStory|AI|2005|jp\nHANABI|Mr.Children|2008|jp\n君の知らない物語|supercell|2009|jp\n紅蓮の弓矢|Linked Horizon|2013|jp\nunravel|TK from 凛として時雨|2014|jp\n恋|星野源|2016|jp\n打上花火|DAOKO、米津玄師|2017|jp\n青と夏|Mrs. GREEN APPLE|2018|jp\nただ君に晴れ|ヨルシカ|2018|jp\n愛にできることはまだあるかい|RADWIMPS|2019|jp\n群青|YOASOBI|2020|jp\nCry Baby|Official髭男dism|2021|jp\n怪物|YOASOBI|2021|jp\nHabit|SEKAI NO OWARI|2022|jp\nミックスナッツ|Official髭男dism|2022|jp\n唱|Ado|2023|jp\n晩餐歌|tuki.|2023|jp\nケセラセラ|Mrs. GREEN APPLE|2023|jp\nライラック|Mrs. GREEN APPLE|2024|jp\n半斤八兩|許冠傑|1976|yue\n浪子心聲|許冠傑|1976|yue\n小李飛刀|羅文|1978|yue\n獅子山下|羅文|1979|yue\n上海灘|葉麗儀|1980|yue\n風繼續吹|張國榮|1983|yue\n偏偏喜歡你|陳百強|1983|yue\nMonica|張國榮|1984|yue\n愛在深秋|譚詠麟|1984|yue\n霧之戀|譚詠麟|1984|yue\n今宵多珍重|陳百強|1984|yue\n順流逆流|徐小鳳|1985|yue\n遙遠的她|張學友|1985|yue\n情已逝|張學友|1985|yue\n似水流年|梅艷芳|1985|yue\n壞女孩|梅艷芳|1985|yue\n誰能明白我|林子祥|1985|yue\n當年情|張國榮|1986|yue\n共同渡過|張國榮|1987|yue\n倩女幽魂|張國榮|1987|yue\n胭脂扣|梅艷芳|1987|yue\n敢愛敢做|林子祥|1987|yue\n月半小夜曲|李克勤|1987|yue\n護花使者|李克勤|1987|yue\n沉默是金|張國榮、許冠傑|1988|yue\n喜歡你|Beyond|1988|yue\n冷雨夜|Beyond|1988|yue\n大地|Beyond|1988|yue\n水中花|譚詠麟|1988|yue\n飄雪|陳慧嫻|1988|yue\n真的愛你|Beyond|1989|yue\n千千闕歌|陳慧嫻|1989|yue\n夕陽之歌|梅艷芳|1989|yue\n一生何求|陳百強|1989|yue\n光輝歲月|Beyond|1990|yue\n灰色軌跡|Beyond|1990|yue\n李香蘭|張學友|1990|yue\n失戀|草蜢|1990|yue\n焚心以火|葉蒨文|1990|yue\n一生中最愛|譚詠麟|1991|yue\n追|張國榮|1991|yue\n不再猶豫|Beyond|1991|yue\n一起走過的日子|劉德華|1991|yue\n男兒當自強|林子祥|1991|yue\n難得有情人|關淑怡|1991|yue\n分手總要在雨天|張學友|1992|yue\n真我的風采|劉德華|1992|yue\n長夜多浪漫|劉德華|1992|yue\n我來自北京|黎明|1992|yue\n我的親愛|黎明|1992|yue\n容易受傷的女人|王菲|1992|yue\n紅日|李克勤|1992|yue\n最愛|周慧敏|1992|yue\n海闊天空|Beyond|1993|yue\n情人|Beyond|1993|yue\n情深說話未曾講|黎明|1993|yue\n夢中人|王菲|1993|yue\n講不出再見|譚詠麟|1994|yue\n狂野之城|郭富城|1995|yue\n有心人|張國榮|1996|yue\n再見二丁目|楊千嬅|1997|yue\n約定|王菲|1997|yue\n暗湧|王菲|1997|yue\n眉飛色舞|鄭秀文|1999|yue\n謝謝你的愛1999|謝霆鋒|1999|yue\n我|張國榮|2000|yue\n少女的祈禱|楊千嬅|2000|yue\n花花宇宙|陳慧琳|2000|yue\n活著VIVA|謝霆鋒|2000|yue\n短髮|梁詠琪|2000|yue\n單車|陳奕迅|2001|yue\nShall We Talk|陳奕迅|2001|yue\n終身美麗|鄭秀文|2001|yue\n人來人往|陳奕迅|2002|yue\n戀愛大過天|Twins|2002|yue\n野孩子|楊千嬅|2002|yue\n明年今日|陳奕迅|2003|yue\n歲月如歌|陳奕迅|2003|yue\n下一站天后|Twins|2003|yue\n我的驕傲|容祖兒|2003|yue\n無賴|鄭中基|2004|yue\n浮誇|陳奕迅|2005|yue\n葡萄成熟時|陳奕迅|2005|yue\n好人|側田|2005|yue\n富士山下|陳奕迅|2006|yue\n最佳損友|陳奕迅|2006|yue\n小小|容祖兒|2007|yue\n櫻花樹下|張敬軒|2008|yue\n陀飛輪|陳奕迅|2009|yue\n苦瓜|陳奕迅|2011|yue\nLa Vie en Rose|Édith Piaf|1947|ot\nLa Bamba|Ritchie Valens|1958|ot\nNel blu dipinto di blu|Domenico Modugno|1958|ot\nNon, je ne regrette rien|Édith Piaf|1960|ot\nLes Champs-Élysées|Joe Dassin|1969|ot\nTi amo|Umberto Tozzi|1977|ot\nMoskau|Dschinghis Khan|1979|ot\nL'italiano|Toto Cutugno|1983|ot\n99 Luftballons|Nena|1983|ot\nHijo de la Luna|Mecano|1986|ot\nBamboléo|Gipsy Kings|1987|ot\nLambada|Kaoma|1989|ot\nMacarena|Los del Río|1995|ot\nCon te partirò|Andrea Bocelli|1995|ot\nPour que tu m'aimes encore|Céline Dion|1995|ot\nAmeno|Era|1996|ot\nAïcha|Khaled|1996|ot\nDu hast|Rammstein|1997|ot\nŞımarık|Tarkan|1997|ot\nTunak Tunak Tun|Daler Mehndi|1998|ot\nLa Copa de la Vida|Ricky Martin|1998|ot\nAserejé|Las Ketchup|2002|ot\nDragostea Din Tei|O-Zone|2004|ot\nGasolina|Daddy Yankee|2004|ot\nLa Camisa Negra|Juanes|2004|ot\nLa Tortura|Shakira|2005|ot\nJai Ho|A. R. Rahman|2008|ot\nAlors on danse|Stromae|2010|ot\nDanza Kuduro|Don Omar|2010|ot\nAi Se Eu Te Pego|Michel Teló|2011|ot\nPapaoutai|Stromae|2013|ot\nDernière danse|Indila|2013|ot\nVivir Mi Vida|Marc Anthony|2013|ot\nBailando|Enrique Iglesias|2014|ot\nDespacito|Luis Fonsi、Daddy Yankee|2017|ot\nMi Gente|J Balvin、Willy William|2017|ot\nFelices los 4|Maluma|2017|ot\nDákiti|Bad Bunny、Jhay Cortez|2020|ot\nTití Me Preguntó|Bad Bunny|2022|ot\nDtMF|Bad Bunny|2025|ot";
+const T2S = {"乾": "干", "亞": "亚", "來": "来", "個": "个", "們": "们", "倫": "伦", "偉": "伟", "側": "侧", "傑": "杰", "傘": "伞", "傳": "传", "傷": "伤", "價": "价", "儀": "仪", "償": "偿", "優": "优", "兒": "儿", "內": "内", "兩": "两", "冊": "册", "凱": "凯", "別": "别", "刪": "删", "剛": "刚", "劃": "划", "劉": "刘", "劍": "剑", "動": "动", "務": "务", "勝": "胜", "勢": "势", "協": "协", "吳": "吴", "員": "员", "唄": "呗", "問": "问", "啟": "启", "喬": "乔", "單": "单", "嗎": "吗", "嗶": "哔", "噹": "当", "國": "国", "園": "园", "圓": "圆", "團": "团", "執": "执", "堅": "坚", "報": "报", "場": "场", "塚": "冢", "塵": "尘", "壞": "坏", "壯": "壮", "夠": "够", "夢": "梦", "婭": "娅", "媽": "妈", "嫻": "娴", "嬌": "娇", "嬤": "嬷", "孃": "娘", "孫": "孙", "學": "学", "實": "实", "寧": "宁", "寫": "写", "寬": "宽", "寶": "宝", "將": "将", "尋": "寻", "對": "对", "島": "岛", "嵐": "岚", "嶼": "屿", "嶽": "岳", "帥": "帅", "師": "师", "帶": "带", "幾": "几", "廣": "广", "張": "张", "強": "强", "彈": "弹", "彎": "弯", "彥": "彦", "後": "后", "從": "从", "復": "复", "恆": "恒", "惱": "恼", "愛": "爱", "慶": "庆", "憂": "忧", "憲": "宪", "憶": "忆", "懲": "惩", "懷": "怀", "懸": "悬", "戀": "恋", "戰": "战", "戲": "戏", "捨": "舍", "捲": "卷", "採": "采", "換": "换", "揮": "挥", "損": "损", "摯": "挚", "擁": "拥", "擱": "搁", "擺": "摆", "攬": "揽", "數": "数", "斷": "断", "於": "于", "昇": "升", "時": "时", "曉": "晓", "曖": "暧", "書": "书", "會": "会", "朧": "胧", "東": "东", "條": "条", "棟": "栋", "棧": "栈", "楊": "杨", "楓": "枫", "榮": "荣", "樂": "乐", "樑": "梁", "樓": "楼", "樣": "样", "樹": "树", "樺": "桦", "橋": "桥", "機": "机", "檸": "柠", "櫻": "樱", "欖": "榄", "歐": "欧", "歡": "欢", "歲": "岁", "歸": "归", "殤": "殇", "殺": "杀", "氣": "气", "沒": "没", "涼": "凉", "淚": "泪", "淺": "浅", "測": "测", "湧": "涌", "湯": "汤", "溫": "温", "滅": "灭", "滾": "滚", "滿": "满", "漢": "汉", "漿": "浆", "潔": "洁", "澤": "泽", "濛": "蒙", "濤": "涛", "瀟": "潇", "灑": "洒", "灘": "滩", "灣": "湾", "為": "为", "烏": "乌", "無": "无", "煉": "炼", "煒": "炜", "煙": "烟", "煩": "烦", "熱": "热", "燈": "灯", "燒": "烧", "爺": "爷", "爾": "尔", "牆": "墙", "牽": "牵", "猶": "犹", "獅": "狮", "獨": "独", "獸": "兽", "獻": "献", "現": "现", "瑋": "玮", "瑩": "莹", "畫": "画", "當": "当", "瘋": "疯", "癡": "痴", "發": "发", "盡": "尽", "盧": "卢", "祕": "秘", "禍": "祸", "禮": "礼", "禱": "祷", "種": "种", "穎": "颖", "穩": "稳", "窩": "窝", "竅": "窍", "箏": "筝", "節": "节", "簡": "简", "紀": "纪", "約": "约", "紅": "红", "納": "纳", "級": "级", "紳": "绅", "終": "终", "絕": "绝", "給": "给", "經": "经", "綠": "绿", "維": "维", "綱": "纲", "網": "网", "綺": "绮", "綿": "绵", "線": "线", "緣": "缘", "緯": "纬", "練": "练", "總": "总", "繼": "继", "續": "续", "罰": "罚", "羅": "罗", "義": "义", "習": "习", "聖": "圣", "聯": "联", "聰": "聪", "聲": "声", "聽": "听", "膽": "胆", "臉": "脸", "與": "与", "興": "兴", "舊": "旧", "艷": "艳", "華": "华", "菸": "烟", "萬": "万", "葉": "叶", "葦": "苇", "蓮": "莲", "蔥": "葱", "蕭": "萧", "藍": "蓝", "藝": "艺", "藥": "药", "蘇": "苏", "蘋": "苹", "蘭": "兰", "號": "号", "蟬": "蝉", "術": "术", "衛": "卫", "衝": "冲", "裡": "里", "襲": "袭", "見": "见", "親": "亲", "覺": "觉", "計": "计", "記": "记", "訣": "诀", "許": "许", "詠": "咏", "詩": "诗", "話": "话", "該": "该", "誇": "夸", "認": "认", "語": "语", "說": "说", "誰": "谁", "課": "课", "調": "调", "請": "请", "諾": "诺", "謊": "谎", "謙": "谦", "講": "讲", "謝": "谢", "證": "证", "識": "识", "譚": "谭", "議": "议", "護": "护", "變": "变", "讓": "让", "貓": "猫", "貝": "贝", "貞": "贞", "負": "负", "財": "财", "貳": "贰", "貴": "贵", "費": "费", "賓": "宾", "賢": "贤", "賣": "卖", "質": "质", "賴": "赖", "贏": "赢", "趙": "赵", "跡": "迹", "車": "车", "軌": "轨", "軍": "军", "軒": "轩", "軟": "软", "較": "较", "輝": "辉", "輩": "辈", "輪": "轮", "轉": "转", "這": "这", "連": "连", "遊": "游", "運": "运", "過": "过", "達": "达", "遙": "遥", "遠": "远", "遲": "迟", "遺": "遗", "還": "还", "邊": "边", "鄉": "乡", "鄧": "邓", "鄭": "郑", "醜": "丑", "醬": "酱", "針": "针", "鈴": "铃", "鈺": "钰", "銀": "银", "鋒": "锋", "錚": "铮", "錢": "钱", "錯": "错", "鎮": "镇", "鐘": "钟", "鐵": "铁", "長": "长", "門": "门", "閃": "闪", "閉": "闭", "開": "开", "間": "间", "閣": "阁", "闊": "阔", "闕": "阙", "關": "关", "陣": "阵", "陰": "阴", "陳": "陈", "陽": "阳", "隊": "队", "隨": "随", "險": "险", "隱": "隐", "隻": "只", "雙": "双", "離": "离", "難": "难", "雲": "云", "電": "电", "霧": "雾", "靚": "靓", "靜": "静", "韋": "韦", "響": "响", "頂": "顶", "順": "顺", "頑": "顽", "頔": "𬱖", "領": "领", "頭": "头", "顏": "颜", "願": "愿", "類": "类", "風": "风", "飄": "飘", "飛": "飞", "餘": "余", "館": "馆", "馬": "马", "駿": "骏", "騎": "骑", "騙": "骗", "騰": "腾", "驕": "骄", "驗": "验", "驚": "惊", "驛": "驿", "體": "体", "髮": "发", "魚": "鱼", "魯": "鲁", "鳥": "鸟", "鳳": "凤", "鴛": "鸳", "鴦": "鸯", "鴨": "鸭", "鴻": "鸿", "鴿": "鸽", "鶯": "莺", "麗": "丽", "麥": "麦", "麼": "么", "黃": "黄", "點": "点", "齊": "齐", "龍": "龙", "龐": "庞", "裏": "里", "姊": "姐", "爲": "为", "綫": "线", "峯": "峰", "衆": "众", "啓": "启", "羣": "群", "臺": "台", "眞": "真", "歎": "叹", "迴": "回", "粧": "妆", "着": "着", "週": "周", "游": "游", "麽": "么"};
+const ALIASES = {"(G)I-DLE": [], "2NE1": ["투애니원"], "5566": [], "A-Lin": [], "A. R. Rahman": [], "ABBA": [], "AI": [], "Adele": [], "Ado": [], "Aimer": [], "Alan Walker": [], "Alex Warren": [], "Andrea Bocelli": [], "Avicii": [], "Avril Lavigne": [], "B'z": [], "BIGBANG": ["Big Bang", "빅뱅"], "BLACKPINK": ["블랙핑크"], "BTS": ["방탄소년단", "防彈少年團"], "BUMP OF CHICKEN": [], "Backstreet Boys": [], "Bad Bunny": [], "Bee Gees": [], "Ben E. King": [], "Benson Boone": [], "Beyoncé": [], "Beyond": [], "Billie Eilish": [], "Bon Jovi": [], "Bonnie Tyler": [], "Bradley Cooper": [], "Britney Spears": [], "Brown Eyed Girls": [], "Bruno Mars": [], "Bryan Adams": [], "Camila Cabello": [], "Carly Rae Jepsen": [], "Carpenters": [], "Celine Dion": [], "Chanyeol": ["CHANYEOL", "찬열"], "Charlie Puth": [], "Coldplay": [], "Creepy Nuts": [], "Cyndi Lauper": [], "Céline Dion": [], "D.O.": [], "DAOKO": [], "DREAMS COME TRUE": [], "Daddy Yankee": [], "Daler Mehndi": [], "Domenico Modugno": [], "Don Omar": [], "Dschinghis Khan": [], "Dua Lipa": [], "EXO": ["엑소"], "Eagles": [], "Ed Sheeran": [], "Ella": [], "Elvis Presley": [], "Eminem": [], "Energy": [], "Enrique Iglesias": [], "Era": [], "F4": [], "Frank Sinatra": [], "GReeeeN": [], "George Michael": [], "Gipsy Kings": [], "Green Day": [], "Guns N' Roses": [], "HUNTR/X": [], "Harry Styles": [], "HyunA": [], "ILLIT": [], "IU": ["아이유"], "IVE": ["아이브"], "Idina Menzel": [], "Imagine Dragons": [], "Indila": [], "J Balvin": [], "JENNIE": [], "JISOO": [], "JOYCE就以斯": ["JOYCE", "就以斯"], "Jason Mraz": [], "Jhay Cortez": [], "Joe Dassin": [], "John Denver": [], "John Legend": [], "John Lennon": [], "Journey": [], "Juanes": [], "Jung Kook": ["정국", "Jungkook"], "Justin Bieber": [], "KARA": ["카라"], "Kaoma": [], "Katy Perry": [], "Khaled": [], "KinKi Kids": [], "King Gnu": [], "Kiroro": [], "LBI利比": ["LBI", "利比"], "LE SSERAFIM": ["르세라핌"], "LISA": [], "LMFAO": [], "Lady Gaga": [], "Lara": [], "Las Ketchup": [], "Leona Lewis": [], "Lewis Capaldi": [], "LiSA": [], "Lil Nas X": [], "Linked Horizon": [], "Linkin Park": [], "Los del Río": [], "Lou Bega": [], "Louis Armstrong": [], "Luis Fonsi": [], "MISIA": [], "Madonna": [], "Maluma": [], "Marc Anthony": [], "Mariah Carey": [], "Mark Ronson": [], "Maroon 5": [], "Mecano": [], "Michael Jackson": [], "Michael Learns to Rock": [], "Michel Teló": [], "Miley Cyrus": [], "Mr.Children": [], "Mrs. GREEN APPLE": [], "Nena": [], "NewJeans": ["뉴진스"], "Nirvana": [], "O-Zone": [], "Oasis": [], "Official髭男dism": ["Official HIGE DANdism"], "Olivia Rodrigo": [], "OneRepublic": [], "Owl City": [], "PSY": ["싸이"], "Pharrell Williams": [], "Post Malone": [], "Punch": ["펀치"], "Queen": [], "RADWIMPS": [], "ROSÉ": ["Rose", "로제"], "Rammstein": [], "Red Velvet": ["레드벨벳"], "Richard Marx": [], "Ricky Martin": [], "Rihanna": [], "Ritchie Valens": [], "S.H.E": ["SHE"], "SEKAI NO OWARI": [], "SEVENTEEN": [], "SHINee": [], "SMAP": [], "Sabrina Carpenter": [], "Saja Boys": [], "Sam Smith": [], "Savage Garden": [], "Shakira": [], "Shawn Mendes": [], "Sia": [], "Spice Girls": [], "Stromae": [], "Super Junior": ["슈퍼주니어"], "Survivor": [], "Swae Lee": [], "T-ara": ["티아라"], "THE BOOM": [], "TK from 凛として時雨": ["TK"], "TWICE": ["트와이스"], "Tank": [], "Tarkan": [], "Taylor Swift": [], "The Beatles": [], "The Black Eyed Peas": [], "The Chainsmokers": [], "The Kid LAROI": [], "The Police": [], "The Weeknd": [], "Tones and I": [], "Toto": [], "Toto Cutugno": [], "Twins": [], "Umberto Tozzi": [], "Under Lover": [], "Westlife": [], "Wham!": [], "Whitney Houston": [], "Willy William": [], "Wiz Khalifa": [], "Wonder Girls": ["원더걸스"], "X JAPAN": [], "YOASOBI": [], "Yoon Mi-rae": ["윤미래", "Yoonmirae"], "ZARD": [], "ZICO": [], "a-ha": [], "aespa": ["에스파"], "iKON": [], "miss A": [], "supercell": [], "tuki.": [], "Édith Piaf": [], "あいみょん": ["Aimyon"], "いきものがかり": ["Ikimonogakari"], "ゆず": ["Yuzu"], "サザンオールスターズ": ["Southern All Stars"], "スピッツ": ["Spitz"], "ヨルシカ": ["Yorushika"], "レミオロメン": ["Remioromen"], "丁噹": ["Della"], "中島美嘉": ["Mika Nakashima"], "久保田利伸": ["Toshinobu Kubota"], "于冬然": ["Yu Dong Ran"], "于文文": ["Kelly Yu"], "五月天": ["Mayday"], "井朧": ["Jing Long"], "任然": ["Ren Ran"], "任賢齊": ["Richie Jen", "Richie Ren"], "伍佰": ["Wu Bai"], "伍思凱": ["Sky Wu"], "信樂團": ["Shin Band"], "側田": ["Justin Lo"], "優客李林": ["Ukulele"], "優里": ["Yuuri"], "光良": ["Michael Wong"], "八三夭": ["831"], "刀郎": ["Dao Lang"], "劉佳慧": ["Liu Chia-Hui"], "劉德華": ["Andy Lau"], "劉文正": ["Liu Wen-Cheng", "Steven Liu"], "劉歡": ["Liu Huan"], "劉若英": ["Rene Liu"], "動力火車": ["Power Station"], "南拳媽媽": ["Nan Quan Mama"], "可米小子": ["Comic Boyz"], "吳克群": ["Kenji Wu"], "吳奇隆": ["Nicky Wu"], "吳宗憲": ["Jacky Wu"], "吳淑敏": ["Wu Shu-Min"], "吳青峰": ["Qing Feng Wu", "青峰"], "告五人": ["Accusefive"], "周傳雄": ["Steve Chou"], "周慧敏": ["Vivian Chow"], "周杰倫": ["Jay Chou"], "周深": ["Zhou Shen", "Charlie Zhou Shen"], "周湯豪": ["Nick Chou"], "周興哲": ["Eric Chou"], "周華健": ["Wakin Chau", "Emil Chau"], "周蕙": ["Where Chou"], "和田光司": ["Koji Wada"], "品冠": ["Victor Wong"], "喬浚丞": ["Chiao Chun-Cheng"], "坂本九": ["Kyu Sakamoto"], "夏川りみ": ["Rimi Natsukawa"], "夢然": ["Miya"], "大塚愛": ["Ai Otsuka"], "大壯": ["Da Zhuang"], "大穎": ["DIOR 大穎", "DIOR"], "姚蘇蓉": ["Yao Su-Rong"], "姜育恆": ["Chiang Yu-Heng"], "孟庭葦": ["Meng Ting-Wei", "Mavis Meng"], "孫楠": ["Sun Nan"], "孫淑媚": ["Sun Shu-Mei"], "孫燕姿": ["Stefanie Sun"], "孫盛希": ["Shi Shi"], "宇多田ヒカル": ["Hikaru Utada", "Utada Hikaru"], "安室奈美恵": ["Namie Amuro"], "宋冬野": ["Song Dongye"], "容祖兒": ["Joey Yung"], "寶石Gem": ["GEM", "寶石"], "小峰峰": ["Xiao Feng Feng"], "小潘潘": ["Xiao Pan Pan"], "小田和正": ["Kazumasa Oda"], "小虎隊": ["Little Tigers"], "小阿七": ["Xiao A Qi"], "少女時代": ["Girls' Generation", "SNSD", "소녀시대"], "尤雅": ["You Ya"], "崔健": ["Cui Jian"], "嵐": ["ARASHI"], "巫啟賢": ["Eric Moo"], "平井堅": ["Ken Hirai"], "庾澄慶": ["Harlem Yu"], "弦子": ["Xian Zi"], "張信哲": ["Jeff Chang"], "張國榮": ["Leslie Cheung"], "張學友": ["Jacky Cheung"], "張宇": ["Phil Chang"], "張惠妹": ["A-Mei", "aMEI"], "張懸": ["Deserts Chang"], "張敬軒": ["Hins Cheung"], "張杰": ["Jason Zhang"], "張棟樑": ["Nicholas Teo"], "張洪量": ["Chang Hung-Liang"], "張碧晨": ["Zhang Bichen"], "張秀卿": ["Chang Hsiu-Ching"], "張艾嘉": ["Sylvia Chang"], "張芸京": ["Jing Chang"], "張衛健": ["Dicky Cheung"], "張遠": ["Zhang Yuan"], "張雨生": ["Tom Chang"], "張震嶽": ["A-Yue", "Chang Chen-Yue"], "張靚穎": ["Jane Zhang"], "張韶涵": ["Angela Chang"], "彭佳慧": ["Julia Peng"], "徐佳瑩": ["LaLa Hsu"], "徐小鳳": ["Paula Tsui"], "徐懷鈺": ["Yuki Hsu"], "戴佩妮": ["Penny Tai"], "戴愛玲": ["Princess Ai"], "承桓": ["Cheng Huan"], "文夏": ["Wen Hsia"], "方大同": ["Khalil Fong"], "施文彬": ["Shih Wen-Pin"], "星野源": ["Gen Hoshino"], "曲婉婷": ["Wanting"], "曹格": ["Gary Chaw"], "曾瑋中": ["Tseng Wei-Chung"], "朴樹": ["Pu Shu"], "李佳薇": ["Jess Lee"], "李健": ["Li Jian"], "李克勤": ["Hacken Lee"], "李千娜": ["Lee Chien-Na", "李千那"], "李娜": ["Li Na"], "李宗盛": ["Jonathan Lee"], "李建復": ["Lee Chien-Fu"], "李榮浩": ["Li Ronghao", "Ronghao Li"], "李泳知": ["Lee Young Ji", "이영지"], "李浩瑋": ["Howard Lee"], "李炳輝": ["Li Ping-Hui"], "李玉剛": ["Li Yugang"], "李玖哲": ["Nicky Lee"], "李玟": ["CoCo Lee"], "李翊君": ["Li Yi-Jun"], "李聖傑": ["Sam Lee"], "松任谷由実": ["Yumi Matsutoya"], "林依晨": ["Ariel Lin"], "林俊傑": ["JJ Lin"], "林凡": ["Freya Lim"], "林子祥": ["George Lam"], "林宥嘉": ["Yoga Lin"], "林強": ["Lim Giong"], "林志炫": ["Terry Lin"], "林志穎": ["Jimmy Lin"], "林憶蓮": ["Sandy Lam"], "林曉培": ["Shino Lin"], "梁文音": ["Rachel Liang"], "梁詠琪": ["Gigi Leung"], "梁靜茹": ["Fish Leong"], "梅艷芳": ["Anita Mui"], "椎名林檎": ["Sheena Ringo", "Ringo Sheena"], "楊丞琳": ["Rainie Yang"], "楊千嬅": ["Miriam Yeung"], "楊培安": ["Roger Yang"], "楊宗緯": ["Aska Yang"], "毛不易": ["Mao Buyi"], "毛寧": ["Mao Ning"], "水木年華": ["Shui Mu Nian Hua"], "江淑娜": ["Chiang Shu-Na"], "江美琪": ["Maggie Chiang"], "江蕙": ["Jody Chiang"], "汪峰": ["Wang Feng"], "沈文程": ["Shen Wen-Cheng"], "洪一峰": ["Hong Yi-Feng"], "洪榮宏": ["Hung Jung-Hung"], "派偉俊": ["Patrick Brasca"], "浜崎あゆみ": ["Ayumi Hamasaki"], "游鴻明": ["Chris Yu"], "溫嵐": ["Landy Wen"], "滅火器": ["Fire EX."], "潘安邦": ["Pan An-Bang"], "潘瑋柏": ["Will Pan"], "潘美辰": ["Pan Mei-Chen"], "潘越雲": ["Pan Yueh-Yun"], "無印良品": ["Michael & Victor"], "熊天平": ["Xiong Tianping"], "熱狗": ["MC HotDog", "MC Hot Dog"], "王傑": ["Dave Wang"], "王力宏": ["Leehom Wang", "Wang Leehom"], "王夢麟": ["Wang Meng-Lin"], "王宇宙Leto": ["Leto", "王宇宙"], "王心凌": ["Cyndi Wang"], "王芷蕾": ["Wang Chih-Lei"], "王菲": ["Faye Wong"], "王識賢": ["Wang Shih-Hsien"], "王貳浪": ["Wang Er Lang"], "王錚亮": ["Wang Zhengliang"], "王馨平": ["Linda Wong"], "玖壹壹": ["Nine One One", "911"], "珂拉琪": ["Collage"], "理想混蛋": ["Bestards"], "甄妮": ["Jenny Tseng"], "田馥甄": ["Hebe Tien"], "瘦子E.SO": ["E.SO", "瘦子"], "盧廣仲": ["Crowd Lu"], "盧盧快閉嘴": ["LuLu"], "童安格": ["Angus Tung"], "竹内まりや": ["Mariya Takeuchi"], "筷子兄弟": ["Chopstick Brothers"], "米津玄師": ["Kenshi Yonezu"], "羅大佑": ["Lo Ta-Yu", "Lo Ta-You"], "羅志祥": ["Show Lo"], "羅文": ["Roman Tam"], "美秀集團": ["Amazing Show"], "翁立友": ["Weng Li-You"], "老狼": ["Lao Lang"], "胡夏": ["Hu Xia"], "胡彥斌": ["Tiger Hu"], "胡歌": ["Hu Ge"], "艾怡良": ["Eve Ai"], "艾薇": ["Ivy"], "艾辰": ["Ai Chen"], "范曉萱": ["Mavis Fan"], "范瑋琪": ["Christine Fan"], "范逸臣": ["Van Fan"], "茄子蛋": ["EggPlantEgg"], "草東沒有派對": ["No Party For Cao Dong"], "草蜢": ["Grasshopper"], "莫文蔚": ["Karen Mok"], "華晨宇": ["Hua Chenyu"], "菲道爾": ["Firdhaus"], "萬芳": ["Wan Fang"], "葉佳修": ["Yeh Chia-Hsiu"], "葉啟田": ["Yeh Chi-Tien"], "葉蒨文": ["Sally Yeh"], "葉麗儀": ["Frances Yip"], "蔡依林": ["Jolin Tsai"], "蔡健雅": ["Tanya Chua"], "蔡小虎": ["Tsai Hsiao-Hu"], "蔡旻佑": ["Evan Yo"], "蔡淳佳": ["Joi Chua"], "蔡琴": ["Tsai Chin"], "蔡秋鳳": ["Tsai Chiu-Feng"], "蕭亞軒": ["Elva Hsiao"], "蕭敬騰": ["Jam Hsiao"], "蕭煌奇": ["Ricky Hsiao"], "薛之謙": ["Joker Xue"], "藤井風": ["Fujii Kaze"], "蘇慧倫": ["Tarcy Su"], "蘇打綠": ["Sodagreen"], "蘇永康": ["William So"], "蘇芮": ["Julie Sue"], "袁婭維": ["Tia Ray"], "裘海正": ["Chiu Hai-Cheng"], "許冠傑": ["Sam Hui"], "許富凱": ["Hsu Fu-Kai"], "許嵩": ["Vae Xu", "Vae"], "許巍": ["Xu Wei"], "許美靜": ["Mavis Hee"], "許茹芸": ["Valen Hsu"], "詹雯婷": ["Faye"], "謝和弦": ["R-Chord"], "謝金燕": ["Jeannie Hsieh"], "謝霆鋒": ["Nicholas Tse"], "譚詠麟": ["Alan Tam"], "費玉清": ["Fei Yu-Ching", "Yu-Ching Fei"], "費翔": ["Kris Phillips", "Fei Xiang"], "趙傳": ["Chao Chuan"], "趙薇": ["Vicki Zhao"], "趙詠華": ["Cyndi Chaw"], "趙雷": ["Zhao Lei"], "辛曉琪": ["Winnie Hsin"], "迪克牛仔": ["Dick Cowboy"], "逃跑計劃": ["Escape Plan"], "那英": ["Na Ying"], "邰正宵": ["Samuel Tai"], "邱軍": ["Chiu Chun"], "邱鋒澤": ["Feng Ze"], "郁可唯": ["Yisa Yu"], "郭富城": ["Aaron Kwok"], "郭金發": ["Kuo Chin-Fa"], "郭靜": ["Claire Kuo"], "鄧紫棋": ["G.E.M.", "GEM"], "鄧麗君": ["Teresa Teng"], "鄭中基": ["Ronald Cheng"], "鄭怡": ["Cheng Yi"], "鄭智化": ["Cheng Chih-Hua", "Zheng Zhihua"], "鄭秀文": ["Sammi Cheng"], "金智娟": ["娃娃", "Wawa"], "金玟岐": ["Jin Wen Qi"], "金莎": ["Kym"], "金門王": ["Kinmen Wang"], "銀霞": ["Yin Hsia"], "關淑怡": ["Shirley Kwan"], "阿冗": ["A Rong"], "阿密特": ["A-MIT", "張惠妹", "aMEI"], "阿杜": ["A-Do", "A Do"], "阿桑": ["A-Sun"], "陳勢安": ["Andrew Tan"], "陳奕迅": ["Eason Chan"], "陳小春": ["Jordan Chan"], "陳小雲": ["Chen Hsiao-Yun"], "陳慧嫻": ["Priscilla Chan"], "陳慧琳": ["Kelly Chen"], "陳昇": ["Bobby Chen"], "陳曉東": ["Daniel Chan"], "陳淑樺": ["Sarah Chen"], "陳百強": ["Danny Chan"], "陳盈潔": ["Chen Ying-Chieh"], "陳綺貞": ["Cheer Chen"], "陳芬蘭": ["Chen Fen-Lan"], "陳華": ["Chen Hua"], "陳雪凝": ["Chen Xue Ning"], "陳雷": ["Chen Lei"], "陶喆": ["David Tao"], "陶晶瑩": ["Matilda Tao"], "韋禮安": ["WeiBird"], "飛兒樂團": ["F.I.R."], "飛輪海": ["Fahrenheit"], "馬頔": ["Ma Di"], "高勝美": ["Gao Sheng-Mei"], "高慧君": ["Kao Hui-Chun"], "高橋洋子": ["Yoko Takahashi"], "高爾宣": ["OSN", "高爾宣 OSN"], "魏如昀": ["Queen Wei"], "鳳凰傳奇": ["Phoenix Legend"], "鳳飛飛": ["Fong Fei-Fei"], "黃乙玲": ["Huang Yee-Ling", "Huang Yi-Ling"], "黃品源": ["Huang Pin-Yuan"], "黃大煒": ["David Huang"], "黃奇斌": ["Huang Chi-Pin", "阿斌"], "黃妃": ["Huang Fei"], "黃安": ["Huang An"], "黃小琥": ["Tiger Huang"], "黃明志": ["Namewee"], "黃義達": ["Huang Yi-Da"], "黃舒駿": ["Huang Shu-Chun"], "黃霄雲": ["Huang Xiaoyun"], "黃鴻升": ["Alien Huang"], "黃鶯鶯": ["Tracy Huang"], "黎明": ["Leon Lai"], "齊秦": ["Chyi Chin"], "齊豫": ["Chyi Yu"], "龐龍": ["Pang Long"]};
+
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const cryptoRnd = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; };
+function mulberry32(a){ return function(){ a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function hashStr(s){ let h = 2166136261 >>> 0; for (const ch of s){ h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h; }
+function shuffle(arr, r = cryptoRnd){ for (let i = arr.length - 1; i > 0; i--){ const j = Math.floor(r() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = {
+  get(k, d){ try { const v = localStorage.getItem('erg_' + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('erg_' + k, JSON.stringify(v)); } catch(e){} }
+};
+function todayKey(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function toast(msg){ const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; $('#toast').appendChild(el); setTimeout(() => el.remove(), 2500); }
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+function waitEvent(el, ev, ms){ return new Promise(res => { let t; const f = () => { clearTimeout(t); el.removeEventListener(ev, f); res(true); }; el.addEventListener(ev, f); t = setTimeout(() => { el.removeEventListener(ev, f); res(false); }, ms); }); }
+
+/* ================= text matching (trad/simp tolerant) ================= */
+const CJK = /[\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff\u31f0-\u31ff\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/;   // Chinese, Japanese kana, Korean hangul
+function norm(s){
+  s = String(s || '').normalize('NFKC').toLowerCase();
+  let out = '';
+  for (const ch of s){
+    if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')) out += ch;
+    else if (ch >= '\u00c0' && ch <= '\u024f'){ const b = ch.normalize('NFD')[0]; if (b >= 'a' && b <= 'z') out += b; }   // é → e
+    else if (CJK.test(ch)) out += T2S[ch] || ch;
+  }
+  return out;
+}
+const toS = s => [...s].map(c => T2S[c] || c).join('');
+function baseTitle(s){ return String(s || '').replace(/[(（\[【].*?[)）\]】]/g, ' ').replace(/\s[-–—~～]\s.*$/, ''); }
+
+/* ================= song bank ================= */
+const BANK = BANK_RAW.split('\n').map((line, id) => {
+  const [t, a, y, cat] = line.split('|');
+  const titles = t.split('/');
+  const artists = a.split('、');
+  const akeys = [...new Set(artists.flatMap(x => [x, ...(ALIASES[x] || [])]).map(norm).filter(k => k.length >= 2))];
+  return { id, title: titles[0], keys: [...new Set(titles.map(norm))], artists, artist: artists.join('、'), akeys, year: +y, cat: cat || 'zh' };
+});
+
+/* ================= online preview lookup ================= */
+/* ---- two music sources: Apple (iTunes Search API) and Deezer ----
+   Apple allows roughly 20 searches a minute per device and then refuses requests for a while,
+   so Apple gets a small budget plus a circuit breaker, and Deezer covers whatever Apple can't. */
+const api = { stamps: store.get('apiStamps', []), max: 15, win: 60000 };
+const srcStat = Object.assign({ itDownUntil: 0, itStrikes: 0 }, store.get('srcStat', {}));
+const srcCount = { it: [0, 0], dz: [0, 0] };            // [ok, failed] this session, for the diagnostics panel
+function noteNet(text){ const game = $('#game'); if (game && game.classList.contains('active') && !R) $('#status-text').textContent = text; }
+function appleAvailable(){
+  const now = Date.now();
+  if (now < srcStat.itDownUntil) return false;
+  api.stamps = api.stamps.filter(t => now - t < api.win && t <= now);
+  return api.stamps.length < api.max;
+}
+function appleUsed(){ api.stamps.push(Date.now()); store.set('apiStamps', api.stamps); }
+function appleResult(ok){
+  if (ok){ srcStat.itStrikes = 0; srcStat.itDownUntil = 0; }
+  else if (++srcStat.itStrikes >= 2){
+    const mins = [1, 2, 5, 10][Math.min(3, srcStat.itStrikes - 2)];   // leave Apple alone for a while
+    srcStat.itDownUntil = Date.now() + mins * 60000;
+  }
+  store.set('srcStat', srcStat);
+}
+let jsonpSeq = 0;
+function jsonp(url, ms = 9000){
+  return new Promise((resolve, reject) => {
+    const cb = '__erg' + Date.now().toString(36) + (jsonpSeq++);
+    const s = document.createElement('script');
+    let done = false;
+    const finish = () => { done = true; clearTimeout(timer); window[cb] = () => {}; s.remove(); };
+    window[cb] = data => { if (done) return; finish(); resolve(data); };
+    s.onerror = () => { if (done) return; finish(); reject(new Error('network')); };
+    const timer = setTimeout(() => { if (done) return; finish(); reject(new Error('network')); }, ms);
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.head.appendChild(s);
+  });
+}
+/* Only the original studio recording counts: concert, live, karaoke, remix, demo, cover and the like are rejected. */
+const NOT_STUDIO = /(japanese ver|jpn ver|english ver|eng ver|chinese ver|korean ver|kor ver|中文版|日本語|\binst\b|off vocal|tv size|tv ver|sped up|slowed|nightcore|8d audio|ライブ|カラオケ|弾き語り|\blive\b|演唱會|演唱会|現場|现场|音樂會|音乐会|巡迴|巡回|concert|\btour\b|unplugged|不插電|不插电|\bmtv\b|\bktv\b|伴奏|伴唱|karaoke|instrumental|純音樂|纯音乐|remix|\bdemo\b|翻唱|\bcover\b|acoustic|鋼琴版|钢琴版|吉他版|piano|music ?box|八音盒|\bdj\b|劇場版|剧场版|清唱|彩排|rehearsal|a ?cappella)/i;
+function candScore(song, name, artistName, album){
+  if (!name) return -1;
+  const full = norm(name);
+  const bt = norm(baseTitle(name)) || full;
+  let s = -1;
+  for (const k of song.keys){
+    if (bt === k) s = Math.max(s, 10);
+    else if (full === k) s = Math.max(s, 9);
+    else if (bt.startsWith(k) && !CJK.test(bt.slice(k.length))) s = Math.max(s, 8);
+    else if (k.length >= 4 && bt.startsWith(k)) s = Math.max(s, 5);
+  }
+  if (s < 0) return -1;
+  const na = norm(artistName);
+  if (!song.akeys.some(k => na.includes(k))) return -1;
+  if (NOT_STUDIO.test(name) || (album && NOT_STUDIO.test(album))) return -1;
+  return s;
+}
+/* All studio versions that match the song, best first (several albums can carry it). */
+function pickCands(song, list, map){
+  const out = [], seen = new Set();
+  for (const r of list){
+    const m = map(r);
+    if (!m.u || seen.has(m.u)) continue;
+    const sc = candScore(song, m.name, m.artist, m.album);
+    if (sc > 0){ m.sc = sc; out.push(m); seen.add(m.u); }
+  }
+  return out.sort((a, b) => b.sc - a.sc);
+}
+async function searchItunes(song, term, country){
+  const data = await jsonp('https://itunes.apple.com/search?term=' + encodeURIComponent(term) + '&country=' + country + '&media=music&entity=song&limit=25', 7000);
+  return pickCands(song, (data && data.results) || [], r => ({
+    u: r.previewUrl, name: r.trackName, artist: r.artistName, album: r.collectionName || '',
+    thumb: r.artworkUrl100 || '', art: (r.artworkUrl100 || '').replace(/\/\d+x\d+bb\./, '/600x600bb.'),
+    link: r.trackViewUrl || '', src: 'Apple Music'
+  }));
+}
+async function searchDeezer(song, term){
+  const data = await jsonp('https://api.deezer.com/search?q=' + encodeURIComponent(term) + '&limit=25&output=jsonp', 7000);
+  return pickCands(song, (data && data.data) || [], r => ({
+    u: r.preview, name: r.title, artist: (r.artist && r.artist.name) || '', album: (r.album && r.album.title) || '',
+    thumb: (r.album && r.album.cover_small) || '', art: (r.album && r.album.cover_big) || '', link: r.link || '', src: 'Deezer'
+  }));
+}
+try { ['erg_cache', 'erg_chorus', 'erg_cache3', 'erg_chorus3'].forEach(k => localStorage.removeItem(k)); } catch(e){}
+let cache = store.get('cache4', {});
+function saveCache(){
+  const keys = Object.keys(cache);
+  if (keys.length > 450) keys.sort((a, b) => cache[a].ts - cache[b].ts).slice(0, keys.length - 450).forEach(k => delete cache[k]);
+  store.set('cache4', cache);
+}
+async function resolveSong(song, opt = {}){
+  const key = song.title + '|' + song.artist;
+  const c = cache[key];
+  const ttl = c ? (c.miss ? 7 : c.src === 'Deezer' ? .25 : 14) * 864e5 : 0;   // Deezer preview links expire within hours
+  if (c && Date.now() - c.ts < ttl) return c.miss ? null : c;
+  const a0 = song.artists[0];
+  const en = (ALIASES[a0] || [])[0];
+  const term = (song.cat === 'kr' && en && /[a-z]/i.test(en) ? en : a0) + ' ' + song.title;   // K-pop: search with the English group name
+  const plan = [
+    ['it', () => searchItunes(song, term, 'TW')],
+    ['dz', () => searchDeezer(song, song.title + ' ' + (en || a0))],
+    ['dz', () => en ? searchDeezer(song, song.title + ' ' + a0) : null],
+    ['it2', () => toS(term) !== term ? searchItunes(song, toS(term), 'TW') : null],   // extra Apple tries only when
+    ['it2', () => searchItunes(song, song.title, 'TW')],                               // there is plenty of quota left
+  ];
+  let tried = 0, failed = 0, itAnswered = 0, itTried = 0;
+  const keep = list => { const r = list[0]; const v = { u: r.u, art: r.art, thumb: r.thumb, link: r.link, src: r.src, alts: list.slice(1, 3).map(c => c.u), ts: Date.now() }; cache[key] = v; saveCache(); return v; };
+  for (const [step, f] of plan){
+    const src = step === 'it2' ? 'it' : step;
+    if (src === 'it' && !appleAvailable()) continue;
+    if (step === 'it2' && api.stamps.length > api.max - 6) continue;
+    const p = f();
+    if (!p) continue;
+    if (src === 'it'){ appleUsed(); itTried++; }
+    tried++;
+    let r = null;
+    try { r = await p; } catch(e){ failed++; srcCount[src][1]++; if (src === 'it') appleResult(false); continue; }
+    srcCount[src][0]++;
+    if (src === 'it'){ appleResult(true); itAnswered++; }
+    if (r && r.length) return keep(r);
+  }
+  const deezerFailed = !tried || failed === tried;
+  const mayWait = () => deezerFailed || (opt.wait && opt.wait());
+  if (!itTried && Date.now() >= srcStat.itDownUntil && mayWait()){
+    // Apple was only skipped for pacing and Deezer couldn't help: wait for a free Apple slot
+    // (in the background while a song is ready, so songs Deezer lacks aren't dropped just for pacing)
+    for (let i = 0; i < 70 && !appleAvailable() && Date.now() >= srcStat.itDownUntil && mayWait(); i++){ noteNet('排隊查歌中…（Apple 每分鐘最多查約 20 次）'); await sleep(1000); }
+    if (appleAvailable()){
+      appleUsed();
+      try { const r = await searchItunes(song, term, 'TW'); srcCount.it[0]++; appleResult(true); if (r.length) return keep(r); cache[key] = { miss: true, ts: Date.now() }; saveCache(); return null; }
+      catch(e){ srcCount.it[1]++; appleResult(false); }
+    }
+  }
+  if (deezerFailed) throw new Error('network');
+  if (!itTried && Date.now() >= srcStat.itDownUntil && opt.why) opt.why.paced = true;          // unknown yet, not missing: worth another try later
+  if (!failed && itAnswered){ cache[key] = { miss: true, ts: Date.now() }; saveCache(); }
+  return null;
+}
+
+/* ================= chorus detection ================= */
+/* Chorus mode downloads the 30-second preview, decodes it and looks for the chorus (see findChorus).
+   It needs the file to be readable (CORS). Songs without a clear chorus are skipped, never guessed. */
+let chorusMap = store.get('chorus4', {});
+const chorusState = { fails: 0, ok: 0, disabled: false };
+function decodeAudio(buf){
+  const C = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if (!C) return Promise.reject(new Error('no-webaudio'));
+  const ctx = new C(1, 22050, 22050);
+  return new Promise((res, rej) => {
+    try { const p = ctx.decodeAudioData(buf, res, rej); if (p && p.then) p.then(res, rej); } catch(e){ rej(e); }
+  });
+}
+/* Chorus finder for a 30-second preview (runs in the browser; also loaded by the Node tests).
+   Looks for the stretch that is loud, full and melodically repeated (what a chorus is), snaps
+   its start to the section change where the music lifts, and reports how sure it is.
+   Returns null when the preview is too short, or { cs, ce, conf, contrast, rep } in seconds. */
+function findChorus(ab){
+  const sr = ab.sampleRate, n = ab.length, C = ab.numberOfChannels;
+  const x = new Float32Array(n);
+  for (let c = 0; c < C; c++){ const d = ab.getChannelData(c); for (let i = 0; i < n; i++) x[i] += d[i] / C; }
+  const N = 2048, half = N / 2, hop = Math.round(sr * .1);
+  const F = Math.floor((n - N) / hop) + 1;
+  if (F < 100) return null;
+  // ---- FFT tables ----
+  const win = new Float32Array(N), rev = new Uint32Array(N), cosT = new Float32Array(half), sinT = new Float32Array(half);
+  for (let i = 0; i < N; i++) win[i] = .5 - .5 * Math.cos(2 * Math.PI * i / (N - 1));
+  for (let i = 0, bits = Math.log2(N); i < N; i++){ let r = 0; for (let b = 0; b < bits; b++) r |= ((i >> b) & 1) << (bits - 1 - b); rev[i] = r; }
+  for (let i = 0; i < half; i++){ cosT[i] = Math.cos(2 * Math.PI * i / N); sinT[i] = -Math.sin(2 * Math.PI * i / N); }
+  const re = new Float32Array(N), im = new Float32Array(N);
+  function fft(){
+    for (let i = 0; i < N; i++){ const j = rev[i]; if (j > i){ let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; } }
+    for (let size = 2; size <= N; size <<= 1){
+      const h = size >> 1, step = N / size;
+      for (let s = 0; s < N; s += size) for (let k = 0; k < h; k++){
+        const wr = cosT[k * step], wi = sinT[k * step], a = s + k, b = a + h;
+        const tr = re[b] * wr - im[b] * wi, ti = re[b] * wi + im[b] * wr;
+        re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti;
+      }
+    }
+  }
+  const pc = new Int8Array(half).fill(-1);
+  for (let k = 1; k < half; k++){ const f = k * sr / N; if (f >= 80 && f <= 4000) pc[k] = ((Math.round(12 * Math.log2(f / 440)) % 12) + 12) % 12; }
+  // ---- frame features: loudness (dB), spectral flux (fullness / drive), chroma (melody & harmony) ----
+  const loud = new Float32Array(F), flux = new Float32Array(F), chroma = new Float32Array(F * 12), prev = new Float32Array(half);
+  for (let f = 0; f < F; f++){
+    const o = f * hop; let e = 0;
+    for (let i = 0; i < N; i++){ const v = x[o + i] || 0; e += v * v; re[i] = v * win[i]; im[i] = 0; }
+    fft();
+    let fl = 0;
+    for (let k = 1; k < half; k++){
+      const m = Math.sqrt(re[k] * re[k] + im[k] * im[k]);
+      const d = m - prev[k]; if (d > 0) fl += d; prev[k] = m;
+      if (pc[k] >= 0) chroma[f * 12 + pc[k]] += m;
+    }
+    loud[f] = 10 * Math.log10(e / N + 1e-10); flux[f] = fl;
+  }
+  // ---- pool into half-second blocks ----
+  const P = 5, B = Math.floor(F / P);
+  const E = new Float32Array(B), X = new Float32Array(B), Ch = new Float32Array(B * 12);
+  for (let b = 0; b < B; b++){
+    let e = 0, fl = 0;
+    for (let k = 0; k < P; k++){ const f = b * P + k; e += loud[f]; fl += flux[f]; for (let j = 0; j < 12; j++) Ch[b * 12 + j] += chroma[f * 12 + j]; }
+    E[b] = e / P; X[b] = Math.log(1 + fl / P);
+    let nrm = 0; for (let j = 0; j < 12; j++) nrm += Ch[b * 12 + j] ** 2; nrm = Math.sqrt(nrm) || 1;
+    for (let j = 0; j < 12; j++) Ch[b * 12 + j] /= nrm;
+  }
+  const dot = (a, b) => { let s = 0; for (let j = 0; j < 12; j++) s += Ch[a * 12 + j] * Ch[b * 12 + j]; return s; };
+  // ---- repetition: how strongly each moment recurs 4–15 s later or earlier ----
+  const seg = 6, Rp = new Float32Array(B);
+  for (let L = 8; L <= Math.min(30, B - seg - 1); L++){
+    for (let i = 0; i + L + seg <= B; i++){
+      let s = 0; for (let k = 0; k < seg; k++) s += dot(i + k, i + L + k); s /= seg;
+      for (let k = 0; k < seg; k++){ if (s > Rp[i + k]) Rp[i + k] = s; if (s > Rp[i + L + k]) Rp[i + L + k] = s; }
+    }
+  }
+  const lo = 2, hi = B - 2;                                   // skip the ~1 s fade at each end
+  const stats = (A, a = lo, b = hi) => { let m = 0, c = 0; for (let k = a; k < b; k++){ m += A[k]; c++; } m /= c || 1; let v = 0; for (let k = a; k < b; k++) v += (A[k] - m) ** 2; return [m, Math.sqrt(v / (c || 1)) || 1]; };
+  const [mE, sE] = stats(E), [mR, sR] = stats(Rp), [mX, sX] = stats(X);
+  // ---- section boundaries: where loudness, fullness or harmony change most (2 s either side) ----
+  const meanOf = (A, a, b) => { a = Math.max(lo, a); b = Math.min(hi, b); let m = 0; for (let k = a; k < b; k++) m += A[k]; return b > a ? m / (b - a) : 0; };
+  const chordOf = (a, b) => { const v = new Float32Array(12); for (let k = Math.max(lo, a); k < Math.min(hi, b); k++) for (let j = 0; j < 12; j++) v[j] += Ch[k * 12 + j]; let n2 = 0; for (let j = 0; j < 12; j++) n2 += v[j] * v[j]; n2 = Math.sqrt(n2) || 1; for (let j = 0; j < 12; j++) v[j] /= n2; return v; };
+  const nov = new Float32Array(B);
+  for (let b = lo + 4; b <= hi - 4; b++){
+    const dE = meanOf(E, b, b + 4) - meanOf(E, b - 4, b), dX = (meanOf(X, b, b + 4) - meanOf(X, b - 4, b)) / sX;
+    const c1 = chordOf(b - 4, b), c2 = chordOf(b, b + 4); let cs = 0; for (let j = 0; j < 12; j++) cs += c1[j] * c2[j];
+    nov[b] = Math.abs(dE) / 2 + Math.abs(dX) + 3 * (1 - cs);
+  }
+  const cand = [];
+  for (let b = lo + 4; b <= hi - 4; b++) if (nov[b] > 0 && nov[b] >= nov[b - 1] && nov[b] >= nov[b + 1]) cand.push(b);
+  cand.sort((p, q) => nov[q] - nov[p]);
+  const [mN, sN] = stats(nov, lo + 4, hi - 3);
+  const cuts = [];
+  for (const b of cand){ if (nov[b] < mN + .15 * sN || cuts.length >= 5) break; if (cuts.every(c => Math.abs(c - b) >= 6)) cuts.push(b); }
+  cuts.push(lo, hi); cuts.sort((p, q) => p - q);
+  // ---- pick the section that is loudest, fullest and most repeated ----
+  const segs = [];
+  for (let i = 0; i + 1 < cuts.length; i++){
+    const a = cuts[i], b = cuts[i + 1];
+    if (b - a < 6) continue;                                    // shorter than 3 s
+    segs.push({ a, b, e: meanOf(E, a, b), x: meanOf(X, a, b), r: meanOf(Rp, a, b) });
+  }
+  if (!segs.length) return null;
+  for (const g of segs) g.score = (g.e - mE) / sE + .5 * (g.x - mX) / sX + .4 * (g.r - mR) / sR;
+  const best = segs.reduce((p, q) => q.score > p.score ? q : p);
+  // ---- strict confidence: only accept a chorus we can actually see begin ----
+  const others = segs.filter(g => g !== best);
+  let oe = 0, ow = 0; for (const g of others){ oe += g.e * (g.b - g.a); ow += g.b - g.a; }
+  const contrast = ow ? best.e - oe / ow : 0;
+  const lift = best.a > lo ? meanOf(E, best.a, best.a + 4) - meanOf(E, best.a - 4, best.a) : 0;     // the jump where it kicks in
+  const clearlyLoudest = others.length > 0 && others.every(g => best.e - g.e >= 1 && best.x >= g.x - .05);
+  const longEnough = (best.b - best.a) >= (best.b >= hi ? 8 : 10);                                   // ≥ 4–5 s of it in the preview
+  const drop = best.b < hi - 2 ? meanOf(E, best.b - 4, best.b) - meanOf(E, best.b, best.b + 4) : 0;   // the fall where it ends
+  const buildUp = hi - best.b >= 2 && meanOf(E, best.b, hi) > best.e + .5;                           // something louder follows: a build-up
+  const seenStart = best.a > lo + 1 && lift >= 1.5;                       // we can hear the chorus kick in
+  const seenEnd = best.a <= lo + 1 && drop >= 1.5 && best.b - best.a >= 10; // preview opens inside the chorus and we hear it end
+  const conf = seenStart && clearlyLoudest && contrast >= 1.5 && longEnough && !buildUp;      // (seenEnd alone proved unreliable)
+  const start = best.a;
+  return { cs: Math.round(start * P) / 10, ce: Math.round(best.b * P) / 10, conf, contrast: Math.round(contrast * 10) / 10, lift: Math.round(lift * 10) / 10, rep: Math.round(best.r * 100) / 100, sections: segs.length };
+}
+if (typeof module !== 'undefined') module.exports = { findChorus };
+
+const notChorus = store.get('notChorus', {});
+function chorusKey(song){ return song.title + '|' + song.artist; }
+/* Skip songs already known to have no clear chorus in their preview, or reported by the player. */
+function chorusSkip(song){ const k = chorusKey(song), c = chorusMap[k]; return !!notChorus[k] || !!(c && c.reject); }
+/* Downloads one preview and looks for a chorus whose beginning we can actually hear. */
+async function analyzeUrl(url){
+  let resp;
+  try {
+    const ctrl = window.AbortController ? new AbortController() : null;
+    const t = setTimeout(() => ctrl && ctrl.abort(), 15000);
+    resp = await fetch(url, { mode: 'cors', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined });
+    clearTimeout(t);
+    if (!resp.ok) throw new Error('http ' + resp.status);
+  } catch(e){
+    if (++chorusState.fails >= 3 && !chorusState.ok) chorusState.disabled = true;
+    return { status: 'unavailable' };
+  }
+  chorusState.fails = 0;
+  const buf = await resp.arrayBuffer();
+  const type = (resp.headers.get('content-type') || '').split(';')[0] || (/\.mp3/i.test(url) ? 'audio/mpeg' : 'audio/mp4');
+  const src = URL.createObjectURL(new Blob([buf], { type }));   // copy before decoding detaches buf
+  let r = null;
+  try { r = findChorus(await decodeAudio(buf)); } catch(e){ URL.revokeObjectURL(src); return { status: 'unavailable' }; }
+  chorusState.ok++;
+  if (!r || !r.conf){ URL.revokeObjectURL(src); return { status: 'reject' }; }
+  return { status: 'ok', cs: r.cs, ce: r.ce, src, url };
+}
+/* Resolves { status: 'ok', cs, ce, url, src } | { status: 'reject' } | { status: 'unavailable' }.
+   Tries every studio preview we know for the song (other albums, then Deezer, which often cuts
+   a different part of the song) until one clearly contains the start of the chorus. */
+async function prepareChorus(song, info){
+  const key = chorusKey(song), cached = chorusMap[key];
+  if (cached && cached.reject) return { status: 'reject' };
+  if (cached && cached.url) return { status: 'ok', cs: cached.cs, ce: cached.ce, url: cached.url, src: null, via: cached.via };
+  if (chorusState.disabled) return { status: 'unavailable' };
+  const https = u => String(u).replace(/^http:\/\//, 'https://');
+  const urls = [info.u, ...(info.alts || [])].map(https);
+  let tried = 0, unavailable = 0;
+  const done = (res, via) => {
+    chorusMap[key] = { cs: res.cs, ce: res.ce, url: res.url, via, ts: Date.now() };
+    const keys = Object.keys(chorusMap);
+    if (keys.length > 900) keys.sort((a, b) => chorusMap[a].ts - chorusMap[b].ts).slice(0, keys.length - 900).forEach(k => delete chorusMap[k]);
+    store.set('chorus4', chorusMap);
+    return Object.assign(res, { via });
+  };
+  for (const u of urls){
+    const res = await analyzeUrl(u); tried++;
+    if (res.status === 'ok') return done(res, info.src);
+    if (res.status === 'unavailable') unavailable++;
+    if (chorusState.disabled) return { status: 'unavailable' };
+  }
+  if (info.src !== 'Deezer'){
+    const a0 = song.artists[0], en = (ALIASES[a0] || [])[0];
+    let dz = [];
+    try { dz = await searchDeezer(song, song.title + ' ' + (en || a0)); srcCount.dz[0]++; } catch(e){ srcCount.dz[1]++; }
+    for (const c of dz.slice(0, 2)){
+      const res = await analyzeUrl(https(c.u)); tried++;
+      if (res.status === 'ok') return done(res, 'Deezer');
+      if (res.status === 'unavailable') unavailable++;
+    }
+  }
+  if (tried && unavailable === tried) return { status: 'unavailable' };
+  chorusMap[key] = { reject: true, ts: Date.now() }; store.set('chorus4', chorusMap);
+  return { status: 'reject' };
+}
+
+/* ================= sound effects ================= */
+try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e){}
+const sfx = {
+  ctx: null, on: store.get('sfx', true),
+  init(){ if (!this.ctx){ try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} } if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {}); },
+  tone(f, d, type = 'triangle', v = .14, at = 0){
+    if (!this.on || !this.ctx) return;
+    const c = this.ctx, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + .05);
+  },
+  ok(){ this.tone(784, .14); this.tone(1175, .26, 'triangle', .14, .09); },
+  no(){ this.tone(196, .3, 'sawtooth', .06); this.tone(147, .38, 'sawtooth', .06, .12); },
+  tick(){ this.tone(1500, .05, 'square', .035); },
+  up(){ [523, 659, 784, 1047].forEach((f, i) => this.tone(f, .16, 'triangle', .12, i * .08)); },
+  ev(){ [880, 1109, 1319].forEach((f, i) => this.tone(f, .12, 'sine', .1, i * .06)); },
+  item(){ this.tone(660, .08, 'sine', .1); this.tone(990, .12, 'sine', .1, .06); }
+};
+
+/* ================= audio pool =================
+   iPhone browsers only load or play an <audio> element after it has been started by a tap.
+   The Start tap "unlocks" a few elements with a silent clip; after that the game can load the
+   next song in the background and check that it really plays before showing the question. */
+function makeWav(sec, freq, amp){
+  const sr = 22050, n = Math.max(1, Math.floor(sr * sec)), buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, str) => { for (let i = 0; i < str.length; i++) v.setUint8(o + i, str.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++){ const env = Math.min(1, i / 300, (n - i) / 2500); v.setInt16(44 + i * 2, freq ? Math.sin(2 * Math.PI * freq * i / sr) * env * amp * 32767 : 0, true); }
+  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+}
+const SILENT = makeWav(.08, 0, 0);
+const audioPool = {
+  els: [],
+  make(){ const a = new Audio(); a.preload = 'auto'; a._busy = false; this.els.push(a); return a; },
+  unlock(){
+    while (this.els.length < 5) this.make();
+    for (const a of this.els){
+      if (a._busy) continue;
+      try { a.src = SILENT; const p = a.play(); if (p && p.then) p.then(() => { if (!a._busy) a.pause(); }).catch(() => {}); } catch(e){}
+    }
+  },
+  take(){ const a = this.els.find(x => !x._busy) || this.make(); a._busy = true; a.onerror = null; return a; },
+  release(a){ if (!a) return; try { a.pause(); } catch(e){} a.onerror = null; a._busy = false; },
+  releaseAll(){ this.els.forEach(a => this.release(a)); }
+};
+/* Resolves 'ok' once the file is known to be playable, 'error' if it can't load,
+   or 'timeout' if the browser simply won't say yet (treated as playable). */
+function verifyAudio(a, ms = 5000){
+  if (a.readyState >= 1) return Promise.resolve('ok');
+  return new Promise(res => {
+    let done = false;
+    const fin = v => { if (done) return; done = true; clearTimeout(t); a.removeEventListener('loadedmetadata', ok); a.removeEventListener('canplay', ok); a.removeEventListener('error', bad); res(v); };
+    const ok = () => fin('ok'), bad = () => fin('error');
+    a.addEventListener('loadedmetadata', ok); a.addEventListener('canplay', ok); a.addEventListener('error', bad);
+    const t = setTimeout(() => fin(a.error ? 'error' : 'timeout'), ms);
+    try { a.load(); } catch(e){ fin('error'); }
+  });
+}
+
+/* ================= audio clip player ================= */
+const player = { audio: null, token: 0, raf: 0, guard: 0 };
+function stopPlayback(){
+  player.token++;
+  cancelAnimationFrame(player.raf); clearTimeout(player.guard);
+  if (player.audio){ try { player.audio.pause(); } catch(e){} }
+  setSpinning(false);
+}
+/* Called synchronously from a tap/click so mobile browsers allow sound.
+   No mute/unmute tricks: if the file is ready we seek before play(); otherwise the src
+   carries a #t= media fragment so the very first play already starts at the clip. */
+function fitRange(audio, from, to){
+  const dur = isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 30;
+  if (to > dur - .05){ const len = to - from; to = Math.max(.5, dur - .05); from = Math.max(0, to - len); }
+  return [from, to];
+}
+function playRange(audio, from, to, cb = {}){
+  stopPlayback();
+  const token = player.token;
+  player.audio = audio;
+  audio.muted = false;
+  try { audio.volume = 1; } catch(e){}
+  if (audio.readyState >= 1){ [from, to] = fitRange(audio, from, to); try { audio.currentTime = from; } catch(e){} }
+  let p;
+  try { p = audio.play(); } catch(e){ p = Promise.reject(e); }
+  const slow = setTimeout(() => { if (token === player.token && cb.onSlow) cb.onSlow(); }, 6000);
+  Promise.resolve(p).then(async () => {
+    clearTimeout(slow);
+    if (token !== player.token) return;
+    [from, to] = fitRange(audio, from, to);
+    if (audio.currentTime < from - .4 || audio.currentTime > from + 1.5){ audio.currentTime = from; await waitEvent(audio, 'seeked', 4000); }
+    if (token !== player.token) return;
+    setSpinning(true);
+    cb.onStart && cb.onStart(from, to);
+    const end = () => { if (token !== player.token) return; audio.pause(); setSpinning(false); cancelAnimationFrame(player.raf); clearTimeout(player.guard); player.token++; cb.onEnd && cb.onEnd(); };
+    player.guard = setTimeout(end, (to - from) * 1000 + 2500);
+    const tick = () => {
+      if (token !== player.token) return;
+      const t = audio.currentTime;
+      cb.onProgress && cb.onProgress(Math.min(1, Math.max(0, (t - from) / (to - from))));
+      if (t >= to || audio.ended) return end();
+      player.raf = requestAnimationFrame(tick);
+    };
+    tick();
+  }).catch(err => {
+    clearTimeout(slow);
+    if (token !== player.token) return;
+    cb.onError && cb.onError(err);
+  });
+}
+/* A short beep played through a plain <audio> element, to check the device's sound output. */
+let beepUrl = null;
+function beep(){
+  if (!beepUrl) beepUrl = makeWav(.45, 880, .6);
+  const a = new Audio(beepUrl);
+  try { return Promise.resolve(a.play()); } catch(e){ return Promise.reject(e); }
+}
+function setSpinning(on){ $('#record').classList.toggle('playing', on); $('#eq').classList.toggle('on', on); }
+function setRing(p){ $('#ring-fg').style.strokeDashoffset = (301.6 * (1 - p)).toFixed(1); }
+
+/* ================= settings & config ================= */
+const DIFF = {
+  easy:   { name: '輕鬆', clips: [5, 10, 20],  mult: .8 },
+  normal: { name: '普通', clips: [3, 6, 12],   mult: 1 },
+  hard:   { name: '地獄', clips: [1.5, 3, 6],  mult: 1.3 },
+};
+const EXT_MULT = [1, .6, .35];
+const MODES = { classic: { name: '經典十題', rounds: 10 }, survival: { name: '生存模式', rounds: Infinity }, daily: { name: '每日挑戰', rounds: 5 }, stage: { name: '闖關模式', rounds: Infinity } };
+/* Stage mode: 5 songs a level; the level score must reach the target to go on. */
+const STAGE_Q = 5;
+const LEVELS = [
+  { clips: [5, 10, 20],  n: 4, t: 30, diff: 'easy',   target: 2000 },
+  { clips: [4, 8, 16],   n: 4, t: 25, diff: 'easy',   target: 2400 },
+  { clips: [3, 6, 12],   n: 6, t: 20, diff: 'easy',   target: 2800 },
+  { clips: [3, 6, 12],   n: 6, t: 15, diff: 'normal', target: 3000 },
+  { clips: [2.5, 5, 10], n: 9, t: 15, diff: 'normal', target: 3300 },
+  { clips: [2, 4, 8],    n: 9, t: 15, diff: 'normal', target: 3600 },
+  { clips: [2, 4, 8],    n: 9, t: 12, diff: 'hard',   target: 3900 },
+  { clips: [1.5, 3, 6],  n: 9, t: 12, diff: 'hard',   target: 4200 },
+  { clips: [1.5, 3, 6],  n: 9, t: 10, diff: 'hard',   target: 4400 },
+  { clips: [1, 2, 4],    n: 9, t: 10, diff: 'hard',   target: 4600 },
+];
+const EVENTS = {
+  double: { icon: '🔥', name: '雙倍分數', desc: '這題分數 ×2', mult: 2, clip: 1 },
+  speed:  { icon: '⚡', name: '極速題', desc: '片段減半，分數 ×1.5', mult: 1.5, clip: .5 },
+  chest:  { icon: '🎁', name: '寶箱題', desc: '答對送一個道具', mult: 1, clip: 1 },
+};
+const ITEM_NAMES = { cut: '刪去一半', free: '免費延長', skip: '換一首' };
+const MINY = Math.min(...BANK.map(s => s.year)), MAXY = Math.max(...BANK.map(s => s.year));
+const MIN_POOL = 10;
+const OPT_MULT = { 4: 1, 6: 1.15, 9: 1.3 };
+const PRESETS = [['全部', MINY, MAXY], ['80 年代以前', MINY, 1989], ['90 年代', 1990, 1999], ['2000 年代', 2000, 2009], ['2010 以後', 2010, MAXY], ['近十年', MAXY - 9, MAXY], ['懷舊（2000 前）', MINY, 1999], ['千禧世代', 1998, 2012]];
+const TIME_OPTS = [0, 10, 15, 20, 30];
+const CATS = [['zh', '華語'], ['tw', '台語'], ['yue', '粵語'], ['en', '西洋'], ['kr', '韓語'], ['jp', '日語'], ['ot', '其他語言']];
+const settings = Object.assign({ mode: 'classic', diff: 'normal', nopt: 9, y0: MINY, y1: MAXY, clip: 'random', tlimit: 20, cats: CATS.map(c => c[0]), stageStart: 1 }, store.get('settings', {}));
+if (!Array.isArray(settings.cats) || !settings.cats.length) settings.cats = CATS.map(c => c[0]);
+settings.cats = settings.cats.filter(c => CATS.some(x => x[0] === c));
+if (!settings.cats.length) settings.cats = ['zh'];
+// players who had every category on get the newly added categories too
+{ const known = Array.isArray(settings.catsSeen) ? settings.catsSeen : ['zh', 'tw', 'en', 'kr', 'jp'];
+  if (known.every(k => settings.cats.includes(k))) CATS.forEach(([k]) => { if (!known.includes(k) && !settings.cats.includes(k)) settings.cats.push(k); });
+  settings.catsSeen = CATS.map(c => c[0]); }
+// a year range that reached the newest (or oldest) year of an older song bank keeps reaching it as songs are added
+{ const seen = Array.isArray(settings.ySeen) ? settings.ySeen : null;
+  if (seen ? settings.y1 >= seen[1] : settings.y1 >= 2020) settings.y1 = MAXY;
+  if (seen ? settings.y0 <= seen[0] : settings.y0 <= 1960) settings.y0 = MINY;
+  settings.y0 = Math.max(MINY, Math.min(+settings.y0 || MINY, MAXY));
+  settings.y1 = Math.max(settings.y0, Math.min(+settings.y1 || MAXY, MAXY));
+  settings.ySeen = [MINY, MAXY]; }
+if (!TIME_OPTS.includes(+settings.tlimit)) settings.tlimit = 20;
+settings.tlimit = +settings.tlimit;
+if (settings.clip !== 'chorus') settings.clip = 'random';
+delete settings['era'];
+if (![4, 6, 9].includes(+settings.nopt)) settings.nopt = 9;
+settings.nopt = +settings.nopt;
+settings.y0 = Math.max(MINY, Math.min(MAXY, +settings.y0 || MINY));
+settings.y1 = Math.max(settings.y0, Math.min(MAXY, +settings.y1 || MAXY));
+
+/* ================= home screen ================= */
+function show(id){ $$('.screen').forEach(s => s.classList.toggle('active', s.id === id)); window.scrollTo(0, 0); }
+function poolFor(cats, y0, y1){ return BANK.filter(s => cats.includes(s.cat) && s.year >= y0 && s.year <= y1); }
+function catLabel(cats){ return cats.length === CATS.length ? '全部類別' : CATS.filter(c => cats.includes(c[0])).map(c => c[1]).join('・'); }
+function rangeLabel(y0, y1){ return y0 <= MINY && y1 >= MAXY ? '全部年代' : y0 === y1 ? `${y0} 年` : `${y0} – ${y1}`; }
+function bestKey(mode, diff, nopt, y0, y1, clip, tl, cats){ return ['best5', mode, diff, nopt, y0, y1, clip || 'random', tl || 0, (cats || []).slice().sort().join('')].join('_'); }
+function renderHome(){
+  $('#bank-count').textContent = BANK.length;
+  $$('.mode').forEach(b => b.setAttribute('aria-checked', String(b.dataset.mode === settings.mode)));
+  $$('#seg-diff button').forEach(b => b.classList.toggle('on', b.dataset.diff === settings.diff));
+  $$('#seg-n button').forEach(b => b.classList.toggle('on', +b.dataset.n === settings.nopt));
+  $$('#seg-clip button').forEach(b => b.classList.toggle('on', b.dataset.clip === settings.clip));
+  $$('#seg-time button').forEach(b => b.classList.toggle('on', +b.dataset.t === settings.tlimit));
+  const daily = settings.mode === 'daily';
+  $('#opts-wrap').hidden = daily;
+  $('#daily-note').hidden = !daily;
+  const bc = store.get(bestKey('classic', settings.diff, settings.nopt, settings.y0, settings.y1, settings.clip, settings.tlimit, settings.cats), null);
+  const bs = store.get(bestKey('survival', settings.diff, settings.nopt, settings.y0, settings.y1, settings.clip, settings.tlimit, settings.cats), null);
+  const stageMax = store.get('stageMax', 1);
+  $('#best-stage').textContent = stageMax > LEVELS.length ? '已全破 🏆' : '已解鎖第 ' + stageMax + ' 關';
+  // categories
+  $('#chips-cat').innerHTML = CATS.map(([k, n]) => `<button data-cat="${k}" class="${settings.cats.includes(k) ? 'on' : ''}">${n}<small>${BANK.filter(s => s.cat === k).length}</small></button>`).join('');
+  // stage panel
+  const stage = settings.mode === 'stage';
+  $('#stage-wrap').hidden = !stage;
+  $('#grp-free').hidden = stage;
+  if (stage){
+    const top = Math.min(stageMax, LEVELS.length);
+    if (settings.stageStart > top) settings.stageStart = top;
+    $('#chips-level').innerHTML = LEVELS.map((L, i) => `<button data-lv="${i + 1}" class="${settings.stageStart === i + 1 ? 'on' : ''}" ${i + 1 > top ? 'disabled' : ''}>${i + 1 > top ? '🔒 ' : ''}第 ${i + 1} 關</button>`).join('');
+    const L = LEVELS[settings.stageStart - 1];
+    $('#stage-note').textContent = `第 ${settings.stageStart} 關：目標 ${fmt(L.target)} 分 · ${STAGE_Q} 首 · ${L.n} 選 1 · 片段 ${L.clips[0]} 秒 · 限時 ${L.t} 秒。難度、選項數和時間由關卡決定；本關分數達到目標才能進下一關。`;
+  }
+  const dd = store.get('daily_' + todayKey(), null);
+  $('#best-classic').textContent = bc ? '最佳 ' + fmt(bc.score) : '';
+  $('#best-survival').textContent = bs ? '最佳 ' + bs.correct + ' 首' : '';
+  $('#best-daily').textContent = dd ? '今日 ' + dd.correct + '/5 ✓' : '今天還沒玩';
+  $('#btn-start').textContent = '開始 · ' + MODES[settings.mode].name;
+  $('#btn-sfx').textContent = '音效：' + (sfx.on ? '開' : '關');
+  renderRange();
+}
+/* ---- year range slider ---- */
+const yrA = $('#yr-a'), yrB = $('#yr-b');
+[yrA, yrB].forEach(el => { el.min = MINY; el.max = MAXY; el.step = 1; });
+$('#yr-min').textContent = MINY; $('#yr-max').textContent = MAXY;
+$('#yr-presets').innerHTML = PRESETS.map(([n, a, b]) => `<button data-a="${a}" data-b="${b}">${n}</button>`).join('');
+function renderRange(){
+  yrA.value = settings.y0; yrB.value = settings.y1;
+  const span = (MAXY - MINY) || 1;
+  const fill = $('#yr-fill');
+  fill.style.left = ((settings.y0 - MINY) / span * 100) + '%';
+  fill.style.right = ((MAXY - settings.y1) / span * 100) + '%';
+  yrA.style.zIndex = settings.y0 >= MAXY - 2 ? 4 : 2;
+  $('#yr-label').textContent = rangeLabel(settings.y0, settings.y1);
+  const n = poolFor(settings.cats, settings.y0, settings.y1).length;
+  const c = $('#yr-count');
+  c.textContent = n >= MIN_POOL ? `共 ${n} 首` : `只有 ${n} 首，至少要 ${MIN_POOL} 首`;
+  c.classList.toggle('warn', n < MIN_POOL);
+  $$('#yr-presets button').forEach(b => b.classList.toggle('on', +b.dataset.a === settings.y0 && +b.dataset.b === settings.y1));
+  $('#btn-start').disabled = settings.mode !== 'daily' && n < MIN_POOL;
+}
+function onRange(which){
+  let a = +yrA.value, b = +yrB.value;
+  if (a > b){ if (which === 'a') a = b; else b = a; }
+  settings.y0 = a; settings.y1 = b;
+  renderRange();
+}
+yrA.addEventListener('input', () => onRange('a'));
+yrB.addEventListener('input', () => onRange('b'));
+[yrA, yrB].forEach(el => el.addEventListener('change', () => saveSettings()));
+$('#yr-presets').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; settings.y0 = +b.dataset.a; settings.y1 = +b.dataset.b; saveSettings(); });
+$('#seg-time').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.tlimit = +b.dataset.t; saveSettings(); } });
+$('#seg-clip').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.clip = b.dataset.clip; saveSettings(); } });
+$('#chips-cat').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const k = b.dataset.cat, has = settings.cats.includes(k);
+  if (has && settings.cats.length === 1){ toast('至少要選一個類別'); return; }
+  settings.cats = has ? settings.cats.filter(c => c !== k) : [...settings.cats, k];
+  saveSettings();
+});
+$('#chips-level').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.disabled){ settings.stageStart = +b.dataset.lv; saveSettings(); } });
+$('#seg-n').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.nopt = +b.dataset.n; saveSettings(); } });
+function saveSettings(){ store.set('settings', settings); renderHome(); }
+$$('.mode').forEach(b => b.addEventListener('click', () => { settings.mode = b.dataset.mode; saveSettings(); }));
+$('#seg-diff').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.diff = b.dataset.diff; saveSettings(); } });
+$('#btn-sfx').addEventListener('click', () => { sfx.on = !sfx.on; store.set('sfx', sfx.on); renderHome(); });
+$('#btn-start').addEventListener('click', () => { sfx.init(); audioPool.unlock(); newGame(); });
+$('#btn-beep').addEventListener('click', () => {
+  beep().then(() => toast('有聽到「嗶」一聲嗎？沒有的話請檢查靜音開關和音量'))
+        .catch(() => toast('這個瀏覽器擋下了聲音播放，請換 Safari 或 Chrome'));
+});
+
+/* ================= game ================= */
+let G = null;   // game state
+let R = null;   // round state
+
+function newGame(){
+  audioPool.releaseAll();
+  if (G){ G.dead = true; (G.blobs || []).forEach(u => { try { URL.revokeObjectURL(u); } catch(e){} }); }
+  stopPlayback();
+  const mode = settings.mode;
+  const daily = mode === 'daily';
+  const cats = daily ? ['zh'] : settings.cats.slice();
+  const diff = daily ? 'normal' : settings.diff;
+  const nopt = daily ? 9 : settings.nopt;
+  const y0 = daily ? MINY : settings.y0, y1 = daily ? MAXY : settings.y1;
+  const poolArr = poolFor(cats, y0, y1);
+  let bag;
+  if (daily){
+    bag = diverseOrder(BANK.filter(s => s.cat === 'zh'), mulberry32(hashStr('erg-daily-' + todayKey())));
+  } else {
+    bag = diverseOrder(poolArr, cryptoRnd, null, new Set(store.get('recent', [])));
+  }
+  G = {
+    mode, diff, nopt, y0, y1, cats, daily, tlimit: daily ? 20 : settings.tlimit, chorus: !daily && settings.clip === 'chorus', blobs: [], dateKey: todayKey(), cfg: DIFF[diff],
+    rounds: MODES[mode].rounds, roundNo: 0, score: 0, combo: 0, maxCombo: 0,
+    lives: mode === 'survival' ? 3 : 0, level: 0, correct: 0,
+    items: { cut: 1, free: 1, skip: 1 },
+    history: [], played: new Set(), failed: new Set(), retry: new Map(), optSeen: { ids: new Set(), artists: new Map() }, bag, poolIds: new Set(poolArr.map(s => s.id)),
+    queue: [], waiters: [], filling: false, netFails: 0, audioFails: 0, skipped: 0, netError: false, audioError: false, dead: false
+  };
+  if (mode === 'stage'){ Object.assign(G, { stage: 0, stageQ: 0, stageScore: 0, cleared: 0, stageLog: [] }); enterStage(Math.min(settings.stageStart, store.get('stageMax', 1), LEVELS.length) - 1); }
+  $('#game').classList.toggle('n9', G.nopt === 9);
+  show('game');
+  nextRound();
+  if (mode === 'stage') stageIntro();
+}
+
+/* ---- background queue: always keep songs resolved & buffering ahead ---- */
+async function fillQueue(){
+  const g = G;
+  if (!g || g.filling || g.dead) return;
+  g.filling = true;
+  while (!g.dead && g.queue.length < 2 && !g.netError){
+    if (!g.bag.length && !refillBag(g)) break;
+    const song = g.bag.shift();
+    if (g.played.has(song.id)) continue;
+    if (g.chorus && chorusSkip(song)) continue;
+    let info; const why = {};
+    try { info = await resolveSong(song, { why, wait: () => !g.dead }); }
+    catch(e){
+      if (++g.netFails >= 4){ g.netError = true; break; }
+      noteNet(`找歌中…（連線不順，換一首試試）`);
+      continue;                                             // move straight on to another song
+    }
+    try {
+      g.netFails = 0;
+      if (g.dead) break;
+      if (!info){
+        const n = g.retry.get(song.id) || 0;
+        if (why.paced && n < 2){ g.retry.set(song.id, n + 1); g.bag.splice(Math.min(4, g.bag.length), 0, song); continue; }   // try it again a few songs later
+        g.skipped++; g.failed.add(song.id); continue;
+      }
+      const url = String(info.u).replace(/^http:\/\//, 'https://');
+      let start, src = url, chorus = null;
+      if (g.chorus){
+        const ch = await prepareChorus(song, info);
+        if (g.dead){ if (ch.src) URL.revokeObjectURL(ch.src); break; }
+        if (ch.status !== 'ok' || ch.ce - ch.cs < g.cfg.clips[0]){      // no sure chorus here: never guess, take another song
+          if (ch.src) URL.revokeObjectURL(ch.src);
+          g.skipped++; g.failed.add(song.id);
+          if (chorusState.disabled){ g.chorus = false; g.chorusOff = true; }
+          noteNet('找副歌中…（這首試聽沒有明確的副歌，換一首）');
+          continue;
+        }
+        if (ch.src){ src = ch.src; g.blobs.push(ch.src); } else src = ch.url;
+        chorus = { cs: ch.cs, ce: ch.ce, via: ch.via };
+        start = ch.cs;                                       // play from the moment the chorus starts
+      } else {
+        const srng = g.daily ? mulberry32(hashStr(g.dateKey + '#start#' + song.id)) : cryptoRnd;
+        const baseMax = g.cfg.clips[g.cfg.clips.length - 1];
+        start = Math.round((0.8 + srng() * Math.max(0, 29 - baseMax - 1.2)) * 10) / 10;
+      }
+      const audio = audioPool.take();
+      audio.src = src.startsWith('blob:') ? src : src + '#t=' + start;
+      const check = await verifyAudio(audio);
+      if (g.dead){ audioPool.release(audio); break; }
+      if (check === 'error'){                               // this preview won't play: drop it and try another song now
+        audioPool.release(audio);
+        delete cache[song.title + '|' + song.artist]; saveCache();
+        if (chorusMap[chorusKey(song)]){ delete chorusMap[chorusKey(song)]; store.set('chorus4', chorusMap); }
+        g.skipped++; g.failed.add(song.id);
+        if (++g.audioFails >= 6){ g.netError = true; g.audioError = true; break; }
+        noteNet('找歌中…（略過一首無法播放的試聽）');
+        continue;
+      }
+      g.audioFails = 0;
+      g.played.add(song.id);
+      g.queue.push({ song, info, audio, start, chorus, url: audio.src, verified: check === 'ok' });
+      flushWaiters(g);
+    } catch(e){ g.skipped++; }
+  }
+  g.filling = false;
+  flushWaiters(g);
+}
+/* ---- song order ----
+   Truly random: every song in the pool has the same chance (crypto RNG). Only two rules on top:
+   the same singer can't come back within the next few songs, and songs heard in recent games are
+   drawn after the ones you haven't heard yet. */
+function diverseOrder(list, rng, avoid, recentIds){
+  rng = rng || cryptoRnd; avoid = avoid || new Map(); recentIds = recentIds || new Set();
+  const groups = new Map();
+  for (const s of shuffle(list.slice(), rng)){
+    const a = s.artists[0];
+    if (!groups.has(a)) groups.set(a, []);
+    groups.get(a).push(s);
+  }
+  // within an artist, songs heard recently go last (the end of the array is taken first)
+  groups.forEach(arr => arr.sort((x, y) => (recentIds.has(y.id) ? 1 : 0) - (recentIds.has(x.id) ? 1 : 0)));
+  const cool = Math.max(1, Math.min(5, Math.floor(groups.size * 0.5)));
+  const fresh = new Map();                                   // songs per singer not heard recently
+  groups.forEach((arr, a) => fresh.set(a, arr.filter(x => !recentIds.has(x.id)).length));
+  const recentA = [], out = [];
+  while (groups.size){
+    const blocked = new Set(recentA.flat());
+    const keys = [...groups.keys()];
+    let cands = keys.filter(a => { const arr = groups.get(a); return !arr[arr.length - 1].artists.some(x => blocked.has(x)); });
+    if (!cands.length) cands = keys;
+    const w = cands.map(a => { const arr = groups.get(a), next = arr[arr.length - 1];
+      return (fresh.get(a) || .02 * arr.length) * (avoid.get(a) || 1); });   // each fresh song counts once
+    let r = rng() * w.reduce((x, y) => x + y, 0), i = 0;
+    while (i < cands.length - 1 && (r -= w[i]) > 0) i++;
+    const a = cands[i], arr = groups.get(a), song = arr.pop();
+    if (!recentIds.has(song.id)) fresh.set(a, fresh.get(a) - 1);
+    if (!arr.length) groups.delete(a);
+    out.push(song);
+    recentA.push(song.artists);                              // the singers of the last few songs
+    while (recentA.length > cool) recentA.shift();
+  }
+  return out;
+}
+function recentArtistPenalty(){
+  const m = new Map();
+  store.get('recentArtists', []).forEach((a, i) => { if (!m.has(a)) m.set(a, i < 20 ? .25 : .5); });
+  return m;
+}
+function refillBag(g){
+  if (g.mode !== 'survival' && g.mode !== 'stage') return false;
+  let left = BANK.filter(s => g.poolIds.has(s.id) && !g.played.has(s.id) && !g.failed.has(s.id));
+  if (!left.length){                                     // heard everything that plays: allow repeats
+    left = BANK.filter(s => g.poolIds.has(s.id) && !g.failed.has(s.id));
+    if (!left.length) return false;
+    g.played = new Set();
+  }
+  g.bag = diverseOrder(left, cryptoRnd, null, new Set(g.history.slice(-30).map(h => h.song.id)));
+  return g.bag.length > 0;
+}
+function flushWaiters(g){ g.waiters = g.waiters.filter(fn => !fn()); }
+function nextReady(){
+  const g = G;
+  return new Promise(res => {
+    const give = () => {
+      if (g.dead){ res(null); return true; }
+      if (g.queue.length){ res(g.queue.shift()); setTimeout(fillQueue, 0); return true; }
+      if (g.netError || (!g.filling && !g.bag.length && !refillBag(g))){ res(null); return true; }
+      return false;
+    };
+    if (!give()){ g.waiters.push(give); fillQueue(); }
+  });
+}
+
+function clipLens(){
+  let scale = 1;
+  if (G.mode === 'survival') scale *= Math.pow(.85, G.level);
+  if (R && R.event) scale *= EVENTS[R.event].clip;
+  return G.cfg.clips.map(c => Math.max(1, Math.round(c * scale * 10) / 10));
+}
+function optionCount(){ return G.nopt; }
+
+function buildOptions(song, n, diff, rng, seen){
+  const used = new Set(song.keys);
+  const usedArtists = new Set(song.artists);
+  let all = BANK.filter(s => s.id !== song.id && s.cat === song.cat);
+  if (all.length < n + 3) all = BANK.filter(s => s.id !== song.id);
+  const sameArtist = s => s.artists.some(a => song.artists.includes(a));
+  const near = s => Math.abs(s.year - song.year) <= 6;
+  const seenIds = seen ? seen.ids : new Set();
+  // random order (every song equally likely); songs already shown as choices in this game go last
+  const mix = list => shuffle(list.slice(), rng).sort((x, y) => (seenIds.has(x.id) ? 1 : 0) - (seenIds.has(y.id) ? 1 : 0));
+  const out = [];
+  const take = (list, max, uniqueArtist) => {
+    for (const s of list){
+      if (out.length >= n - 1 || max <= 0) return;
+      if (s.keys.some(k => used.has(k))) continue;
+      if (uniqueArtist && s.artists.some(a => usedArtists.has(a))) continue;
+      out.push(s); s.keys.forEach(k => used.add(k)); if (uniqueArtist) s.artists.forEach(a => usedArtists.add(a)); max--;
+    }
+  };
+  // same-singer decoys make it harder: easy none, normal some, hard up to half of the choices
+  const nSame = diff === 'easy' ? 0 : diff === 'normal' ? (n >= 9 ? 2 : n >= 6 ? 1 : (rng() < .5 ? 1 : 0)) : Math.floor(n / 2);
+  take(mix(all.filter(sameArtist)), nSame, false);
+  const rest = all.filter(s => !sameArtist(s));
+  if (diff === 'hard') take(mix(rest.filter(near)), 99, true);                                        // hard: same era first
+  else if (diff === 'normal') take(mix(rest.filter(near)), Math.ceil((n - 1 - out.length) / 2), true);  // normal: half same era
+  take(mix(rest), 99, true);
+  take(mix(all), 99, false);
+  const opts = shuffle([song, ...out], rng);
+  if (seen) opts.forEach(s => seen.ids.add(s.id));
+  return opts;
+}
+
+async function nextRound(isSkip){
+  const g = G;
+  stopPlayback(); stopTimer();
+  if (R && R.audio) audioPool.release(R.audio);
+  if (!isSkip) g.roundNo++;
+  R = null;
+  renderHud();
+  // reset stage
+  $('#event').hidden = true;
+  $('#reveal').hidden = true;
+  $('#status').hidden = false;
+  $('#status-text').textContent = '找歌中…（確認試聽可以播放）';
+  $('#label').classList.remove('show', 'big');
+  $('#art').removeAttribute('src');
+  $('#label-q').className = 'q load';
+  $('#label-q').textContent = '?';
+  $('#options').innerHTML = '';
+  $('#options').className = 'options locked';
+  $('#controls').hidden = false;
+  $('#items').hidden = false;
+  $('#btn-next').hidden = true;
+  $('#btn-replay').disabled = $('#btn-extend').disabled = true;
+  $('#ext-sub').textContent = '';
+  setRing(0);
+  renderItems(true);
+
+  const it = await nextReady();
+  if (g !== G || g.dead) return;
+  if (!it){
+    if (g.netError) return showNetError();
+    if (g.history.length) return endGame();
+    return showModal('題庫不夠', '這個年代目前找不到可播放的試聽，換個年代試試。', [{ label: '回主選單', primary: true, fn: goHome }]);
+  }
+  const rng = g.daily ? mulberry32(hashStr(g.dateKey + '#' + it.song.id)) : cryptoRnd;
+  R = {
+    ...it, rng, clipIdx: 0, penalty: 0, usedFree: false, played: false, answered: false, t0: 0,
+    event: null, start: 0, options: [], removed: new Set()
+  };
+  R.chorus = it.chorus || null;
+  resetClock();
+  if (g.chorusOff && !g.chorusOffShown){
+    g.chorusOffShown = true;
+    showModal('副歌模式在這個瀏覽器無法使用', '這個瀏覽器不允許讀取試聽的聲音內容，所以找不出副歌在哪裡。為了不播錯段落，這局改用隨機片段。\n\n可以換 Chrome 或 Safari 再試一次副歌模式。', [{ label: '知道了', primary: true }]);
+  }
+  // random event (never on the very first song)
+  const roll = rng();
+  if (g.roundNo > 1 || isSkip){
+    R.event = roll < .10 ? 'double' : roll < .18 ? 'speed' : roll < .26 ? 'chest' : null;
+  }
+  const lens = clipLens();
+  const maxLen = lens[lens.length - 1];
+  if (it.chorus){
+    // chorus: keep the start on the chorus; longer clips are cut at the end of the preview instead
+    R.start = it.start;
+    R.lens = [...new Set(lens.map(l => Math.max(1, Math.min(l, Math.round((29.6 - R.start) * 10) / 10))))];
+  } else {
+    R.lens = lens;
+    R.start = Math.min(it.start, Math.max(0, 29.5 - maxLen));
+  }
+  R.options = buildOptions(it.song, optionCount(), g.diff, rng, g.daily ? null : g.optSeen);
+
+  if (R.event){
+    const e = EVENTS[R.event];
+    const el = $('#event');
+    el.dataset.kind = R.event;
+    el.innerHTML = `${e.icon} ${e.name} <small>${e.desc}</small>`;
+    el.hidden = false;
+    sfx.ev();
+  }
+  $('#label-q').className = 'q';
+  $('#status-text').innerHTML = it.chorus ? `點唱片播放 ${R.lens[0]} 秒片段<span class="chorus-tag">副歌</span>` : `點唱片播放 ${R.lens[0]} 秒片段`;
+  $('#options').innerHTML = R.options.map((s, i) =>
+    `<button class="opt" data-i="${i}"><span class="k">${i + 1}</span><span class="t${[...s.title].length >= 9 ? ' xl' : [...s.title].length >= 6 ? ' l' : ''}">${esc(s.title)}</span></button>`).join('');
+  updateExtend();
+  renderItems();
+  it.audio.onerror = () => { if (R && R.audio === it.audio && !R.answered) audioFailed(); };
+  if (it.audio.error) audioFailed();
+}
+
+function audioFailed(){
+  if (!R || R.answered) return;
+  toast('這首試聽載入失敗，自動換下一首');
+  nextRound(true);
+}
+
+function playClip(){
+  if (!R || R.answered) return;
+  const len = R.lens[R.clipIdx];
+  $('#status-text').textContent = '緩衝中…';
+  playRange(R.audio, R.start, R.start + len, {
+    onStart: (from) => {
+      R.start = from;
+      $('#status-text').textContent = `播放中 · ${len} 秒${R.chorus ? '（副歌）' : ''}`;
+      if (!R.played){ R.played = true; startTimer(); $('#options').classList.remove('locked'); }
+    },
+    onProgress: setRing,
+    onSlow: () => { if (R && !R.answered) $('#status-text').textContent = '音樂載入較慢…等一下，或按「換一首」'; },
+    onEnd: () => {
+      if (!R || R.answered) return;
+      setRing(1);
+      $('#status-text').textContent = R.clipIdx < R.lens.length - 1 ? '聽不出來？重播或聽長一點' : '已經是最長的片段了';
+      $('#btn-replay').disabled = false;
+      updateExtend();
+    },
+    onError: (err) => {
+      if (!R || R.answered) return;
+      if (err && err.name === 'NotAllowedError'){ $('#status-text').textContent = '瀏覽器擋下自動播放，請再點一次唱片'; return; }
+      audioFailed();
+    }
+  });
+}
+function updateExtend(){
+  if (!R) return;
+  const can = R.clipIdx < R.lens.length - 1;
+  const btn = $('#btn-extend');
+  btn.disabled = !can || !R.played || R.answered;
+  if (can){
+    const nextMult = EXT_MULT[Math.min(R.penalty + 1, EXT_MULT.length - 1)];
+    $('#ext-sub').textContent = `${R.lens[R.clipIdx]} → ${R.lens[R.clipIdx + 1]} 秒 · 本題分數 ×${nextMult}`;
+  } else $('#ext-sub').textContent = '已是最長片段';
+  renderItems();
+}
+
+/* ---- timer: starts when the clip first plays; the limit is set on the home screen ---- */
+let timerInt = 0, lastTick = -1;
+function startTimer(){
+  R.t0 = performance.now(); R.pausedAt = 0; lastTick = -1;
+  clearInterval(timerInt);
+  timerInt = setInterval(tickTimer, 100);
+  tickTimer();
+}
+function elapsedSec(){ return R && R.t0 ? ((R.pausedAt || performance.now()) - R.t0) / 1000 : 0; }
+function tickTimer(){
+  if (!R || R.answered || !R.t0) return stopTimer();
+  if (R.pausedAt) return;
+  const el = elapsedSec(), lim = G.tlimit;
+  if (lim){
+    const left = Math.max(0, lim - el);
+    setTimerBar(left / lim);
+    const low = left <= 5;
+    $('#timer').classList.toggle('low', low); $('#hud-time').classList.toggle('low', low);
+    $('#hud-time').textContent = `⏱ ${left.toFixed(1)} 秒`;
+    const sec = Math.ceil(left);
+    if (low && sec !== lastTick && sec > 0){ lastTick = sec; sfx.tick(); }
+    if (left <= 0) answer(null, false);
+  } else {
+    $('#hud-time').textContent = `⏱ ${el.toFixed(1)} 秒`;
+  }
+}
+function stopTimer(){ clearInterval(timerInt); $('#timer').classList.remove('low'); $('#hud-time').classList.remove('low'); }
+function pauseTimer(){ if (R && R.t0 && !R.answered && !R.pausedAt){ R.pausedAt = performance.now(); clearInterval(timerInt); } }
+function resumeTimer(){ if (R && R.pausedAt && !R.answered && $('#game').classList.contains('active')){ R.t0 += performance.now() - R.pausedAt; R.pausedAt = 0; clearInterval(timerInt); timerInt = setInterval(tickTimer, 100); } }
+function setTimerBar(p){ $('#timer-fill').style.transform = `scaleX(${p})`; }
+function resetClock(){
+  stopTimer(); setTimerBar(1);
+  $('#timer').hidden = !G.tlimit;
+  $('#hud-time').textContent = G.tlimit ? `⏱ ${G.tlimit.toFixed(1)} 秒` : '⏱ 不限時';
+}
+
+/* ---- answering ---- */
+function answer(idx, viaClick){
+  if (!R || R.answered || !R.played) return;
+  const elapsed = Math.min(G.tlimit || 1e9, elapsedSec());
+  R.answered = true;
+  stopTimer();
+  const chosen = idx == null ? null : R.options[idx];
+  const ok = !!chosen && chosen.id === R.song.id;
+  let pts = 0, gotItem = null;
+  if (ok){
+    const T = G.tlimit || 30;                               // faster answers score more
+    const base = 300 + 700 * Math.max(0, 1 - elapsed / T);
+    const comboMult = 1 + Math.min(G.combo, 10) * .1;
+    const evMult = R.event ? EVENTS[R.event].mult : 1;
+    pts = Math.round(base * EXT_MULT[R.penalty] * comboMult * evMult * G.cfg.mult * (OPT_MULT[G.nopt] || 1) / 10) * 10;
+    G.score += pts; G.combo++; G.correct++;
+    if (G.mode === 'stage') G.stageScore += pts;
+    G.maxCombo = Math.max(G.maxCombo, G.combo);
+    sfx.ok();
+    if (R.event === 'chest'){ gotItem = randomItem(); }
+  } else {
+    G.combo = 0;
+    if (G.mode === 'survival'){ G.lives--; setTimeout(() => toast(G.lives > 0 ? `💔 少一條命，剩 ${G.lives} 條` : '💔 沒命了，遊戲結束'), 300); }
+    sfx.no();
+    $('#game').classList.remove('shake'); void $('#game').offsetWidth; $('#game').classList.add('shake');
+  }
+  if (G.mode === 'stage') G.stageQ++;
+  const emoji = ok ? (R.penalty === 0 && !R.usedFree ? '🟩' : '🟨') : (idx == null ? '⬛' : '🟥');
+  G.history.push({ song: R.song, info: R.info, url: R.url || R.audio.src, ok, pts, emoji, picked: chosen, chorus: R.chorus, time: elapsed });
+
+  // reveal UI
+  $$('#options .opt').forEach((b, i) => {
+    const s = R.options[i];
+    if (s.id === R.song.id) b.classList.add('correct');
+    else if (i === idx) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  $('#options').classList.add('done');
+  $('#status').hidden = true;
+  $('#controls').hidden = true;
+  $('#items').hidden = true;
+  const v = $('#rv-verdict');
+  v.className = 'rv-verdict ' + (ok ? 'ok' : 'no');
+  v.textContent = ok ? `答對了！${elapsed.toFixed(1)} 秒${G.combo >= 3 ? ` · ${G.combo} 連擊` : ''}` : (idx == null ? '時間到' : `答錯了 · ${elapsed.toFixed(1)} 秒`);
+  $('#rv-title').textContent = '《' + R.song.title + '》';
+  $('#rv-meta').innerHTML = `${esc(R.song.artist)} · ${R.song.year}` + (R.info.link ? `<a href="${esc(R.info.link)}" target="_blank" rel="noopener">${esc(R.info.src)} 聽完整版 ↗</a>` : '');
+  $('#reveal').hidden = false;
+  $('#btn-notchorus').hidden = !R.chorus;
+  $('#btn-notchorus').textContent = '這段不是副歌？按這裡回報';
+  if (R.info.art){ const img = $('#art'); img.onload = () => $('#label').classList.add('show'); img.src = R.info.art; }
+  $('#label').classList.add('big');
+  $('#label-q').className = 'q';
+  $('#label-q').textContent = '♪';
+  if (ok){ const f = $('#float-pts'); f.textContent = '+' + fmt(pts); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+
+  // level / lives progression in survival
+  if (G.mode === 'survival' && ok){
+    if (G.correct % 5 === 0){ G.level++; setTimeout(() => { sfx.up(); toast(`升到 Lv.${G.level + 1}！片段變短`); }, 500); }
+    if (G.correct % 10 === 0 && G.lives < 5){ G.lives++; setTimeout(() => toast('回復一條命 ❤'), 1100); }
+  }
+  if (gotItem){ setTimeout(() => { sfx.item(); toast(`🎁 寶箱打開：${ITEM_NAMES[gotItem]} +1`); }, 700); }
+  renderHud(!ok && G.mode === 'survival' ? 'hit' : true);
+
+  const last = (G.mode === 'survival' && G.lives <= 0) || (G.mode !== 'survival' && G.roundNo >= G.rounds);
+  const nb = $('#btn-next');
+  nb.textContent = G.mode === 'stage' && G.stageQ >= STAGE_Q ? '看本關結果 →' : last ? '看結果 →' : '下一首 →';
+  nb.hidden = false;
+  setRing(0);
+  // reward: let the song keep playing a bit (only when the answer came from a tap = user gesture)
+  if (viaClick || R.played){
+    const a = R.audio;
+    playRange(a, R.start, Math.min(R.start + 14, 30), { onProgress: setRing, onEnd: () => setRing(1), onError: () => {} });
+  }
+}
+function randomItem(){ const keys = Object.keys(G.items); const k = keys[Math.floor(cryptoRnd() * keys.length)]; G.items[k]++; return k; }
+
+/* ---- items ---- */
+function renderItems(disableAll){
+  $$('#items .item').forEach(b => {
+    const k = b.dataset.item, n = G ? G.items[k] : 0;
+    b.querySelector('b').textContent = n;
+    let can = !disableAll && n > 0 && R && !R.answered;
+    if (k === 'cut') can = can && R.options.length - 1 - R.removed.size > 1;
+    if (k === 'free') can = can && R.played && R.clipIdx < R.lens.length - 1;
+    b.disabled = !can;
+  });
+}
+function useItem(k){
+  if (!R || R.answered || !G.items[k]) return;
+  if (k === 'cut'){
+    const wrong = R.options.map((s, i) => i).filter(i => R.options[i].id !== R.song.id && !R.removed.has(i));
+    const n = Math.floor(R.options.length / 2);
+    shuffle(wrong).slice(0, Math.min(n, wrong.length - 1)).forEach(i => { R.removed.add(i); $(`#options .opt[data-i="${i}"]`).classList.add('removed'); });
+  } else if (k === 'free'){
+    if (!R.played || R.clipIdx >= R.lens.length - 1) return;
+    R.clipIdx++; R.usedFree = true;
+    playClip();
+  } else if (k === 'skip'){
+    G.items[k]--; sfx.item(); toast('換一首！不扣分、不斷連擊');
+    return nextRound(true);
+  }
+  G.items[k]--;
+  sfx.item();
+  const btn = $(`#items .item[data-item="${k}"]`); btn.classList.remove('bump'); void btn.offsetWidth; btn.classList.add('bump');
+  updateExtend();
+}
+
+/* ---- stage mode ---- */
+function enterStage(k){
+  const L = LEVELS[k];
+  Object.assign(G, { stage: k, stageQ: 0, stageScore: 0, nopt: L.n, tlimit: L.t, diff: L.diff, cfg: { name: `第 ${k + 1} 關`, clips: L.clips, mult: 1 } });
+  $('#game').classList.toggle('n9', L.n === 9);
+  renderHud();
+}
+function stageIntro(){
+  const L = LEVELS[G.stage];
+  showModal(`第 ${G.stage + 1} 關`, `目標：本關 ${STAGE_Q} 首拿到 ${fmt(L.target)} 分\n\n${L.n} 選 1 · 片段 ${L.clips[0]} 秒 · 限時 ${L.t} 秒\n答得越快、連續答對，分數越高。`, [{ label: '開始', primary: true }]);
+}
+function stageEnd(){
+  const L = LEVELS[G.stage], k = G.stage + 1, passed = G.stageScore >= L.target;
+  G.stageLog.push({ level: k, score: G.stageScore, target: L.target, passed });
+  if (passed){
+    G.cleared = Math.max(G.cleared, k);
+    store.set('stageMax', Math.max(store.get('stageMax', 1), k + 1));
+    sfx.up();
+    if (k >= LEVELS.length){
+      showModal('全部過關！🏆', `第 ${k} 關 ${fmt(G.stageScore)} 分（目標 ${fmt(L.target)}）。\n10 關全破，你就是金曲活字典！`, [{ label: '看結果', primary: true, fn: endGame }]);
+      return;
+    }
+    const gift = randomItem(), N = LEVELS[k];
+    showModal(`第 ${k} 關過關！`, `本關 ${fmt(G.stageScore)} 分（目標 ${fmt(L.target)}）\n過關獎勵：${ITEM_NAMES[gift]} +1\n\n下一關：第 ${k + 1} 關\n目標 ${fmt(N.target)} 分 · ${N.n} 選 1 · 片段 ${N.clips[0]} 秒 · 限時 ${N.t} 秒`, [
+      { label: '結束', fn: endGame },
+      { label: '進入下一關', primary: true, fn: () => { enterStage(k); nextRound(); } }
+    ]);
+  } else {
+    sfx.no();
+    showModal('未達目標', `第 ${k} 關拿到 ${fmt(G.stageScore)} 分，目標是 ${fmt(L.target)} 分，差 ${fmt(L.target - G.stageScore)} 分。`, [
+      { label: '結束看結果', fn: endGame },
+      { label: '再挑戰這關', primary: true, fn: () => { enterStage(G.stage); nextRound(); } }
+    ]);
+  }
+}
+
+/* ---- HUD ---- */
+function renderHud(pop){
+  if (!G) return;
+  if (G.mode === 'stage'){
+    const L = LEVELS[G.stage];
+    $('#hud-round').textContent = `第 ${G.stage + 1} 關 · 第 ${Math.min(G.stageQ + (R && R.answered ? 0 : 1), STAGE_Q)} / ${STAGE_Q} 首`;
+    $('#hud-lives').innerHTML = `<span class="tgt ${G.stageScore >= L.target ? 'ok' : ''}">本關 ${fmt(G.stageScore)} / ${fmt(L.target)}</span>`;
+  } else if (G.mode === 'survival'){
+    $('#hud-round').textContent = `Lv.${G.level + 1} · 第 ${G.roundNo} 首`;
+    $('#hud-lives').innerHTML = `<span class="hearts${pop === 'hit' ? ' hit' : ''}" aria-label="剩 ${G.lives} 條命">${'❤️'.repeat(Math.max(0, G.lives))}<span class="lost">${'♡'.repeat(Math.max(0, 3 - G.lives))}</span></span>`;
+  } else {
+    $('#hud-round').textContent = `${G.daily ? '每日 · ' : ''}第 ${G.roundNo} / ${G.rounds} 首`;
+    $('#hud-lives').textContent = '';
+  }
+  $('#hud-score').textContent = fmt(G.score);
+  const c = $('#hud-combo');
+  c.textContent = G.combo >= 2 ? `${G.combo} 連擊 · ×${(1 + Math.min(G.combo, 10) * .1).toFixed(1)}` : '';
+  if (pop && G.combo >= 2){ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
+}
+
+/* ---- end ---- */
+function rankFor(){
+  if (G.mode === 'stage'){
+    const c = G.cleared;
+    return c >= 10 ? ['金曲活字典', '10 關全破，耳朵根本是一台點唱機。'] : c >= 7 ? ['KTV 麥霸', `闖過 ${c} 關，前奏一下麥克風就是你的。`] : c >= 4 ? ['點歌達人', `闖過 ${c} 關，熟歌秒答。`] : c >= 1 ? ['偶爾哼兩句', `闖過 ${c} 關，再接再厲。`] : ['多聽點廣播吧', '第一關還差一點，再來一次就過了。'];
+  }
+  if (G.mode === 'survival'){
+    const c = G.correct;
+    return c >= 30 ? ['金曲活字典', '耳朵根本是一台點唱機。'] : c >= 20 ? ['KTV 麥霸', '前奏一下，麥克風就是你的。'] : c >= 12 ? ['點歌達人', '熟歌秒答，冷門的再加油。'] : c >= 6 ? ['偶爾哼兩句', '旋律很熟，歌名卡在嘴邊。'] : ['多聽點廣播吧', '沒關係，再來一局就熟了。'];
+  }
+  const r = G.correct / Math.max(1, G.history.length);
+  return r >= .9 ? ['金曲活字典', '耳朵根本是一台點唱機。'] : r >= .7 ? ['KTV 麥霸', '前奏一下，麥克風就是你的。'] : r >= .5 ? ['點歌達人', '熟歌秒答，冷門的再加油。'] : r >= .3 ? ['偶爾哼兩句', '旋律很熟，歌名卡在嘴邊。'] : ['多聽點廣播吧', '沒關係，再來一局就熟了。'];
+}
+function endGame(){
+  const g = G;
+  g.dead = true;
+  stopPlayback(); stopTimer();
+  g.queue.forEach(q => audioPool.release(q.audio)); g.queue = [];
+  const grid = g.history.map(h => h.emoji).join('');
+  // records
+  let newRec = false;
+  if (g.daily){
+    const k = 'daily_' + g.dateKey;
+    if (!store.get(k, null)) store.set(k, { score: g.score, correct: g.correct, grid });
+  } else {
+    const k = g.mode === 'stage' ? bestKey('stage', '', 0, g.y0, g.y1, g.chorus ? 'chorus' : 'random', 0, g.cats) : bestKey(g.mode, g.diff, g.nopt, g.y0, g.y1, g.chorus ? 'chorus' : 'random', g.tlimit, g.cats);
+    const prev = store.get(k, null);
+    const better = !prev || (g.mode === 'stage' ? (g.cleared > (prev.cleared || 0) || (g.cleared === (prev.cleared || 0) && g.score > prev.score)) : g.mode === 'survival' ? (g.correct > prev.correct || (g.correct === prev.correct && g.score > prev.score)) : g.score > prev.score);
+    if (better && g.history.length){ store.set(k, { score: g.score, correct: g.correct, cleared: g.cleared || 0 }); newRec = !!prev || g.score > 0; }
+    const recent = store.get('recent', []).filter(id => !g.history.some(h => h.song.id === id));
+    store.set('recent', [...g.history.map(h => h.song.id), ...recent].slice(0, 150));
+    store.set('recentArtists', [...g.history.flatMap(h => h.song.artists), ...store.get('recentArtists', [])].slice(0, 40));
+  }
+  const [rank, sub] = rankFor();
+  $('#res-kicker').textContent = g.daily ? `每日挑戰 · ${g.dateKey}` : g.mode === 'stage' ? `闖關模式 · ${g.cleared ? '闖過 ' + g.cleared + ' 關' : '第 ' + (g.stage + 1) + ' 關止步'} · ${g.chorus ? '副歌 · ' : ''}${catLabel(g.cats)}` : `${MODES[g.mode].name} · ${g.chorus ? '副歌 · ' : ''}${g.cfg.name} · ${g.nopt} 選 1 · ${g.tlimit ? g.tlimit + ' 秒' : '不限時'} · ${catLabel(g.cats)} · ${rangeLabel(g.y0, g.y1)}`;
+  $('#res-rank').textContent = rank;
+  $('#res-rank-sub').textContent = sub;
+  $('#res-newrec').innerHTML = newRec ? '<span class="newrec">新紀錄！</span>' : '';
+  $('#res-grid').textContent = grid;
+  const oks = g.history.filter(h => h.ok);
+  const okTimes = g.history.filter(h => h.ok).map(h => h.time);
+  const avgT = okTimes.length ? okTimes.reduce((a, b) => a + b, 0) / okTimes.length : 0;
+  $('#res-stats').innerHTML = [
+    g.mode === 'stage' ? [`${g.cleared}/${LEVELS.length}`, '過關數'] : [g.mode === 'survival' ? g.correct : `${g.correct}/${g.history.length}`, g.mode === 'survival' ? '答對首數' : '答對'],
+    g.mode === 'stage' ? [`${g.correct}/${g.history.length}`, '答對'] : [g.maxCombo, '最高連擊'],
+    [okTimes.length ? avgT.toFixed(1) + 's' : '–', '平均答對秒數']
+  ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join('');
+  $('#btn-share').hidden = false;
+  $('#res-list').innerHTML = g.history.map((h, i) => `
+    <li class="song">
+      ${h.info.thumb ? `<img src="${esc(h.info.thumb)}" alt="" loading="lazy">` : '<span class="noart"></span>'}
+      <div class="info"><b>${esc(h.song.title)}</b><small>${esc(h.song.artist)} · ${h.song.year}${h.info.link ? ` · <a href="${esc(h.info.link)}" target="_blank" rel="noopener">${esc(h.info.src)} ↗</a>` : ''}</small></div>
+      <span class="mark">${h.emoji}</span>
+      <button class="play" data-i="${i}" aria-label="重聽">▶</button>
+    </li>`).join('');
+  show('result');
+  countUp($('#res-score'), g.score);
+}
+function countUp(el, to){
+  const t0 = performance.now(), d = 900;
+  const step = now => { const p = Math.min(1, (now - t0) / d); el.textContent = fmt(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+let resultAudio = null;
+$('#res-list').addEventListener('click', e => {
+  const b = e.target.closest('.play'); if (!b) return;
+  const h = G.history[+b.dataset.i];
+  const wasOn = b.classList.contains('on');
+  $$('#res-list .play').forEach(x => { x.classList.remove('on'); x.textContent = '▶'; });
+  if (wasOn){ stopPlayback(); return; }
+  b.classList.add('on'); b.textContent = '❚❚';
+  const ra = resultAudio || (resultAudio = new Audio());
+  ra.src = h.url;
+  playRange(ra, 0, 30, { onEnd: () => { b.classList.remove('on'); b.textContent = '▶'; }, onError: () => { b.classList.remove('on'); b.textContent = '▶'; toast('試聽載入失敗'); } });
+});
+$('#btn-share').addEventListener('click', async () => {
+  const g = G;
+  const head = g.daily ? `🎵 耳熟能詳 每日挑戰 ${g.dateKey}` : `🎵 耳熟能詳 ${MODES[g.mode].name}（${g.cfg.name}）`;
+  const line = g.mode === 'stage' ? `闖過 ${g.cleared} 關 · ${fmt(g.score)} 分` : g.mode === 'survival' ? `答對 ${g.correct} 首 · ${fmt(g.score)} 分` : `${g.history.map(h => h.emoji).join('')} ${g.correct}/${g.history.length} · ${fmt(g.score)} 分`;
+  const text = `${head}\n${line}\n${rankFor()[0]}`;
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch(e){
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand('copy'); } catch(e2){} ta.remove();
+  }
+  toast(ok ? '已複製，貼給朋友比比看！' : '複製失敗，請手動截圖分享');
+});
+$('#btn-again').addEventListener('click', () => { sfx.init(); audioPool.unlock(); newGame(); });
+$('#btn-home').addEventListener('click', goHome);
+function goHome(){ hideModal(); if (G) G.dead = true; stopPlayback(); stopTimer(); renderHome(); show('home'); }
+
+/* ---- modal ---- */
+function showModal(title, text, actions){
+  pauseTimer();
+  $('#modal-title').textContent = title;
+  $('#modal-text').textContent = text;
+  const box = $('#modal-actions'); box.innerHTML = '';
+  actions.forEach(a => { const b = document.createElement('button'); b.textContent = a.label; if (a.primary) b.className = 'primary'; b.onclick = () => { hideModal(); a.fn && a.fn(); }; box.appendChild(b); });
+  $('#modal').hidden = false;
+}
+function hideModal(){ $('#modal').hidden = true; resumeTimer(); }
+function showNetError(){
+  showModal('暫時連不上音樂資料庫', G && G.audioError ? '連續好幾首試聽都載入失敗，可能是網路不穩。確認網路後按重試。' : 'Apple 和 Deezer 兩個音樂資料庫都連不上。請確認網路，或過 1 分鐘再按重試。', [
+    { label: '回主選單', fn: goHome },
+    { label: '重試', primary: true, fn: () => { G.netError = false; G.audioError = false; G.netFails = 0; G.audioFails = 0; nextRound(true); } }
+  ]);
+}
+
+$('#btn-notchorus').addEventListener('click', () => {
+  const h = G && G.history[G.history.length - 1];
+  if (!h) return;
+  const k = chorusKey(h.song);
+  notChorus[k] = Date.now(); store.set('notChorus', notChorus);
+  chorusMap[k] = { reject: true, ts: Date.now() }; store.set('chorus4', chorusMap);
+  $('#btn-notchorus').textContent = '已記下，之後副歌模式不會再出這首';
+  toast('謝謝回報！');
+});
+
+/* ---- sound diagnostics ---- */
+function diagText(){
+  const a = R && R.audio;
+  const tips = '・iPhone：確認左側靜音開關沒有打開、音量調大\n・有連著藍牙耳機或喇叭嗎？\n・按「播放測試音」：聽得到嗶聲但聽不到歌，請把下面的狀態截圖給我';
+  if (!a) return tips + '\n\n目前還沒載入歌曲。';
+  const rs = ['沒有資料', '只有長度資訊', '有部分資料', '可以播放', '可以順暢播放'][a.readyState] || a.readyState;
+  let host = ''; try { host = new URL(a.src).host; } catch(e){}
+  const err = a.error ? ['', '中止', '網路錯誤', '解碼失敗', '格式不支援'][a.error.code] || a.error.code : '無';
+  return tips + `\n\n音源：${host}\n載入狀態：${rs}\n正在播放：${a.paused ? '否' : '是'}\n播放位置：${a.currentTime.toFixed(1)} 秒 / ${isFinite(a.duration) ? a.duration.toFixed(1) : '?'} 秒\n靜音：${a.muted ? '是' : '否'}　音量：${Math.round(a.volume * 100)}%\n錯誤：${err}\n這首來源：${R.info ? R.info.src : '—'}（${R.verified ? '出題前已確認可播放' : '未能事先確認'}）\n查歌：Apple 成功 ${srcCount.it[0]}・失敗 ${srcCount.it[1]}${Date.now() < srcStat.itDownUntil ? '（暫停使用中）' : ''}；Deezer 成功 ${srcCount.dz[0]}・失敗 ${srcCount.dz[1]}\n本局略過 ${G ? G.skipped : 0} 首無法播放的歌\n副歌偵測：${G && G.chorusOff ? '這個瀏覽器無法分析，本局改用隨機片段' : !G || !G.chorus ? '未開啟' : !R.chorus ? '—' : `副歌在試聽的 ${R.chorus.cs.toFixed(1)}–${R.chorus.ce.toFixed(1)} 秒`}`;
+}
+$('#btn-diag').addEventListener('click', () => {
+  showModal('檢查聲音', diagText(), [
+    { label: '關閉' },
+    { label: '播放測試音', primary: true, fn: () => beep().then(() => toast('有聽到「嗶」嗎？')).catch(() => toast('瀏覽器擋下了聲音播放')) }
+  ]);
+});
+
+/* ---- game input ---- */
+$('#record').addEventListener('click', () => {
+  sfx.init();
+  if (!R){ toast('還在找歌，稍等一下'); return; }
+  if (R.answered){
+    if (player.audio === R.audio && !R.audio.paused){ stopPlayback(); }
+    else playRange(R.audio, R.start, Math.min(R.start + 14, 30), { onProgress: setRing, onEnd: () => setRing(1), onError: () => {} });
+    return;
+  }
+  playClip();
+});
+$('#btn-replay').addEventListener('click', () => playClip());
+$('#btn-extend').addEventListener('click', () => {
+  if (!R || R.answered || R.clipIdx >= R.lens.length - 1) return;
+  R.clipIdx++; R.penalty = Math.min(R.penalty + 1, EXT_MULT.length - 1);
+  updateExtend();
+  playClip();
+});
+$('#options').addEventListener('click', e => { const b = e.target.closest('.opt'); if (b) answer(+b.dataset.i, true); });
+$('#items').addEventListener('click', e => { const b = e.target.closest('.item'); if (b && !b.disabled) useItem(b.dataset.item); });
+$('#btn-next').addEventListener('click', () => {
+  if (G.mode === 'stage' && G.stageQ >= STAGE_Q){ stopPlayback(); return stageEnd(); }
+  const last = (G.mode === 'survival' && G.lives <= 0) || (G.mode !== 'survival' && G.roundNo >= G.rounds);
+  if (last) endGame(); else nextRound();
+});
+$('#btn-quit').addEventListener('click', () => {
+  showModal('要離開這局嗎？', '目前的進度和分數不會保留。', [
+    { label: '繼續玩' },
+    { label: G && G.history.length ? '結算這局' : '離開', primary: true, fn: () => { if (G && G.history.length) endGame(); else goHome(); } }
+  ]);
+});
+document.addEventListener('keydown', e => {
+  if (!$('#modal').hidden || !$('#game').classList.contains('active') || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === ' '){ e.preventDefault(); $('#record').click(); }
+  else if (/^[1-9]$/.test(e.key)){ const b = $(`#options .opt[data-i="${+e.key - 1}"]`); if (b && !b.classList.contains('removed')) b.click(); }
+  else if (e.key === 'e' || e.key === 'E'){ $('#btn-extend').click(); }
+  else if (e.key === 'Enter' && !$('#btn-next').hidden){ e.preventDefault(); $('#btn-next').click(); }
+});
+
+if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, poolFor, recentArtistPenalty };   // test hook
+renderHome();
+})();
+</script>
+</body>
+</html>
