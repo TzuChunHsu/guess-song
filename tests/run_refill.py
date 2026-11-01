@@ -1,6 +1,6 @@
 """Survival/stage with only a few playable songs: the game must keep going (repeats allowed) and never freeze."""
 import sys, re, time
-exec(open("/home/claude/testkit/harness12.py", encoding="utf-8").read())
+exec(open(__import__("os").path.join(__import__("os").path.dirname(__import__("os").path.abspath(__file__)), "harness12.py"), encoding="utf-8").read())
 jp = [x for x in bank if x["cat"] == "ot"]; OK = {x["id"] for x in jp[:12]}
 def apple2(r):
     q = urllib.parse.parse_qs(urllib.parse.urlparse(r.request.url).query); b_ = find(q["term"][0]); res = []

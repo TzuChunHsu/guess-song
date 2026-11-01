@@ -159,6 +159,9 @@ def main(template, bank_path, out):
     html = html.replace("/*__ALIASES__*/", json.dumps(aliases, ensure_ascii=False))
     chorus = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "chorus.js"), encoding="utf-8").read()
     html = html.replace("/*__CHORUS__*/", chorus)
+    battle = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "battle.js"), encoding="utf-8").read()
+    assert html.count("/*__BATTLE__*/") == 1
+    html = html.replace("/*__BATTLE__*/", battle)
     assert "/*__" not in html
     open(out, "w", encoding="utf-8").write(html)
     print(f"{len(rows)} songs, {len(artists)} artists, {len(t2s)} char maps -> {out} ({len(html)//1024} KB)")

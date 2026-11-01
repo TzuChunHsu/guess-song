@@ -1,35 +1,95 @@
 # 耳熟能詳 · 猜歌王
 
-聽一小段歌，猜出歌名。收錄 1337 首華語、台語、粵語、西洋、韓語、日語和其他語言的熱門歌曲。
+聽一小段歌，猜出歌名。收錄 1337 首華語、台語、粵語、西洋、韓語、日語和其他語言的熱門歌曲，可以一個人玩，也能開房間跟朋友連線對戰。
 
 **線上玩：https://tzuchunhsu.github.io/guess-song/**
 
-- 模式：經典十題、生存模式、闖關模式、每日挑戰
-- 可調整年代、語言類別、選項數、作答時間和難度
-- 音源：Apple iTunes 試聽片段，連不上時自動改用 Deezer
+## 模式
+
+| 模式 | 玩法 |
+| --- | --- |
+| 經典十題 | 10 首歌，拚速度、拚連擊 |
+| 生存模式 | 3 條命，答錯扣一條；越往後片段越短 |
+| 每日挑戰 | 每天所有人同一組 5 首，第一次的成績可以上**今日排行榜** |
+| 闖關模式 | 10 關，每關分數達標才能進下一關 |
+| 好友對戰 | 開房間，朋友用房號、房間名稱或邀請連結加入，大家同時聽同一首搶答 |
+
+## 好友對戰規則
+
+規則參考 Kahoot 的速度計分和連對加分，以及音樂猜歌遊戲常見的「最快答對」獎勵：
+
+- 房主開房（可以取房間名稱），朋友輸入**暱稱**加上 4 碼房號或房間名稱加入；暱稱重複會自動加編號。
+- 房主選難度和題數（5／10／15／20 首），類別、年代、隨機片段或只出副歌沿用房主首頁的設定。
+- 倒數 3 秒後，所有人**同時**播同一段，每首只能選一次；選完先不揭曉，等這首結束才一起公布答案和分數（旁邊的人偷看不到）。
+- 答對 **500–1000 分**，越快越多；「聽長一點」分數打折（×0.6、×0.35）。
+- **連續答對**：第 2 首起每首 +100，最多 +300。
+- 每首**最快答對**的人 +200。
+- **最後一首分數加倍**。
+- 同分時答對首數多的人贏，再同分比答對花的總時間。
+
+| 難度 | 片段 | 選項 | 限時 | 同歌手陷阱 | 答錯 |
+| --- | --- | --- | --- | --- | --- |
+| 輕鬆 | 5 秒 | 4 選 1 | 20 秒 | 沒有 | 0 分 |
+| 普通 | 3 秒 | 6 選 1 | 15 秒 | 1 首 | 0 分 |
+| 地獄 | 1.5 秒 | 9 選 1 | 10 秒 | 一半 | 倒扣 200 |
+
+斷線處理：手機睡著或網路中斷會自動重連；重新整理頁面後按「加入」回到房間，分數保留；房主斷線 20 秒，房間裡最早加入的人自動接手；網路擋住即時串流時改成每秒查詢。
+
+## 線上資料庫（Firebase Realtime Database）
+
+對戰和排行榜用免費的 Firebase Realtime Database，網址寫在 `src/battle.js` 的 `FB_DEFAULT`。資料庫的「規則」要設成：
+
+```json
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": "$code.matches(/^[A-Z2-9]{4}$/)",
+        ".write": "$code.matches(/^[A-Z2-9]{4}$/)"
+      }
+    },
+    "board": {
+      ".read": true,
+      "$id": {
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['n','s','ts']) && newData.child('n').isString() && newData.child('n').val().length <= 20 && newData.child('s').isNumber()"
+      }
+    }
+  }
+}
+```
+
+規則沒設好時，遊戲的好友對戰頁面會直接提示。
 
 ## 檔案
 
 | 路徑 | 內容 |
 | --- | --- |
-| `index.html` | 遊戲本體（單一檔案，GitHub Pages 直接提供這個檔案） |
-| `src/template.html` | 遊戲程式和畫面 |
+| `index.html` | 遊戲本體（單一檔案，GitHub Pages 直接提供） |
+| `og.png`、`icon-*.png`、`apple-touch-icon.png`、`manifest.webmanifest` | 分享預覽圖、圖示、加到主畫面用 |
+| `src/template.html` | 遊戲畫面和單人模式程式 |
+| `src/battle.js` | 好友對戰、每日排行榜（Firebase REST API + 即時串流） |
 | `src/bank.txt` | 題庫，一行一首：`歌名(/別名)\|歌手(、合唱)\|年份`，用 `@zh` `@tw` `@yue` `@en` `@kr` `@jp` `@ot` 分類 |
-| `src/build.py` | 把題庫、簡繁對照、歌手別名、副歌時間（`src/chorus.js`）放進模板 |
-| `tests/` | Playwright 自動測試（模擬 Apple / Deezer 回應，不需要網路） |
+| `src/build.py` | 把題庫、簡繁對照、歌手別名、副歌時間、對戰程式組成 `index.html` |
+| `src/make_assets.py` | 產生分享預覽圖和圖示 |
+| `tests/` | Playwright 自動測試；`fake_firebase.py` 是模擬 Firebase 的本機伺服器 |
 
-## 更新題庫或程式
+## 更新
 
 ```bash
 cd src
 python3 build.py template.html bank.txt ../index.html
+python3 make_assets.py ..        # 只有改圖示或預覽圖時需要
 ```
 
 ## 測試
 
 ```bash
 pip install playwright && playwright install chromium
-python3 tests/run_v12.py index.html src/bank.txt   # 完整檢查：按鈕、模式、計分、生存、闖關、每日挑戰
-python3 tests/run_rand.py index.html src/bank.txt  # 出題隨機性與歌手分散
-python3 tests/run_v6.py index.html src/bank.txt    # Apple / Deezer 連不上時的備援
+python3 tests/run_v12.py index.html src/bank.txt            # 單人模式完整檢查
+python3 tests/run_battle.py index.html src/bank.txt         # 三人連線對戰（含斷線、中途加入、房主接手）
+python3 tests/run_battle_chorus.py index.html src/bank.txt  # 副歌模式對戰；加 --no-stream 測輪詢備援
+python3 tests/run_board.py index.html src/bank.txt          # 每日挑戰排行榜
+python3 tests/run_rand.py index.html src/bank.txt           # 出題隨機性與歌手分散
+python3 tests/run_v6.py index.html src/bank.txt             # Apple / Deezer 連不上時的備援
 ```

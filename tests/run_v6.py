@@ -1,5 +1,5 @@
 import json, re, sys, time, urllib.parse, pathlib
-sys.path.insert(0, "/home/claude/songgame")
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "src"))
 from build import ALIASES
 from playwright.sync_api import sync_playwright
 GAME = pathlib.Path(sys.argv[1]).resolve(); KIT = pathlib.Path(__file__).parent

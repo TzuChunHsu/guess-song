@@ -1,6 +1,6 @@
 """Full audit: every home/game/result control, keyboard shortcuts, timer, items, scoring, modes, singer variety in real play."""
 import sys, re, json, time
-exec(open("/home/claude/testkit/harness12.py", encoding="utf-8").read())
+exec(open(__import__("os").path.join(__import__("os").path.dirname(__import__("os").path.abspath(__file__)), "harness12.py"), encoding="utf-8").read())
 results = []
 def check(name, cond, info=""):
     results.append((name, bool(cond), info)); print(("PASS " if cond else "FAIL ") + name + (f"  [{info}]" if info else ""))
@@ -196,7 +196,7 @@ with sync_playwright() as p:
     play(pg); pick(pg, False); pg.wait_for_timeout(500)
     check("survival: wrong answer costs a life (2 red + 1 empty heart)", lives() == 2 and pg.inner_text("#hud-lives").count("♡") == 1, pg.inner_text("#hud-lives"))
     check("survival: life-lost message", "少一條命" in pg.inner_text("#toast"), pg.inner_text("#toast"))
-    pg.screenshot(path="/home/claude/testkit/shots/v12-survival-hearts.png", clip={"x": 0, "y": 0, "width": 390, "height": 120})
+    pg.screenshot(path=str(pathlib.Path(__file__).resolve().parent / "shots") + "/v12-survival-hearts.png", clip={"x": 0, "y": 0, "width": 390, "height": 120})
     for i in range(5): pg.click("#btn-next"); play(pg); pick(pg, True)
     check("survival: level up after 5 correct", "Lv.2" in pg.inner_text("#hud-round"), pg.inner_text("#hud-round"))
     pg.click("#btn-next"); play(pg); pg.wait_for_selector("#btn-next:not([hidden])", timeout=30000)

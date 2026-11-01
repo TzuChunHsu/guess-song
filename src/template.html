@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14100d">
 <title>耳熟能詳 · 華語金曲猜歌王</title>
+<meta name="description" content="聽一小段旋律，猜出是哪首歌。1337 首華語、台語、粵語、西洋、日韓熱門金曲，可以開房間跟朋友即時對戰。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="耳熟能詳">
+<meta property="og:title" content="耳熟能詳 · 猜歌王｜好友連線對戰">
+<meta property="og:description" content="聽一小段旋律，猜出是哪首歌。開房間把房號傳給朋友，大家同時聽同一首歌搶答！">
+<meta property="og:url" content="https://tzuchunhsu.github.io/guess-song/">
+<meta property="og:image" content="https://tzuchunhsu.github.io/guess-song/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%23191512'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23ff5a3c'/%3E%3Ccircle cx='32' cy='32' r='2.5' fill='%23191512'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="耳熟能詳">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
@@ -134,6 +148,41 @@ a{color:inherit}
   box-shadow:0 10px 30px rgba(255,90,60,.35);transition:transform .1s,filter .2s}
 .start:active{transform:scale(.98)}
 .start.ghost{background:transparent;color:var(--cream);border:1px solid var(--line2);box-shadow:none;margin-top:10px}
+/* ---- 好友對戰 ---- */
+.mp-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:12px}
+.mp-field{display:grid;gap:6px;font-size:12px;letter-spacing:.12em;color:var(--dim);font-weight:700}
+.mp-box input{font:inherit;font-size:16px;font-weight:500;letter-spacing:normal;color:var(--cream);background:var(--bg);border:1px solid var(--line2);border-radius:12px;padding:11px 12px;width:100%;outline:0;-webkit-appearance:none;appearance:none}
+.mp-box input:focus{border-color:var(--gold)}
+.mp-join{display:flex;gap:8px}
+.mp-box #mp-code{flex:1;min-width:0;font-weight:900;text-align:center;letter-spacing:.08em}
+.mp-box #mp-code::placeholder{font-weight:500;letter-spacing:normal}
+.mp-sub{font-size:12px;letter-spacing:.12em;color:var(--dim);font-weight:700;margin:2px 0 -4px}
+.lb-name{color:var(--cream);font-weight:700;font-size:14.5px;margin:0 0 6px}
+.rules{margin:0;padding:12px 14px 12px 32px;background:var(--card);border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:13.5px;line-height:1.75}
+.rules b{color:var(--cream)}
+#lb-diff button:disabled,#lb-rounds button:disabled{cursor:default}
+#lb-diff button:disabled:not(.on),#lb-rounds button:disabled:not(.on){opacity:.4}
+#mp-join{flex:none;padding:0 18px;border-radius:12px;background:var(--gold);color:var(--bg);font-weight:900}
+#mp-join:disabled{opacity:.4}
+.mp-hint{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.room-code{font-family:var(--serif);font-weight:900;font-size:clamp(58px,20vw,86px);letter-spacing:.16em;color:var(--gold);line-height:1.05;margin:10px 0 2px;padding-left:.16em;font-variant-numeric:tabular-nums}
+.players,.mpboard{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.pl{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px}
+.pl.me{border-color:rgba(242,193,78,.55);background:linear-gradient(100deg,rgba(242,193,78,.10),rgba(242,193,78,.02))}
+.pl.off{opacity:.45}
+.pl-rank{width:28px;flex:none;text-align:center;font-family:var(--serif);font-weight:900;font-size:16px;color:var(--muted)}
+.pl-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.pl-name small{color:var(--gold);font-weight:700;font-size:11.5px;margin-left:6px}
+.pl-round{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.pl-round.ok{color:var(--green)}.pl-round.no{color:var(--red)}
+.pl-total{font-family:var(--serif);font-weight:900;font-size:17px;min-width:56px;text-align:right;font-variant-numeric:tabular-nums}
+.mpboard{margin:14px 0 0}
+.mpboard .mp-head{font-size:12px;letter-spacing:.16em;color:var(--dim);font-weight:700;text-align:center;padding:2px 0}
+.mpboard.final .pl-rank{font-size:20px}
+.mp-net{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:50%;transform:translateX(-50%);z-index:45;background:var(--red);color:#1a0d08;font-weight:700;font-size:13px;padding:7px 14px;border-radius:99px;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+#lobby .result-head{padding-top:18px}
+.lb-actions{display:grid;gap:0}
+.seg.seg4{grid-template-columns:repeat(4,1fr)}
 .howto{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 16px}
 .howto summary{cursor:pointer;padding:12px 0;font-weight:700;list-style:none}
 .howto summary::-webkit-details-marker{display:none}
@@ -229,6 +278,8 @@ a{color:inherit}
 .opt.correct .t{color:var(--green)}
 .opt.wrong{background:rgba(255,90,60,.14);border-color:var(--red)}
 .opt.dim{opacity:.4}
+.opt.picked{border-color:var(--gold);background:rgba(242,193,78,.12)}
+.opt.picked .t{color:var(--gold)}
 .options.done{pointer-events:none}
 .items{display:flex;gap:8px;margin-top:12px}
 .item{flex:1;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid var(--line);padding:8px 6px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--cream)}
@@ -316,6 +367,27 @@ a{color:inherit}
       <span class="mode-body"><b>闖關模式</b><small>10 關，每關達到目標分數才能進下一關</small></span>
       <span class="mode-best" id="best-stage"></span>
     </button>
+    <button class="mode" role="radio" data-mode="battle" aria-checked="false">
+      <span class="mode-no">05</span>
+      <span class="mode-body"><b>好友對戰</b><small>開房間給朋友房號，同一首歌一起搶答</small></span>
+      <span class="mode-best" id="best-battle"></span>
+    </button>
+  </div>
+
+  <div id="battle-wrap" hidden>
+    <h2 class="sec">好友對戰</h2>
+    <div class="mp-box">
+      <label class="mp-field"><span>你的暱稱（必填）</span><input id="mp-name" maxlength="12" autocomplete="nickname" enterkeyhint="done" placeholder="朋友會看到這個名字"></label>
+      <div class="mp-sub">加入朋友的房間</div>
+      <div class="mp-join">
+        <input id="mp-code" maxlength="16" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" placeholder="4 碼房號或房間名稱" aria-label="房號或房間名稱">
+        <button id="mp-join">加入</button>
+      </div>
+      <div class="mp-sub">自己開房間</div>
+      <label class="mp-field"><input id="mp-room" maxlength="16" autocomplete="off" enterkeyhint="done" placeholder="房間名稱（選填，例如：阿明的歌房）" aria-label="房間名稱"></label>
+      <p class="mp-hint" id="mp-hint">取了名稱，朋友輸入名稱就能進來；不取也會拿到 4 碼房號。在下面選好類別和年代，按「建立房間」，難度和題數進房間再選。</p>
+    </div>
+    <p class="daily-note" id="mp-off" hidden>好友對戰需要先設定線上資料庫，目前這個網站還沒設定好。</p>
   </div>
 
   <div id="opts-wrap">
@@ -365,7 +437,8 @@ a{color:inherit}
       <div class="chips" id="yr-presets"></div>
     </div>
   </div>
-  <p class="daily-note" id="daily-note" hidden>每日挑戰固定華語歌、「普通」難度、9 選 1、20 秒、全年代、隨機片段。今天每個人聽到的是同一組 5 首歌，片段位置也一樣。</p>
+  <p class="daily-note" id="daily-note" hidden>每日挑戰固定華語歌、「普通」難度、9 選 1、20 秒、全年代、隨機片段。今天每個人聽到的是同一組 5 首歌，片段位置也一樣，每天第一次的成績可以上排行榜。</p>
+  <ol class="mpboard" id="home-daily-board" hidden></ol>
 
   <button class="start" id="btn-start">開始遊戲</button>
 
@@ -381,6 +454,7 @@ a{color:inherit}
       <li>可以複選<b>題目類別</b>（華語、台語、粵語、西洋、韓語、日語、其他語言），自訂<b>年代範圍</b>和<b>選項數量</b>（4／6／9 個，選項越多分數越高）。</li>
       <li><b>闖關模式</b>：共 10 關，每關 5 首，本關分數達到目標才能進下一關；越後面片段越短、選項越多、時間越緊。過過的關卡可以直接選來挑戰。</li>
       <li><b>生存模式</b>：答錯扣一條命；每答對 5 首升一級，片段變短；每答對 10 首回一條命。</li>
+      <li><b>好友對戰</b>：一人建立房間，把 4 碼房號或邀請連結傳給朋友。房主按開始後，大家同時倒數、同時播同一首歌，答對越快分數越高，每題結束會顯示所有人的分數，最後排出名次。</li>
       <li>每次的歌單、片段位置、干擾選項都是隨機的，最近玩過的歌會排到後面。</li>
     </ul>
   </details>
@@ -425,6 +499,7 @@ a{color:inherit}
     <button class="ctl ctl-ext" id="btn-extend" disabled><b>＋ 聽長一點</b><small id="ext-sub"></small></button>
   </div>
   <div class="options locked" id="options"></div>
+  <ol class="mpboard" id="mp-board" hidden></ol>
   <div class="items" id="items">
     <button class="item" data-item="cut">✂ 刪去一半 <b>1</b></button>
     <button class="item" data-item="free">⏩ 免費延長 <b>1</b></button>
@@ -433,6 +508,51 @@ a{color:inherit}
   <button class="start next" id="btn-next" hidden>下一首 →</button>
   <div class="kbd-hint">空白鍵 播放 · 1–9 選答案 · E 聽長一點 · Enter 下一首</div>
   <p class="foot"><button class="link" id="btn-diag">沒聲音？點這裡檢查</button></p>
+</section>
+
+<!-- ================= LOBBY (好友對戰) ================= -->
+<section id="lobby" class="screen" aria-label="對戰房間">
+  <div class="result-head">
+    <div class="kicker">好友對戰 · 房號</div>
+    <div class="room-code" id="lb-code">----</div>
+    <p class="rank-sub">把房號或邀請連結傳給朋友，大家進來後由房主按開始。</p>
+    <p class="lb-name" id="lb-name" hidden></p>
+    <button class="start ghost share" id="lb-share">邀請朋友（複製連結）</button>
+  </div>
+  <h2 class="sec" id="lb-count">玩家</h2>
+  <ul class="players" id="lb-players"></ul>
+  <h2 class="sec">題目</h2>
+  <p class="daily-note" id="lb-cfg" style="margin-top:0"></p>
+  <h2 class="sec">難度 · 房主決定</h2>
+  <div class="seg" id="lb-diff">
+    <button data-d="easy"><b>輕鬆</b><small>5 秒 · 4 選 1</small></button>
+    <button data-d="normal"><b>普通</b><small>3 秒 · 6 選 1</small></button>
+    <button data-d="hard"><b>地獄</b><small>1.5 秒 · 9 選 1</small></button>
+  </div>
+  <p class="mp-hint" id="lb-diff-note" style="margin:8px 2px 0"></p>
+  <h2 class="sec">題數 · 房主決定</h2>
+  <div class="seg seg4" id="lb-rounds">
+    <button data-r="5"><b>5</b><small>首</small></button>
+    <button data-r="10"><b>10</b><small>首</small></button>
+    <button data-r="15"><b>15</b><small>首</small></button>
+    <button data-r="20"><b>20</b><small>首</small></button>
+  </div>
+  <h2 class="sec">對戰規則</h2>
+  <ul class="rules">
+    <li>倒數結束後，<b>大家同時聽同一段</b>，選出歌名，每首只能選一次。</li>
+    <li>答對拿 <b>500–1000 分</b>，越快越多；按「聽長一點」分數會打折（×0.6、×0.35）。</li>
+    <li><b>連續答對</b>：第 2 首起每首再加 100，最多加 300；答錯或沒答就歸零。</li>
+    <li>每首<b>最快答對</b>的人再加 <b>200</b> 搶答獎勵。</li>
+    <li><b>最後一首分數加倍</b>，落後也有機會逆轉。</li>
+    <li id="lb-rules-wrong"><b>地獄難度答錯倒扣 200</b>，沒把握可以不答（時間到不扣分）。</li>
+    <li>同分時，答對首數多的人贏；再同分，答對花的總時間短的人贏。</li>
+  </ul>
+  <div id="lb-host">
+    <button class="start" id="lb-start">開始對戰</button>
+    <button class="start ghost" id="lb-edit">改類別、年代、片段</button>
+  </div>
+  <p class="daily-note" id="lb-wait" hidden>等房主按開始…</p>
+  <button class="start ghost" id="lb-leave">離開房間</button>
 </section>
 
 <!-- ================= RESULT ================= -->
@@ -447,6 +567,19 @@ a{color:inherit}
     <div class="stats" id="res-stats"></div>
     <button class="start ghost share" id="btn-share" hidden>複製成績分享</button>
   </div>
+  <div id="res-board-wrap" hidden>
+    <h2 class="sec">最終排名</h2>
+    <ol class="mpboard final" id="res-board"></ol>
+  </div>
+  <div id="daily-board-wrap" hidden>
+    <h2 class="sec">每日挑戰排行榜</h2>
+    <div class="mp-box" id="daily-submit">
+      <p class="mp-hint" id="daily-first" hidden>排行榜只收今天第一次的成績（每個人聽到的歌都一樣，才公平）。</p>
+      <label class="mp-field"><span>上榜暱稱</span><input id="daily-name" maxlength="12" autocomplete="nickname" enterkeyhint="done" placeholder="排行榜上顯示的名字"></label>
+      <button class="start" id="btn-daily-submit" style="margin-top:0">把今天的成績放上排行榜</button>
+    </div>
+    <ol class="mpboard final" id="daily-board"></ol>
+  </div>
   <h2 class="sec">這局的歌 · 點 ▶ 重聽</h2>
   <ul class="songlist" id="res-list"></ul>
   <button class="start" id="btn-again">再玩一局</button>
@@ -456,6 +589,7 @@ a{color:inherit}
 
 <div class="modal" id="modal" hidden><div class="modal-card" role="dialog" aria-modal="true"><h3 id="modal-title"></h3><p id="modal-text"></p><div class="modal-actions" id="modal-actions"></div></div></div>
 <div id="toast" aria-live="polite"></div>
+<div class="mp-net" id="mp-net" hidden>連線中斷，重新連線中…</div>
 
 <script>
 (() => {
@@ -852,7 +986,7 @@ const DIFF = {
   hard:   { name: '地獄', clips: [1.5, 3, 6],  mult: 1.3 },
 };
 const EXT_MULT = [1, .6, .35];
-const MODES = { classic: { name: '經典十題', rounds: 10 }, survival: { name: '生存模式', rounds: Infinity }, daily: { name: '每日挑戰', rounds: 5 }, stage: { name: '闖關模式', rounds: Infinity } };
+const MODES = { classic: { name: '經典十題', rounds: 10 }, survival: { name: '生存模式', rounds: Infinity }, daily: { name: '每日挑戰', rounds: 5 }, stage: { name: '闖關模式', rounds: Infinity }, battle: { name: '好友對戰', rounds: 10 } };
 /* Stage mode: 5 songs a level; the level score must reach the target to go on. */
 const STAGE_Q = 5;
 const LEVELS = [
@@ -894,6 +1028,7 @@ if (!settings.cats.length) settings.cats = ['zh'];
   settings.y0 = Math.max(MINY, Math.min(+settings.y0 || MINY, MAXY));
   settings.y1 = Math.max(settings.y0, Math.min(+settings.y1 || MAXY, MAXY));
   settings.ySeen = [MINY, MAXY]; }
+if (!MODES[settings.mode]) settings.mode = 'classic';
 if (!TIME_OPTS.includes(+settings.tlimit)) settings.tlimit = 20;
 settings.tlimit = +settings.tlimit;
 if (settings.clip !== 'chorus') settings.clip = 'random';
@@ -928,7 +1063,9 @@ function renderHome(){
   // stage panel
   const stage = settings.mode === 'stage';
   $('#stage-wrap').hidden = !stage;
-  $('#grp-free').hidden = stage;
+  $('#grp-free').hidden = stage || settings.mode === 'battle';
+  if (settings.mode === 'battle') mpCheckDb();
+  dailyHome();
   if (stage){
     const top = Math.min(stageMax, LEVELS.length);
     if (settings.stageStart > top) settings.stageStart = top;
@@ -940,7 +1077,12 @@ function renderHome(){
   $('#best-classic').textContent = bc ? '最佳 ' + fmt(bc.score) : '';
   $('#best-survival').textContent = bs ? '最佳 ' + bs.correct + ' 首' : '';
   $('#best-daily').textContent = dd ? '今日 ' + dd.correct + '/5 ✓' : '今天還沒玩';
-  $('#btn-start').textContent = '開始 · ' + MODES[settings.mode].name;
+  const battle = settings.mode === 'battle';
+  $('#battle-wrap').hidden = !battle;
+  $('#mp-off').hidden = !battle || !!FB;
+  $('#mp-join').disabled = !FB;
+  $('#best-battle').textContent = mp.code ? '房號 ' + mp.code : '';
+  $('#btn-start').textContent = battle ? mpStartLabel() : '開始 · ' + MODES[settings.mode].name;
   $('#btn-sfx').textContent = '音效：' + (sfx.on ? '開' : '關');
   renderRange();
 }
@@ -962,7 +1104,8 @@ function renderRange(){
   c.textContent = n >= MIN_POOL ? `共 ${n} 首` : `只有 ${n} 首，至少要 ${MIN_POOL} 首`;
   c.classList.toggle('warn', n < MIN_POOL);
   $$('#yr-presets button').forEach(b => b.classList.toggle('on', +b.dataset.a === settings.y0 && +b.dataset.b === settings.y1));
-  $('#btn-start').disabled = settings.mode !== 'daily' && n < MIN_POOL;
+  const inRoom = settings.mode === 'battle' && !!mp.code;
+  $('#btn-start').disabled = !inRoom && ((settings.mode !== 'daily' && n < MIN_POOL) || (settings.mode === 'battle' && !FB));
 }
 function onRange(which){
   let a = +yrA.value, b = +yrB.value;
@@ -989,7 +1132,7 @@ function saveSettings(){ store.set('settings', settings); renderHome(); }
 $$('.mode').forEach(b => b.addEventListener('click', () => { settings.mode = b.dataset.mode; saveSettings(); }));
 $('#seg-diff').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ settings.diff = b.dataset.diff; saveSettings(); } });
 $('#btn-sfx').addEventListener('click', () => { sfx.on = !sfx.on; store.set('sfx', sfx.on); renderHome(); });
-$('#btn-start').addEventListener('click', () => { sfx.init(); audioPool.unlock(); newGame(); });
+$('#btn-start').addEventListener('click', () => { sfx.init(); audioPool.unlock(); if (settings.mode === 'battle') mpStartButton(); else newGame(); });
 $('#btn-beep').addEventListener('click', () => {
   beep().then(() => toast('有聽到「嗶」一聲嗎？沒有的話請檢查靜音開關和音量'))
         .catch(() => toast('這個瀏覽器擋下了聲音播放，請換 Safari 或 Chrome'));
@@ -1297,7 +1440,7 @@ function playClip(){
     onStart: (from) => {
       R.start = from;
       $('#status-text').textContent = `播放中 · ${len} 秒${R.chorus ? '（副歌）' : ''}`;
-      if (!R.played){ R.played = true; startTimer(); $('#options').classList.remove('locked'); }
+      if (!R.played){ R.played = true; if (G.mode === 'battle') R.limit = mpLimit(); startTimer(); $('#options').classList.remove('locked'); }
     },
     onProgress: setRing,
     onSlow: () => { if (R && !R.answered) $('#status-text').textContent = '音樂載入較慢…等一下，或按「換一首」'; },
@@ -1339,7 +1482,7 @@ function elapsedSec(){ return R && R.t0 ? ((R.pausedAt || performance.now()) - R
 function tickTimer(){
   if (!R || R.answered || !R.t0) return stopTimer();
   if (R.pausedAt) return;
-  const el = elapsedSec(), lim = G.tlimit;
+  const el = elapsedSec(), lim = R.limit || G.tlimit;
   if (lim){
     const left = Math.max(0, lim - el);
     setTimerBar(left / lim);
@@ -1366,7 +1509,7 @@ function resetClock(){
 /* ---- answering ---- */
 function answer(idx, viaClick){
   if (!R || R.answered || !R.played) return;
-  const elapsed = Math.min(G.tlimit || 1e9, elapsedSec());
+  const elapsed = Math.min(R.limit || G.tlimit || 1e9, elapsedSec());
   R.answered = true;
   stopTimer();
   const chosen = idx == null ? null : R.options[idx];
@@ -1377,24 +1520,39 @@ function answer(idx, viaClick){
     const base = 300 + 700 * Math.max(0, 1 - elapsed / T);
     const comboMult = 1 + Math.min(G.combo, 10) * .1;
     const evMult = R.event ? EVENTS[R.event].mult : 1;
-    pts = Math.round(base * EXT_MULT[R.penalty] * comboMult * evMult * G.cfg.mult * (OPT_MULT[G.nopt] || 1) / 10) * 10;
+    pts = G.mode === 'battle' ? mpScore(elapsed) : Math.round(base * EXT_MULT[R.penalty] * comboMult * evMult * G.cfg.mult * (OPT_MULT[G.nopt] || 1) / 10) * 10;
     G.score += pts; G.combo++; G.correct++;
     if (G.mode === 'stage') G.stageScore += pts;
     G.maxCombo = Math.max(G.maxCombo, G.combo);
-    sfx.ok();
+    if (G.mode !== 'battle') sfx.ok();
     if (R.event === 'chest'){ gotItem = randomItem(); }
   } else {
     G.combo = 0;
+    if (G.mode === 'battle' && idx != null && G.mpWrong){ pts = -Math.min(G.mpWrong, G.score); G.score += pts; }   // hard mode: a wrong guess costs points
     if (G.mode === 'survival'){ G.lives--; setTimeout(() => toast(G.lives > 0 ? `💔 少一條命，剩 ${G.lives} 條` : '💔 沒命了，遊戲結束'), 300); }
-    sfx.no();
-    $('#game').classList.remove('shake'); void $('#game').offsetWidth; $('#game').classList.add('shake');
+    if (G.mode !== 'battle') answerFx(false);
   }
   if (G.mode === 'stage') G.stageQ++;
   const emoji = ok ? (R.penalty === 0 && !R.usedFree ? '🟩' : '🟨') : (idx == null ? '⬛' : '🟥');
   G.history.push({ song: R.song, info: R.info, url: R.url || R.audio.src, ok, pts, emoji, picked: chosen, chorus: R.chorus, time: elapsed });
-
+  if (G.mode === 'battle'){
+    mpSubmit(R.mpOver ? { k: -1, t: 0, p: 0 } : { k: chosen ? chosen.id : -1, t: Math.round(elapsed * 100) / 100, p: pts });
+    // battle: the pick is locked in quietly and everyone sees the answer when the song ends,
+    // so a neighbour can't read it off your screen (or hear the song play on)
+    if (!R.mpOver){ R.mpPending = { idx, ok, pts, elapsed }; mpLockIn(idx, elapsed); return; }
+  }
+  revealAnswer(idx, ok, pts, elapsed, viaClick, gotItem);
+}
+function answerFx(ok){
+  if (ok){ sfx.ok(); return; }
+  sfx.no();
+  $('#game').classList.remove('shake'); void $('#game').offsetWidth; $('#game').classList.add('shake');
+}
+function revealAnswer(idx, ok, pts, elapsed, viaClick, gotItem){
+  if (G.mode === 'battle') answerFx(ok);
   // reveal UI
   $$('#options .opt').forEach((b, i) => {
+    b.classList.remove('picked', 'dim');
     const s = R.options[i];
     if (s.id === R.song.id) b.classList.add('correct');
     else if (i === idx) b.classList.add('wrong');
@@ -1406,7 +1564,7 @@ function answer(idx, viaClick){
   $('#items').hidden = true;
   const v = $('#rv-verdict');
   v.className = 'rv-verdict ' + (ok ? 'ok' : 'no');
-  v.textContent = ok ? `答對了！${elapsed.toFixed(1)} 秒${G.combo >= 3 ? ` · ${G.combo} 連擊` : ''}` : (idx == null ? '時間到' : `答錯了 · ${elapsed.toFixed(1)} 秒`);
+  v.textContent = ok ? `答對了！${elapsed.toFixed(1)} 秒${G.mode === 'battle' ? ` · +${fmt(pts)}` : ''}${G.combo >= 3 ? ` · ${G.combo} 連擊` : ''}` : (idx == null ? '時間到' : `答錯了 · ${elapsed.toFixed(1)} 秒${pts < 0 ? ` · 倒扣 ${fmt(-pts)}` : ''}`);
   $('#rv-title').textContent = '《' + R.song.title + '》';
   $('#rv-meta').innerHTML = `${esc(R.song.artist)} · ${R.song.year}` + (R.info.link ? `<a href="${esc(R.info.link)}" target="_blank" rel="noopener">${esc(R.info.src)} 聽完整版 ↗</a>` : '');
   $('#reveal').hidden = false;
@@ -1426,10 +1584,13 @@ function answer(idx, viaClick){
   if (gotItem){ setTimeout(() => { sfx.item(); toast(`🎁 寶箱打開：${ITEM_NAMES[gotItem]} +1`); }, 700); }
   renderHud(!ok && G.mode === 'survival' ? 'hit' : true);
 
-  const last = (G.mode === 'survival' && G.lives <= 0) || (G.mode !== 'survival' && G.roundNo >= G.rounds);
-  const nb = $('#btn-next');
-  nb.textContent = G.mode === 'stage' && G.stageQ >= STAGE_Q ? '看本關結果 →' : last ? '看結果 →' : '下一首 →';
-  nb.hidden = false;
+  if (G.mode === 'battle') mpRenderBoard();
+  else {
+    const last = (G.mode === 'survival' && G.lives <= 0) || (G.mode !== 'survival' && G.roundNo >= G.rounds);
+    const nb = $('#btn-next');
+    nb.textContent = G.mode === 'stage' && G.stageQ >= STAGE_Q ? '看本關結果 →' : last ? '看結果 →' : '下一首 →';
+    nb.hidden = false;
+  }
   setRing(0);
   // reward: let the song keep playing a bit (only when the answer came from a tap = user gesture)
   if (viaClick || R.played){
@@ -1516,13 +1677,17 @@ function renderHud(pop){
   } else if (G.mode === 'survival'){
     $('#hud-round').textContent = `Lv.${G.level + 1} · 第 ${G.roundNo} 首`;
     $('#hud-lives').innerHTML = `<span class="hearts${pop === 'hit' ? ' hit' : ''}" aria-label="剩 ${G.lives} 條命">${'❤️'.repeat(Math.max(0, G.lives))}<span class="lost">${'♡'.repeat(Math.max(0, 3 - G.lives))}</span></span>`;
+  } else if (G.mode === 'battle'){
+    $('#hud-round').textContent = `對戰 · 第 ${G.roundNo} / ${G.rounds} 首`;
+    $('#hud-lives').textContent = mpRankText();
   } else {
     $('#hud-round').textContent = `${G.daily ? '每日 · ' : ''}第 ${G.roundNo} / ${G.rounds} 首`;
     $('#hud-lives').textContent = '';
   }
-  $('#hud-score').textContent = fmt(G.score);
+  const hidden = G.mode === 'battle' && R && R.mpPending;
+  $('#hud-score').textContent = fmt(G.score - (hidden ? R.mpPending.pts : 0));
   const c = $('#hud-combo');
-  c.textContent = G.combo >= 2 ? `${G.combo} 連擊 · ×${(1 + Math.min(G.combo, 10) * .1).toFixed(1)}` : '';
+  c.textContent = hidden ? '' : G.mode === 'battle' ? (G.combo >= 2 ? `${G.combo} 連對` : '') : G.combo >= 2 ? `${G.combo} 連擊 · ×${(1 + Math.min(G.combo, 10) * .1).toFixed(1)}` : '';
   if (pop && G.combo >= 2){ c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
 }
 
@@ -1574,6 +1739,9 @@ function endGame(){
     [okTimes.length ? avgT.toFixed(1) + 's' : '–', '平均答對秒數']
   ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join('');
   $('#btn-share').hidden = false;
+  $('#res-board-wrap').hidden = true;
+  $('#btn-again').textContent = '再玩一局'; $('#btn-home').textContent = '回主選單';
+  dailyResult(g);
   $('#res-list').innerHTML = g.history.map((h, i) => `
     <li class="song">
       ${h.info.thumb ? `<img src="${esc(h.info.thumb)}" alt="" loading="lazy">` : '<span class="noart"></span>'}
@@ -1613,8 +1781,8 @@ $('#btn-share').addEventListener('click', async () => {
   }
   toast(ok ? '已複製，貼給朋友比比看！' : '複製失敗，請手動截圖分享');
 });
-$('#btn-again').addEventListener('click', () => { sfx.init(); audioPool.unlock(); newGame(); });
-$('#btn-home').addEventListener('click', goHome);
+$('#btn-again').addEventListener('click', () => { sfx.init(); audioPool.unlock(); if (G && G.mode === 'battle') mpAgain(); else newGame(); });
+$('#btn-home').addEventListener('click', () => { if (G && G.mode === 'battle' && mp.code) mpLeave(); goHome(); });
 function goHome(){ hideModal(); if (G) G.dead = true; stopPlayback(); stopTimer(); renderHome(); show('home'); }
 
 /* ---- modal ---- */
@@ -1665,6 +1833,7 @@ $('#btn-diag').addEventListener('click', () => {
 $('#record').addEventListener('click', () => {
   sfx.init();
   if (!R){ toast('還在找歌，稍等一下'); return; }
+  if (G.mode === 'battle' && !R.mpStarted && !R.answered){ toast('等倒數結束，大家一起開始'); return; }
   if (R.answered){
     if (player.audio === R.audio && !R.audio.paused){ stopPlayback(); }
     else playRange(R.audio, R.start, Math.min(R.start + 14, 30), { onProgress: setRing, onEnd: () => setRing(1), onError: () => {} });
@@ -1687,6 +1856,10 @@ $('#btn-next').addEventListener('click', () => {
   if (last) endGame(); else nextRound();
 });
 $('#btn-quit').addEventListener('click', () => {
+  if (G && G.mode === 'battle') return showModal('要離開對戰嗎？', '離開後會退出這個房間，分數不會保留。', [
+    { label: '繼續玩' },
+    { label: '離開房間', primary: true, fn: () => { mpLeave(); goHome(); } }
+  ]);
   showModal('要離開這局嗎？', '目前的進度和分數不會保留。', [
     { label: '繼續玩' },
     { label: G && G.history.length ? '結算這局' : '離開', primary: true, fn: () => { if (G && G.history.length) endGame(); else goHome(); } }
@@ -1700,7 +1873,8 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Enter' && !$('#btn-next').hidden){ e.preventDefault(); $('#btn-next').click(); }
 });
 
-if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, poolFor, recentArtistPenalty };   // test hook
+/*__BATTLE__*/
+if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, poolFor, recentArtistPenalty, mp, srvNow };   // test hook
 renderHome();
 })();
 </script>

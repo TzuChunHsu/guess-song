@@ -1,8 +1,9 @@
 import json, re, sys, time, urllib.parse, pathlib
-sys.path.insert(0, "/home/claude/songgame"); from build import ALIASES
+KIT = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(KIT.parent / "src")); from build import ALIASES
 from playwright.sync_api import sync_playwright
 GAME = pathlib.Path(sys.argv[1]).resolve()
-tone = pathlib.Path("/home/claude/testkit/tone.mp3").read_bytes(); chorus = pathlib.Path("/home/claude/testkit/chorus.mp3").read_bytes()
+tone = (KIT / "tone.mp3").read_bytes(); chorus = (KIT / "chorus.mp3").read_bytes()
 bank, cat = [], "zh"
 for l in open(sys.argv[2], encoding="utf-8").read().splitlines():
     if not l or l.startswith("#"): continue
