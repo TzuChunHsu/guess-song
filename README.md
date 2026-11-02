@@ -39,6 +39,12 @@
 
 順暢度：房主在大廳等人時就先找好、確認好前三首歌，按開始馬上倒數；遊戲中房主一直保持三首歌寫在前面，朋友的手機也先把這幾首載入。只出副歌時，大家拿到的是房主找到副歌的那一個試聽檔，片段完全相同。
 
+不卡關的做法：
+- 房主同時找三首歌（以前一次一首），只出副歌時一首歌最多試兩個試聽檔，找不到副歌就換下一首，不在同一首上耗時間。
+- 每首歌在出題前就先確認試聽能播；播不出來的歌會被標記，三天內不再出現。
+- 朋友的手機如果載不出某一首（還沒開始播之前），會自動回報，房主馬上換一首給所有人，大家聽到的還是同一首。同一個人最多換三次，之後那一首他就跳過（不扣分），避免網路很差的手機讓整局停住。
+- 下一首還沒準備好時，上一首會繼續播著，等新的一首好了才停，不會一片安靜乾等；房主畫面會顯示已略過幾首不能用的歌。
+
 斷線處理：手機睡著或網路中斷會自動重連；重新整理頁面後按「加入」回到房間，分數保留；房主斷線 20 秒，房間裡最早加入的人自動接手；網路擋住即時串流時改成每秒查詢。
 
 ## 線上資料庫（Firebase Realtime Database）
@@ -96,6 +102,7 @@ pip install playwright && playwright install chromium
 python3 tests/run_v12.py index.html src/bank.txt            # 單人模式完整檢查
 python3 tests/run_battle.py index.html src/bank.txt         # 三人連線對戰（含斷線、中途加入、房主接手）
 python3 tests/run_battle_chorus.py index.html src/bank.txt  # 副歌模式對戰；加 --no-stream 測輪詢備援
+python3 tests/run_battle_swap.py index.html src/bank.txt    # 朋友載不出的歌先換掉；下一首晚到時上一首繼續播
 python3 tests/run_board.py index.html src/bank.txt          # 每日挑戰排行榜
 python3 tests/run_rand.py index.html src/bank.txt           # 出題隨機性與歌手分散
 python3 tests/run_options.py index.html src/bank.txt        # 干擾選項：同歌手、同性別、同年代

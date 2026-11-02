@@ -830,7 +830,7 @@ async function analyzeUrl(url){
 /* Resolves { status: 'ok', cs, ce, url, src } | { status: 'reject' } | { status: 'unavailable' }.
    Tries every studio preview we know for the song (other albums, then Deezer, which often cuts
    a different part of the song) until one clearly contains the start of the chorus. */
-async function prepareChorus(song, info){
+async function prepareChorus(song, info, maxTries = 0){
   const key = chorusKey(song), cached = chorusMap[key];
   if (cached && cached.reject) return { status: 'reject' };
   if (cached && cached.url) return { status: 'ok', cs: cached.cs, ce: cached.ce, url: cached.url, src: null, via: cached.via };
@@ -846,16 +846,19 @@ async function prepareChorus(song, info){
     return Object.assign(res, { via });
   };
   for (const u of urls){
+    if (maxTries && tried >= maxTries) return { status: 'reject', partial: true };
     const res = await analyzeUrl(u); tried++;
     if (res.status === 'ok') return done(res, info.src);
     if (res.status === 'unavailable') unavailable++;
     if (chorusState.disabled) return { status: 'unavailable' };
   }
+  if (maxTries && tried >= maxTries) return { status: 'reject', partial: true };
   if (info.src !== 'Deezer'){
     const a0 = song.artists[0], en = (ALIASES[a0] || [])[0];
     let dz = [];
     try { dz = await searchDeezer(song, song.title + ' ' + (en || a0)); srcCount.dz[0]++; } catch(e){ srcCount.dz[1]++; }
     for (const c of dz.slice(0, 2)){
+      if (maxTries && tried >= maxTries) return { status: 'reject', partial: true };
       const res = await analyzeUrl(https(c.u)); tried++;
       if (res.status === 'ok') return done(res, 'Deezer');
       if (res.status === 'unavailable') unavailable++;
@@ -1182,7 +1185,7 @@ function newGame(){
     lives: mode === 'survival' ? 3 : 0, level: 0, correct: 0,
     items: { cut: 1, free: 1, skip: 1 },
     history: [], played: new Set(), failed: new Set(), retry: new Map(), optSeen: { ids: new Set(), artists: new Map() }, bag, poolIds: new Set(poolArr.map(s => s.id)),
-    queue: [], waiters: [], filling: false, netFails: 0, audioFails: 0, skipped: 0, netError: false, audioError: false, dead: false
+    queue: [], waiters: [], filling: 0, inflight: 0, netFails: 0, audioFails: 0, skipped: 0, netError: false, audioError: false, dead: false
   };
   if (mode === 'stage'){ Object.assign(G, { stage: 0, stageQ: 0, stageScore: 0, cleared: 0, stageLog: [] }); enterStage(Math.min(settings.stageStart, store.get('stageMax', 1), LEVELS.length) - 1); }
   $('#game').classList.toggle('n9', G.nopt === 9);
@@ -1191,74 +1194,97 @@ function newGame(){
   if (mode === 'stage') stageIntro();
 }
 
-/* ---- background queue: always keep songs resolved & buffering ahead ---- */
-async function fillQueue(){
+/* ---- background queue: always keep songs resolved & buffering ahead ----
+   A solo game checks one song at a time; a battle host checks three at once, so a run of songs
+   that turn out unusable (no preview, no clear chorus, won't play) doesn't hold the game up. */
+const deadSongs = store.get('deadSongs', {});                // previews that wouldn't play, skipped for 3 days
+const DEAD_TTL = 3 * 864e5;
+function isDead(song){ const t = deadSongs[song.title + '|' + song.artist]; return !!t && Date.now() - t < DEAD_TTL; }
+function markDead(song){
+  deadSongs[song.title + '|' + song.artist] = Date.now();
+  for (const k in deadSongs) if (Date.now() - deadSongs[k] > DEAD_TTL) delete deadSongs[k];
+  store.set('deadSongs', deadSongs);
+  delete cache[song.title + '|' + song.artist]; saveCache();
+  if (chorusMap[chorusKey(song)] && !chorusMap[chorusKey(song)].reject){ delete chorusMap[chorusKey(song)]; store.set('chorus4', chorusMap); }
+}
+function fillQueue(){
   const g = G;
-  if (!g || g.filling || g.dead) return;
-  g.filling = true;
+  if (!g || g.dead) return;
+  const workers = g.mode === 'battle' ? 3 : 1;
+  while ((g.filling || 0) < workers){
+    g.filling = (g.filling || 0) + 1;
+    fillWorker(g).catch(() => {}).finally(() => { g.filling--; flushWaiters(g); });
+  }
+}
+async function fillWorker(g){
   const ahead = g.mode === 'battle' ? 3 : 2;
-  while (!g.dead && g.queue.length < ahead && !g.netError){
+  while (!g.dead && g.queue.length + (g.inflight || 0) < ahead && !g.netError){
     if (!g.bag.length && !refillBag(g)) break;
     const song = g.bag.shift();
-    if (g.played.has(song.id)) continue;
-    if (g.chorus && chorusSkip(song)) continue;
-    let info; const why = {};
-    try { info = await resolveSong(song, { why, wait: () => !g.dead && g.mode !== 'battle' }); }   // battles take another song instead of waiting
-    catch(e){
-      if (++g.netFails >= 4){ g.netError = true; break; }
-      noteNet(`找歌中…（連線不順，換一首試試）`);
-      continue;                                             // move straight on to another song
-    }
-    try {
-      g.netFails = 0;
-      if (g.dead) break;
-      if (!info){
-        const n = g.retry.get(song.id) || 0;
-        if (why.paced && n < 2){ g.retry.set(song.id, n + 1); g.bag.splice(Math.min(4, g.bag.length), 0, song); continue; }   // try it again a few songs later
-        g.skipped++; g.failed.add(song.id); continue;
-      }
-      const url = String(info.u).replace(/^http:\/\//, 'https://');
-      let start, src = url, chorus = null, srcUrl = url;
-      if (g.chorus){
-        const ch = await prepareChorus(song, info);
-        if (g.dead){ if (ch.src) URL.revokeObjectURL(ch.src); break; }
-        if (ch.status !== 'ok' || ch.ce - ch.cs < g.cfg.clips[0]){      // no sure chorus here: never guess, take another song
-          if (ch.src) URL.revokeObjectURL(ch.src);
-          g.skipped++; g.failed.add(song.id);
-          if (chorusState.disabled){ g.chorus = false; g.chorusOff = true; }
-          noteNet('找副歌中…（這首試聽沒有明確的副歌，換一首）');
-          continue;
-        }
-        if (ch.src){ src = ch.src; g.blobs.push(ch.src); } else src = ch.url;
-        srcUrl = ch.url || url;                              // the chorus may sit in another album's (or Deezer's) preview
-        chorus = { cs: ch.cs, ce: ch.ce, via: ch.via };
-        start = ch.cs;                                       // play from the moment the chorus starts
-      } else {
-        const srng = g.daily ? mulberry32(hashStr(g.dateKey + '#start#' + song.id)) : cryptoRnd;
-        const baseMax = g.cfg.clips[g.cfg.clips.length - 1];
-        start = Math.round((0.8 + srng() * Math.max(0, 29 - baseMax - 1.2)) * 10) / 10;
-      }
-      const audio = audioPool.take();
-      audio.src = src.startsWith('blob:') ? src : src + '#t=' + start;
-      const check = await verifyAudio(audio);
-      if (g.dead){ audioPool.release(audio); break; }
-      if (check === 'error'){                               // this preview won't play: drop it and try another song now
-        audioPool.release(audio);
-        delete cache[song.title + '|' + song.artist]; saveCache();
-        if (chorusMap[chorusKey(song)]){ delete chorusMap[chorusKey(song)]; store.set('chorus4', chorusMap); }
-        g.skipped++; g.failed.add(song.id);
-        if (++g.audioFails >= 6){ g.netError = true; g.audioError = true; break; }
-        noteNet('找歌中…（略過一首無法播放的試聽）');
-        continue;
-      }
-      g.audioFails = 0;
-      g.played.add(song.id);
-      g.queue.push({ song, info, audio, start, chorus, url: audio.src, srcUrl, verified: check === 'ok' });
-      flushWaiters(g);
-    } catch(e){ g.skipped++; }
+    if (g.played.has(song.id) || g.failed.has(song.id)) continue;
+    if ((g.chorus && chorusSkip(song)) || isDead(song)){ g.failed.add(song.id); continue; }   // failed: a refill never loops on them
+    g.inflight = (g.inflight || 0) + 1;
+    let r;
+    try { r = await prepareSong(g, song); } catch(e){ g.skipped++; r = 'skip'; }
+    finally { g.inflight--; }
+    if (r === 'stop') break;
   }
-  g.filling = false;
+}
+/* Look up one song, find its clip (or chorus) and check that it really plays.
+   'ok' = queued, 'skip' = take another song, 'stop' = give up for now. */
+async function prepareSong(g, song){
+  let info; const why = {};
+  try { info = await resolveSong(song, { why, wait: () => !g.dead && g.mode !== 'battle' }); }   // battles take another song instead of waiting
+  catch(e){
+    if (++g.netFails >= 4){ g.netError = true; return 'stop'; }
+    noteNet(`找歌中…（連線不順，換一首試試）`);
+    return 'skip';                                       // move straight on to another song
+  }
+  g.netFails = 0;
+  if (g.dead) return 'stop';
+  if (!info){
+    const n = g.retry.get(song.id) || 0;
+    if (why.paced && n < 2){ g.retry.set(song.id, n + 1); g.bag.splice(Math.min(4, g.bag.length), 0, song); return 'skip'; }   // try it again a few songs later
+    g.skipped++; g.failed.add(song.id); return 'skip';
+  }
+  const url = String(info.u).replace(/^http:\/\//, 'https://');
+  let start, src = url, chorus = null, srcUrl = url;
+  if (g.chorus){
+    const ch = await prepareChorus(song, info, g.mode === 'battle' ? 2 : 0);   // battles give up on a song sooner
+    if (g.dead){ if (ch.src) URL.revokeObjectURL(ch.src); return 'stop'; }
+    if (ch.status !== 'ok' || ch.ce - ch.cs < g.cfg.clips[0]){      // no sure chorus here: never guess, take another song
+      if (ch.src) URL.revokeObjectURL(ch.src);
+      g.skipped++; g.failed.add(song.id);
+      if (chorusState.disabled){ g.chorus = false; g.chorusOff = true; }
+      noteNet('找副歌中…（這首試聽沒有明確的副歌，換一首）');
+      return 'skip';
+    }
+    if (ch.src){ src = ch.src; g.blobs.push(ch.src); } else src = ch.url;
+    srcUrl = ch.url || url;                              // the chorus may sit in another album's (or Deezer's) preview
+    chorus = { cs: ch.cs, ce: ch.ce, via: ch.via };
+    start = ch.cs;                                       // play from the moment the chorus starts
+  } else {
+    const srng = g.daily ? mulberry32(hashStr(g.dateKey + '#start#' + song.id)) : cryptoRnd;
+    const baseMax = g.cfg.clips[g.cfg.clips.length - 1];
+    start = Math.round((0.8 + srng() * Math.max(0, 29 - baseMax - 1.2)) * 10) / 10;
+  }
+  const audio = audioPool.take();
+  audio.src = src.startsWith('blob:') ? src : src + '#t=' + start;
+  const check = await verifyAudio(audio);
+  if (g.dead){ audioPool.release(audio); return 'stop'; }
+  if (check === 'error'){                               // this preview won't play: mark it, take another song now
+    audioPool.release(audio);
+    if (navigator.onLine !== false) markDead(song);      // offline for a moment is not the song's fault
+    g.skipped++; g.failed.add(song.id);
+    if (++g.audioFails >= 6){ g.netError = true; g.audioError = true; return 'stop'; }
+    noteNet('找歌中…（略過一首無法播放的試聽）');
+    return 'skip';
+  }
+  g.audioFails = 0;
+  g.played.add(song.id);
+  g.queue.push({ song, info, audio, start, chorus, url: audio.src, srcUrl, verified: check === 'ok' });
   flushWaiters(g);
+  return 'ok';
 }
 /* ---- song order ----
    Truly random: every song in the pool has the same chance (crypto RNG). Only two rules on top:
@@ -1319,7 +1345,7 @@ function nextReady(){
     const give = () => {
       if (g.dead){ res(null); return true; }
       if (g.queue.length){ res(g.queue.shift()); setTimeout(fillQueue, 0); return true; }
-      if (g.netError || (!g.filling && !g.bag.length && !refillBag(g))){ res(null); return true; }
+      if (g.netError || (!g.filling && !g.inflight && !g.bag.length && !refillBag(g))){ res(null); return true; }
       return false;
     };
     if (!give()){ g.waiters.push(give); fillQueue(); }

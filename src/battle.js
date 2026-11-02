@@ -11,6 +11,7 @@
      From v2 every question carries its own titles, so players on different versions of the song
      list (an older cached page, or the Netlify copy) can still play together.
      a/nI/PLAYER { k picked song id (-1 time up, -2 can't play), t seconds, p points },
+     bad/nI/PLAYER  this question's preview won't load on that device: the host swaps the song before it starts,
      p/PLAYER { n name, j joined, hb heartbeat, s score, c correct, tt seconds spent on correct answers }
    Battle rules (modelled on Kahoot-style speed scoring and the fastest-answer bonus of music quizzes):
      correct = 500 + up to 500 for speed (× 0.6 / × 0.35 after listening longer), +100 per song in a row
@@ -141,7 +142,7 @@ const mpSameName = (a, b) => String(a || '').normalize('NFKC').trim().replace(/\
 /* someone is still in this room (any heartbeat in the last 5 minutes) */
 function mpRoomBusy(room){ return !!room && mpPlayers(room).some(p => Date.now() - (+p.hb || 0) < 5 * 60000); }
 const mp = { code: null, pid: null, room: null, sub: null, hb: 0, tick: 0, isHost: false, gameKey: null, roundIdx: -1,
-  aud: {}, local: {}, overAt: {}, preparing: false, noMore: false, producer: false, patching: 0, finalShown: false, busy: false };
+  aud: {}, local: {}, overAt: {}, swaps: {}, preparing: false, noMore: false, producer: false, patching: 0, finalShown: false, busy: false };
 const mpArr = x => Array.isArray(x) ? x : Object.values(x || {});     // the database may hand arrays back as objects
 
 function mpPid(){
@@ -443,7 +444,7 @@ function mpNewG(c){
     rounds: Math.max(1, Math.min(30, +c.r || 10)), roundNo: 0, score: 0, combo: 0, maxCombo: 0, lives: 0, level: 0, correct: 0,
     items: { cut: 0, free: 0, skip: 0 },
     history: [], played: new Set(), failed: new Set(), retry: new Map(), optSeen: { ids: new Set(), artists: new Map() }, bag: [], poolIds: new Set(poolArr.map(s => s.id)),
-    queue: [], waiters: [], filling: false, netFails: 0, audioFails: 0, skipped: 0, netError: false, audioError: false, dead: false
+    queue: [], waiters: [], filling: 0, inflight: 0, netFails: 0, audioFails: 0, skipped: 0, netError: false, audioError: false, dead: false
   };
 }
 /* While everyone is still in the lobby, the host already looks up and checks the first songs,
@@ -472,7 +473,7 @@ function mpStartLocal(room){
   else G = mpNewG(c);
   const me = room.p && room.p[mp.pid];
   if (me){ G.score = +me.s || 0; G.correct = +me.c || 0; G.mpTime = +me.tt || 0; }       // back in after a reload
-  Object.assign(mp, { gameKey: room.gk, roundIdx: -1, aud: {}, local: {}, overAt: {}, preparing: false, noMore: false, producer: reuse, finalShown: false, boardHtml: '', cd: 0, netRetry: 0, waitSince: 0 });
+  Object.assign(mp, { gameKey: room.gk, roundIdx: -1, aud: {}, local: {}, overAt: {}, preparing: false, noMore: false, producer: reuse, finalShown: false, boardHtml: '', cd: 0, netRetry: 0, waitSince: 0, swaps: {} });
   R = null;
   $('#game').classList.toggle('n9', G.nopt === 9);
   $('#res-board-wrap').hidden = true;
@@ -489,11 +490,18 @@ function mpStartLocal(room){
 }
 /* preload a question's preview on this device */
 function mpLoadAudio(k, q){
+  const qu = String(q.u || '');
+  if (mp.aud[k] && mp.aud[k].qu !== qu){                 // the host swapped this question's song
+    if (!mp.local[k] || mp.local[k].audio !== mp.aud[k].audio) audioPool.release(mp.aud[k].audio);
+    delete mp.aud[k];
+  }
   if (mp.aud[k]) return mp.aud[k];
-  if (mp.local[k]){ const it = mp.local[k]; return (mp.aud[k] = { audio: it.audio, url: it.url, ok: true }); }
+  if (mp.local[k] && String(mp.local[k].srcUrl || '').replace(/^http:\/\//, 'https://') === qu.replace(/^http:\/\//, 'https://')){
+    const it = mp.local[k]; return (mp.aud[k] = { audio: it.audio, url: it.url, ok: true, qu });
+  }
   const audio = audioPool.take();
   const urls = [q.u, ...mpArr(q.alt)].filter(Boolean).map(u => String(u).replace(/^http:\/\//, 'https://'));
-  const rec = mp.aud[k] = { audio, url: urls[0], ok: null };
+  const rec = mp.aud[k] = { audio, url: urls[0], ok: null, qu };
   (async () => {
     for (const u of urls){
       audio.src = u + '#t=' + (+q.st || 0); rec.url = u;
@@ -502,6 +510,11 @@ function mpLoadAudio(k, q){
       if (r !== 'error'){ rec.ok = true; return; }
     }
     rec.ok = false;
+    // tell the host: before the song starts it is swapped for everyone
+    if (mp.code && mp.room && !(R && R.mpIdx === k && R.mpStarted)){
+      const upd = { [`bad/n${k}/${mp.pid}`]: String(q.s) }; treeSet(mp.room, `bad/n${k}/${mp.pid}`, String(q.s));
+      fb.patch(`rooms/${mp.code}`, upd).catch(() => {});
+    }
     if (R && R.mpIdx === k && R.mpStarted) mpCantPlay();
   })();
   return rec;
@@ -511,13 +524,18 @@ function mpRenderPlay(now){
   if (!$('#game').classList.contains('active') && $('#modal').hidden) show('game');
   const q = room.q && room.q['n' + i];
   for (let k = i; k < i + MP_AHEAD; k++){ const qq = room.q && room.q['n' + k]; if (qq && k < G.rounds) mpLoadAudio(k, qq); }
-  if (mp.roundIdx !== i){
+  if (!q && mp.roundIdx === i && R && R.mpIdx === i && !R.mpStarted){
+    stopPlayback(); R = null; mp.roundIdx = -1; mp.cd = 0;
+    $('#options').innerHTML = ''; $('#event').hidden = true; $('#label-q').className = 'q load'; $('#label-q').textContent = '?';
+  }
+  if (mp.roundIdx !== i || (q && R && R.mpIdx === i && R.mpQu !== String(q.u || '') && !R.mpStarted)){
     if (!q){
       if (!mp.waitSince) mp.waitSince = Date.now();
       const w = Math.round((Date.now() - mp.waitSince) / 1000), sec = w >= 3 ? `（${w} 秒）` : '';
-      const msg = mp.isHost ? `正在找第 ${i + 1} 首歌，確認試聽可以播放…${sec}` : `房主正在準備第 ${i + 1} 首歌…${sec}`;
+      const skipped = mp.isHost && G && G.skipped ? `，已略過 ${G.skipped} 首不能用的` : '';
+      const msg = mp.isHost ? `正在找第 ${i + 1} 首歌，確認試聽可以播放…${sec}${skipped}` : `房主正在準備第 ${i + 1} 首歌…${sec}`;
       if (!R) $('#status-text').textContent = msg;
-      else if (R.answered) mpRenderBoard(msg);
+      else if (R.answered){ mpRenderBoard(msg); mpKeepPlaying(); }
       return;
     }
     mp.waitSince = 0;
@@ -563,7 +581,7 @@ function mpSetupRound(i, q){
     song, info: { u: q.u, art: q.art || '', thumb: q.th || '', link: q.lk || '', src: q.src || '' }, audio: a.audio, url: a.url, verified: a.ok === true,
     rng: cryptoRnd, clipIdx: 0, penalty: 0, usedFree: false, played: false, answered: false, t0: 0, limit: 0,
     event: null, start: 0, options, removed: new Set(),
-    chorus: q.ch ? { cs: +q.st || 0, ce: +q.ce || (+q.st || 0) + 10, via: 'host' } : null, mpIdx: i, mpFinal: i + 1 >= G.rounds
+    chorus: q.ch ? { cs: +q.st || 0, ce: +q.ce || (+q.st || 0) + 10, via: 'host' } : null, mpIdx: i, mpFinal: i + 1 >= G.rounds, mpQu: String(q.u || '')
   };
   const lens = clipLens(), maxLen = lens[lens.length - 1];
   if (R.chorus){ R.start = R.chorus.cs; R.lens = [...new Set(lens.map(l => Math.max(1, Math.min(l, Math.round((29.6 - R.start) * 10) / 10))))]; }
@@ -584,6 +602,14 @@ function mpSetupRound(i, q){
   $('#status-text').textContent = '等大家準備好…';
   setRing(0); renderHud(); updateExtend();
   a.audio.onerror = () => { if (R && R.audio === a.audio && R.mpStarted && !R.answered){ const rec = mp.aud[i]; if (rec && rec.ok !== null) mpCantPlay(); } };
+}
+/* while everyone waits for the next song, the last one keeps playing (to the end of the preview, then again) */
+function mpKeepPlaying(){
+  if (!R || !R.audio || !R.answered || R.mpSkip) return;
+  if (player.audio === R.audio && !R.audio.paused) return;
+  const r = R, again = from => playRange(r.audio, from, 30, { onProgress: setRing, onEnd: () => { if (R === r && mp.roundIdx === r.mpIdx) again(0); }, onError: () => {} });
+  const t = +r.audio.currentTime || 0;
+  again(t > 1 && t < 27 ? t : 0);
 }
 function mpLimit(){ return Math.max(3, Math.min(G.tlimit, (R.mpDeadline - srvNow()) / 1000 - 1)); }
 function mpCantPlay(){
@@ -716,6 +742,7 @@ function mpHostDuties(now){
   const hasQ = k => !!(room.q && room.q['n' + k]);
   if (!mp.preparing && !mp.noMore && [...Array(MP_AHEAD).keys()].some(d => i + d < G.rounds && !hasQ(i + d))) mpPrepare();
   if (mp.patching) return;
+  if (mpSwapBad(room, i, now)) return;
   if (!hasQ(i)){
     if (mp.noMore && !mp.preparing) mpPatchRoom({ st: 'end' });          // ran out of songs that play
     return;
@@ -727,6 +754,29 @@ function mpHostDuties(now){
     if (i + 1 >= G.rounds || (!hasQ(i + 1) && mp.noMore && !mp.preparing)) mpPatchRoom({ st: 'end' });
     else mpPatchRoom({ cur: i + 1, at: hasQ(i + 1) ? now + MP_LEAD : null });
   }
+}
+function mpSwapBad(room, i, now){
+  const bad = room.bad || {};
+  for (const key of Object.keys(bad)){
+    const k = +String(key).slice(1);
+    if (!(k >= i) || !(room.q && room.q['n' + k])) { if (k < i) mpPatchRoom({ [`bad/${key}`]: null }); continue; }
+    if (k === i && room.at && now >= room.at) continue;           // already playing: that player just sits this one out
+    const q = room.q['n' + k], who = Object.keys(bad[key] || {}).filter(id => String(bad[key][id]) === String(q.s));
+    // a report about a song that was already swapped, or a device that can't play anything (3 swaps is enough): it sits out
+    if (!who.length || !who.some(id => (mp.swaps[id] || 0) < 3)){ mpPatchRoom({ [`bad/${key}`]: null }); continue; }
+    who.forEach(id => { mp.swaps[id] = (mp.swaps[id] || 0) + 1; });
+    const op = mpArr(q.op).map(o => mpArr(o)).find(o => +o[0] === +q.s);
+    const song = op ? BANK.find(x => x.title === op[1] && x.artist === op[2]) : BANK[+q.s];
+    if (song){ markDead(song); if (G) G.failed.add(song.id); }
+    if (mp.local[k]){ audioPool.release(mp.local[k].audio); delete mp.local[k]; }
+    if (mp.aud[k]){ audioPool.release(mp.aud[k].audio); delete mp.aud[k]; }
+    const upd = { [`q/n${k}`]: null, [`bad/${key}`]: null };
+    if (k === i) upd.at = null;                                   // the countdown starts again with the new song
+    mpPatchRoom(upd);
+    toast('有人的手機播不出這首，換一首');
+    return true;
+  }
+  return false;
 }
 async function mpPrepare(){
   if (mp.preparing) return;
@@ -773,7 +823,7 @@ async function mpStartGame(){
   const c = room.cfg || {};
   if (poolFor(mpCfgCats(c), +c.y0 || MINY, +c.y1 || MAXY).length < MIN_POOL) return toast('題目太少，按「改類別、難度、年代」放寬一點');
   const now = srvNow();
-  const upd = { st: 'play', cur: 0, at: null, q: null, a: null, gk: Date.now().toString(36) + Math.floor(cryptoRnd() * 1e6).toString(36), ts: SV_TS };
+  const upd = { st: 'play', cur: 0, at: null, q: null, a: null, bad: null, gk: Date.now().toString(36) + Math.floor(cryptoRnd() * 1e6).toString(36), ts: SV_TS };
   mpPlayers(room).forEach(p => {
     if (p.id !== mp.pid && now - (+p.hb || 0) > MP_STALE) upd[`p/${p.id}`] = null;   // drop players who already left
     else { upd[`p/${p.id}/s`] = 0; upd[`p/${p.id}/c`] = 0; }
@@ -792,7 +842,7 @@ function mpStartButton(){
 }
 function mpAgain(){
   if (!mp.code) return goHome();
-  if (mp.isHost) mpPatchRoom({ st: 'lobby', cur: 0, at: null, q: null, a: null });
+  if (mp.isHost) mpPatchRoom({ st: 'lobby', cur: 0, at: null, q: null, a: null, bad: null });
   show('lobby');
   mpRender();
 }
