@@ -657,9 +657,16 @@ function mpLockIn(idx, elapsed){
   $('#controls').hidden = true; $('#items').hidden = true;
   $('#status').hidden = false;
   $('#status-text').textContent = idx == null ? '時間到 · 等這首結束' : `已作答 · ${elapsed.toFixed(1)} 秒 · 等這首結束揭曉`;
-  stopPlayback(); setRing(0);
+  setRing(0); mpPlayOn();                 // the song keeps going until the round is over
   renderHud();
   mpRenderBoard();
+}
+/* after a pick the song plays on to the end of the preview, then from the top, until the next song is set up */
+function mpPlayOn(){
+  if (!R || !R.audio || R.mpSkip || !R.played) return;
+  const r = R, live = () => R === r && mp.roundIdx === r.mpIdx;
+  const loop = () => { if (live()) playRange(r.audio, 0, 30, { onProgress: setRing, onEnd: loop, onError: () => {} }); };
+  playOn(r.audio, 30, { onProgress: setRing, onEnd: loop, onError: () => {} });
 }
 function mpOnRoundOver(){
   const i = R.mpIdx, room = mp.room;

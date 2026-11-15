@@ -3,6 +3,19 @@
 import json, os, sys, opencc
 
 ALIASES = {
+    "楊臣剛": ["Yang Chengang"], "曾沛慈": ["Pets Tseng"], "王艷薇": ["Evangeline Wong", "Evangeline"],
+    "洪佩瑜": ["Pei-Yu Hung", "Hung Pei-Yu"], "宇宙人": ["Cosmos People"],
+    "柳爽": ["Liu Shuang"], "音闕詩聽": ["Yinque Shiting"], "趙方婧": ["Zhao Fangjing"], "馬良": ["Ma Liang"], "溫奕心": ["Wen Yixin"],
+    "BY2": ["By2"], "曹雅雯": ["Tsao Ya-Wen", "Ya-Wen Tsao"], "蔡佳麟": ["Tsai Chia-Lin"], "郭婷筠": ["Kuo Ting-Yun"], "十明": ["Toaka"], "平野綾": ["Aya Hirano", "涼宮ハルヒ"],
+    "影山ヒロノブ": ["Hironobu Kageyama"], "きただにひろし": ["Hiroshi Kitadani"], "秦基博": ["Motohiro Hata"], "中島みゆき": ["Miyuki Nakajima"],
+    "美空ひばり": ["Hibari Misora"], "千昌夫": ["Masao Sen"], "谷村新司": ["Shinji Tanimura"], "石川さゆり": ["Sayuri Ishikawa"],
+    "一青窈": ["Yo Hitoto"], "福山雅治": ["Masaharu Fukuyama"], "コブクロ": ["Kobukuro"], "森山直太朗": ["Naotaro Moriyama"],
+    "中山美穂": ["Miho Nakayama"], "結束バンド": ["Kessoku Band"], "東方神起": ["TVXQ!", "TVXQ", "동방신기"], "SS501": ["더블에스501"],
+    "G-DRAGON": ["G-Dragon", "지드래곤"], "朴孝信": ["Park Hyo Shin", "박효신"], "V": ["뷔"], "Jimin": ["지민"], "CORTIS": ["코르티스"],
+    "Crush": ["크러쉬"], "Paul Kim": ["폴킴"], "Gaho": ["가호"], "SUNMI": ["선미"], "盧巧音": ["Candy Lo"], "謝安琪": ["Kay Tse"],
+    "梁漢文": ["Edmond Leung"], "陳柏宇": ["Jason Chan"], "黎瑞恩": ["Rachel Lai"], "汪明荃": ["Liza Wang"], "關正傑": ["Michael Kwan"],
+    "鄭少秋": ["Adam Cheng"], "盧冠廷": ["Lowell Lo"], "張天賦": ["MC Cheung Tinfu", "MC 張天賦"], "Gareth.T": ["Gareth T", "湯令山"],
+    "古巨基": ["Leo Ku"], "Sérgio Mendes": ["Sergio Mendes"], "P!nk": ["Pink"], "DISH//": ["DISH"],
     "畢書盡": ["Bii"], "汪蘇瀧": ["Silence Wang"], "理想混蛋": ["Bestards"], "老王樂隊": ["Your Woman Sleep With Others"],
     "陳零九": ["Nine Chen"], "顏人中": ["Yan Jen Chung"], "キタニタツヤ": ["Tatsuya Kitani"], "FIFTY FIFTY": ["피프티피프티"],
     "鄧麗君": ["Teresa Teng"], "蔡琴": ["Tsai Chin"], "費玉清": ["Fei Yu-Ching", "Yu-Ching Fei"],
@@ -63,7 +76,7 @@ ALIASES = {
     "黃大煒": ["David Huang"], "黃舒駿": ["Huang Shu-Chun"],
     "尤雅": ["You Ya"], "劉文正": ["Liu Wen-Cheng", "Steven Liu"], "王夢麟": ["Wang Meng-Lin"], "鄭怡": ["Cheng Yi"],
     "王芷蕾": ["Wang Chih-Lei"], "崔健": ["Cui Jian"], "甄妮": ["Jenny Tseng"], "潘越雲": ["Pan Yueh-Yun"],
-    "張清芳": ["Stella Chang"], "林志穎": ["Jimmy Lin"], "張洪量": ["Chang Hung-Liang"], "毛寧": ["Mao Ning"],
+    "張清芳": ["Stella Chang"], "薛岳": [], "林志穎": ["Jimmy Lin"], "張洪量": ["Chang Hung-Liang"], "毛寧": ["Mao Ning"],
     "老狼": ["Lao Lang"], "裘海正": ["Chiu Hai-Cheng"], "巫啟賢": ["Eric Moo"], "張衛健": ["Dicky Cheung"],
     "蘇慧倫": ["Tarcy Su"], "蘇永康": ["William So"], "周蕙": ["Where Chou"], "謝霆鋒": ["Nicholas Tse"],
     "阿桑": ["A-Sun"], "胡彥斌": ["Tiger Hu"], "林依晨": ["Ariel Lin"], "陳小春": ["Jordan Chan"],

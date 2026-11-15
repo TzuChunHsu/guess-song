@@ -407,7 +407,6 @@ Mojito|周杰倫|2020
 熱帶雨林|S.H.E|2002
 他一定很愛你|阿杜|2002
 相見恨晚|彭佳慧|2002
-記事本|陳慧琳|2002
 斷了的弦|周杰倫|2003
 我難過|5566|2003
 那就這樣吧|動力火車|2003
@@ -588,7 +587,6 @@ I Hate Myself Sometimes|派偉俊、李浩瑋|2024
 奉獻|蘇芮|1990
 風中的承諾|李翊君|1990
 來生緣|劉德華|1991
-每天愛你多一些|張學友|1991
 漂洋過海來看你|金智娟|1991
 那麼愛你為什麼|黃品源|1992
 熱情的沙漠|庾澄慶|1992
@@ -831,6 +829,48 @@ Always Online|林俊傑|2008
 月牙灣|飛兒樂團|2004
 脆弱一分鐘|林宥嘉|2008
 我還年輕 我還年輕|老王樂隊|2016
+激情過後|張清芳|1985
+如果還有明天|薛岳|1990
+野百合也有春天|潘越雲|1983
+原來你也在這裡|劉若英|2003
+笑忘書|王菲|2000
+騎士精神|蔡依林|2003
+野蠻遊戲|蔡依林|2005
+天空|蔡依林|2005
+他還是不懂|S.H.E|2006
+花都開好了|S.H.E|2007
+發現愛|林俊傑、金莎|2005
+如果愛下去|張靚穎|2007
+老鼠愛大米|楊臣剛|2004
+I Believe|范逸臣|2001
+那女孩對我說|黃義達|2005
+專屬天使|Tank|2006
+夏天的風|溫嵐|2004
+寂寞先生|曹格|2009
+一個人想著一個人|曾沛慈|2013
+全世界誰傾聽你|林宥嘉|2016
+再見|張震嶽|2007
+唯一|告五人|2021
+離開我的依賴|王艷薇|2020
+任性|五月天|2024
+看著我的眼睛說|張遠|2025
+太陽與地球|盧廣仲|2025
+怪情歌|林宥嘉|2025
+瞬間的瞬間|林俊傑|2025
+Pleasure|蔡依林|2025
+不佔地方|洪佩瑜|2025
+浪人的|張震嶽|2025
+幸福在歌唱|A-Lin|2025
+沒有人像我一樣|宇宙人|2026
+我對緣分小心翼翼|林俊傑|2026
+如果我很平庸|陳華|2026
+那天下雨了|周杰倫|2026
+漠河舞廳|柳爽|2021
+芒種|音闕詩聽、趙方婧|2019
+往後餘生|馬良|2018
+一路生花|溫奕心|2021
+這世界那麼多人|莫文蔚|2021
+有點甜|汪蘇瀧、BY2|2012
 
 @tw
 愛拼才會贏|葉啟田|1988
@@ -938,6 +978,17 @@ Always Online|林俊傑|2008
 捲菸|美秀集團|2019
 一生只督妳一人|玖壹壹|2023
 再會啦心愛的無緣的人|李千娜、黃奇斌|2025
+你著忍耐|江蕙|1983
+無人熟識|張清芳|1996
+非常女|黃妃|1997
+心肝寶貝|鳳飛飛|1991
+無你的將來|陳勢安|2025
+若是明仔載|曹雅雯|2020
+人生的滋味|蔡佳麟、郭婷筠|2021
+決心|許富凱|2021
+今生的願望|許富凱、曹雅雯|2019
+思念的歌|曹雅雯|2018
+做夥|羅志祥|2025
 
 @en
 Can't Help Falling in Love|Elvis Presley|1961
@@ -1085,6 +1136,101 @@ Heat Waves|Glass Animals|2020
 Love Me Like You Do|Ellie Goulding|2015
 Because of You|Kelly Clarkson|2004
 Apologize|Timbaland、OneRepublic|2007
+Shape of My Heart|Backstreet Boys|2000
+Everybody (Backstreet's Back)/Everybody|Backstreet Boys|1997
+Un-Break My Heart/Unbreak My Heart|Toni Braxton|1996
+Because You Loved Me|Celine Dion|1996
+That's Why (You Go Away)/That's Why You Go Away|Michael Learns to Rock|1995
+Sleeping Child|Michael Learns to Rock|1993
+Seasons in the Sun|Westlife|1999
+Uptown Girl|Westlife|2001
+Flying Without Wings|Westlife|1999
+Hey There Delilah|Plain White T's|2006
+You Belong with Me|Taylor Swift|2008
+We Are Never Ever Getting Back Together|Taylor Swift|2012
+Lover|Taylor Swift|2019
+Fortnight|Taylor Swift、Post Malone|2024
+The Fate of Ophelia|Taylor Swift|2025
+Photograph|Ed Sheeran|2014
+Bad Habits|Ed Sheeran|2021
+7 rings|Ariana Grande|2019
+thank u, next|Ariana Grande|2018
+Locked Out of Heaven|Bruno Mars|2012
+When I Was Your Man|Bruno Mars|2013
+Grenade|Bruno Mars|2010
+Talking to the Moon|Bruno Mars|2010
+24K Magic|Bruno Mars|2016
+Payphone|Maroon 5|2012
+Girls Like You|Maroon 5|2018
+Memories|Maroon 5|2019
+One Call Away|Charlie Puth|2015
+Demons|Imagine Dragons|2012
+Thunder|Imagine Dragons|2017
+Natural|Imagine Dragons|2018
+Bones|Imagine Dragons|2022
+Unstoppable|Sia|2016
+Titanium|David Guetta、Sia|2011
+Easy On Me|Adele|2021
+Rather Be|Clean Bandit|2014
+Treat You Better|Shawn Mendes|2016
+Stitches|Shawn Mendes|2015
+Don't Start Now|Dua Lipa|2019
+New Rules|Dua Lipa|2017
+Sign of the Times|Harry Styles|2017
+That Girl|Olly Murs|2016
+Troublemaker|Olly Murs|2012
+Life Goes On|Oliver Tree|2021
+blue|yung kai|2024
+back to friends|sombr|2024
+Greedy|Tate McRae|2023
+What I've Done|Linkin Park|2007
+Hymn for the Weekend|Coldplay|2016
+The Scientist|Coldplay|2002
+Fix You|Coldplay|2005
+A Sky Full of Stars|Coldplay|2014
+Abracadabra|Lady Gaga|2025
+That's So True|Gracie Abrams|2024
+lovely|Billie Eilish、Khalid|2018
+vampire|Olivia Rodrigo|2023
+good 4 u|Olivia Rodrigo|2021
+Let Me Love You|DJ Snake、Justin Bieber|2016
+Don't Let Me Down|The Chainsmokers|2016
+Alone|Alan Walker|2016
+Mamma Mia|ABBA|1975
+Karma Chameleon|Culture Club|1983
+I Just Called to Say I Love You|Stevie Wonder|1984
+We Are the World|USA for Africa|1985
+Endless Love|Diana Ross、Lionel Richie|1981
+Say You, Say Me|Lionel Richie|1985
+Greatest Love of All|Whitney Houston|1985
+The Day You Went Away|M2M|2000
+Pretty Boy|M2M|2000
+Back for Good|Take That|1995
+Don't Look Back in Anger|Oasis|1996
+Creep|Radiohead|1992
+Zombie|The Cranberries|1994
+Torn|Natalie Imbruglia|1997
+Iris|Goo Goo Dolls|1998
+Kiss Me|Sixpence None the Richer|1998
+Lucky|Jason Mraz、Colbie Caillat|2008
+Hey, Soul Sister|Train|2009
+Mr. Brightside|The Killers|2004
+Somebody That I Used to Know|Gotye|2011
+Price Tag|Jessie J|2011
+Just Give Me a Reason|P!nk|2012
+Wrecking Ball|Miley Cyrus|2013
+Rude|MAGIC!|2013
+Shut Up and Dance|Walk the Moon|2014
+Can't Stop the Feeling!|Justin Timberlake|2016
+7 Years|Lukas Graham|2015
+Stressed Out|Twenty One Pilots|2015
+This Is Me|Keala Settle|2017
+Before You Go|Lewis Capaldi|2019
+Save Your Tears|The Weeknd|2020
+Calm Down|Rema、Selena Gomez|2022
+Kill Bill|SZA|2022
+Please Please Please|Sabrina Carpenter|2024
+Lose Control|Teddy Swims|2023
 
 @kr
 Tell Me|Wonder Girls|2007
@@ -1168,6 +1314,39 @@ Cupid|FIFTY FIFTY|2023
 Lovesick Girls|BLACKPINK|2020
 Feel Special|TWICE|2019
 Bad Boy|BIGBANG|2012
+Winter Ahead|V、朴孝信|2025
+Who|Jimin|2024
+like JENNIE|JENNIE|2025
+JUMP|BLACKPINK|2025
+GO!|CORTIS|2025
+Heartbreaker|G-DRAGON|2009
+Crayon/크레용|G-DRAGON|2012
+Loser|BIGBANG|2015
+Still Life/봄여름가을겨울|BIGBANG|2022
+Into the New World/다시 만난 세계|少女時代|2007
+Shut Down|BLACKPINK|2022
+Playing with Fire/불장난|BLACKPINK|2016
+SOLO|JENNIE|2018
+Nxde|(G)I-DLE|2022
+Spicy|aespa|2023
+After LIKE|IVE|2022
+Kitsch|IVE|2023
+How Sweet|NewJeans|2024
+God of Music/음악의 신|SEVENTEEN|2023
+Super/손오공|SEVENTEEN|2023
+Rockstar|LISA|2024
+Standing Next to You|Jung Kook|2023
+Love wins all|IU|2024
+Blueming/블루밍|IU|2019
+Through the Night/밤편지|IU|2017
+Beautiful|Crush|2017
+Every Day, Every Moment/모든 날, 모든 순간|Paul Kim|2018
+Start Over/시작|Gaho|2020
+Bonamana/미인아|Super Junior|2010
+Gashina/가시나|SUNMI|2017
+Mirotic/주문|東方神起|2008
+Because I'm Stupid/내 머리가 나빠서|SS501|2009
+Love Like This|SS501|2009
 
 @jp
 上を向いて歩こう|坂本九|1961
@@ -1248,6 +1427,52 @@ SPECIALZ|King Gnu|2023
 晴る|ヨルシカ|2024
 オトノケ|Creepy Nuts|2024
 オレンジ|SPYAIR|2024
+なんでもないや|RADWIMPS|2016
+スパークル|RADWIMPS|2016
+すずめ|RADWIMPS、十明|2022
+勇者|YOASOBI|2023
+宿命|Official髭男dism|2019
+I LOVE...|Official髭男dism|2020
+一途|King Gnu|2021
+逆夢|King Gnu|2021
+カメレオン|King Gnu|2022
+飛行艇|King Gnu|2019
+怪獣の花唄|Vaundy|2020
+猫|DISH//|2017
+カタオモイ|Aimer|2016
+廻廻奇譚|Eve|2020
+第ゼロ感|10-FEET|2022
+小さな恋のうた|MONGOL800|2001
+世界が終るまでは…/世界が終るまでは|WANDS|1994
+君が好きだと叫びたい|BAAD|1993
+ムーンライト伝説|DALI|1992
+CHA-LA HEAD-CHA-LA|影山ヒロノブ|1989
+ウィーアー!/ウィーアー|きただにひろし|1999
+ブルーバード|いきものがかり|2008
+GO!!!|FLOW|2004
+God knows...|平野綾|2006
+only my railgun|fripSide|2009
+シルエット|KANA-BOON|2014
+青春コンプレックス|結束バンド|2022
+ひまわりの約束|秦基博|2014
+糸|中島みゆき|1992
+時代|中島みゆき|1975
+川の流れのように|美空ひばり|1989
+北国の春|千昌夫|1977
+昴|谷村新司|1980
+津軽海峡・冬景色|石川さゆり|1977
+恋するフォーチュンクッキー|AKB48|2013
+ヘビーローテーション|AKB48|2010
+さよーならまたいつか!|米津玄師|2024
+366日|HY|2008
+ハナミズキ|一青窈|2004
+桜坂|福山雅治|2000
+桜|コブクロ|2005
+さくら(独唱)/さくら|森山直太朗|2003
+Time goes by|Every Little Thing|1998
+世界中の誰よりきっと|中山美穂、WANDS|1992
+夜空ノムコウ|SMAP|1998
+らいおんハート|SMAP|2000
 
 @yue
 半斤八兩|許冠傑|1976
@@ -1340,6 +1565,25 @@ Shall We Talk|陳奕迅|2001
 櫻花樹下|張敬軒|2008
 陀飛輪|陳奕迅|2009
 苦瓜|陳奕迅|2011
+好心分手|盧巧音|2002
+囍帖街/喜帖街|謝安琪|2008
+七友|梁漢文|2002
+你瞞我瞞|陳柏宇|2009
+一人有一個夢想|黎瑞恩|1993
+誰明浪子心|王傑|1989
+每天愛你多一些|張學友|1991
+鐵血丹心|羅文、甄妮|1983
+萬水千山總是情|汪明荃|1982
+天蠶變|關正傑|1979
+楚留香|鄭少秋|1979
+一生所愛|盧冠廷|1995
+記憶棉|張天賦|2022
+勁浪漫 超溫馨/勁浪漫超溫馨|Gareth.T|2023
+記事本|陳慧琳|2002
+必殺技|古巨基|2004
+相依為命|陳小春|2003
+處處吻|楊千嬅|2015
+
 @ot
 La Vie en Rose|Édith Piaf|1947
 La Bamba|Ritchie Valens|1958
@@ -1381,3 +1625,9 @@ Felices los 4|Maluma|2017
 Dákiti|Bad Bunny、Jhay Cortez|2020
 Tití Me Preguntó|Bad Bunny|2022
 DtMF|Bad Bunny|2025
+Chantaje|Shakira、Maluma|2016
+Échame la Culpa|Luis Fonsi、Demi Lovato|2017
+Ella, elle l'a/Ella Elle l'a|France Gall|1987
+Je veux|Zaz|2010
+Mas Que Nada|Sérgio Mendes|1966
+Tusa|Karol G、Nicki Minaj|2019
