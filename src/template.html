@@ -1662,7 +1662,10 @@ function revealAnswer(idx, ok, pts, elapsed, viaClick, gotItem){
   }
   setRing(0);
   // reward: let the song keep playing a bit (only when the answer came from a tap = user gesture)
-  if (G.mode === 'battle' && player.audio === R.audio && !R.audio.paused) return;   // already playing on since the pick
+  if (G.mode === 'battle' && player.audio === R.audio && !R.audio.paused){          // the clip is still playing: carry on from here
+    playOn(R.audio, Math.min(R.start + 14, 30), { onProgress: setRing, onEnd: () => setRing(1), onError: () => {} });
+    return;
+  }
   if (viaClick || R.played){
     const a = R.audio;
     playRange(a, R.start, Math.min(R.start + 14, 30), { onProgress: setRing, onEnd: () => setRing(1), onError: () => {} });
