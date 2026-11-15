@@ -407,8 +407,8 @@ a{color:inherit}
     <h2 class="sec">難度</h2>
     <div class="seg" id="seg-diff">
       <button data-diff="easy"><b>輕鬆</b><small>5 秒片段</small></button>
-      <button data-diff="normal"><b>普通</b><small>3 秒 · 同性別歌手</small></button>
-      <button data-diff="hard"><b>地獄</b><small>1.5 秒 · 一半同歌手</small></button>
+      <button data-diff="normal"><b>普通</b><small>3 秒 · 一半同歌手</small></button>
+      <button data-diff="hard"><b>地獄</b><small>1.5 秒 · 大多同歌手</small></button>
     </div>
     <h2 class="sec">選項數量</h2>
     <div class="seg" id="seg-n">
@@ -455,7 +455,7 @@ a{color:inherit}
       <li><b>闖關模式</b>：共 10 關，每關 5 首，本關分數達到目標才能進下一關；越後面片段越短、選項越多、時間越緊。過過的關卡可以直接選來挑戰。</li>
       <li><b>生存模式</b>：答錯扣一條命；每答對 5 首升一級，片段變短；每答對 10 首回一條命。</li>
       <li><b>好友對戰</b>：一人建立房間，把 4 碼房號或邀請連結傳給朋友。房主按開始後，大家同時倒數、同時播同一首歌，答對越快分數越高，每題結束會顯示所有人的分數，最後排出名次。</li>
-      <li><b>選項難度</b>：輕鬆沒有同歌手的歌、一半是同性別歌手；普通有 2 首同歌手的歌，其他全是同性別歌手；地獄一半是同歌手的歌，其他是同性別、同年代的歌手。</li>
+      <li><b>選項難度</b>：錯的選項會放同一位歌手的其他熱門歌（同時期、歌名像的優先）、歌名很像的歌，以及同性別的歌手。輕鬆很少同歌手；普通約一半是同歌手的歌；地獄大部分是同歌手的歌，其他是歌名相近或同性別、同年代的歌手。</li>
       <li>每次的歌單、片段位置、干擾選項都是隨機的，最近玩過的歌會排到後面。</li>
     </ul>
   </details>
@@ -1379,6 +1379,28 @@ function clipLens(){
 }
 function optionCount(){ return G.nopt; }
 
+/* How alike two titles look: shared words (Latin letters) or shared characters and character pairs (中日韓).
+   「愛你」/「說愛你」, 「寂寞先生」/「寂寞寂寞就好」, "Love Story"/"Love Yourself" all score high. */
+const TITLE_STOP = new Set('the a an of to in on at my me i you your it is and for be we oh la no so do all im its'.split(' '));
+const CHAR_STOP = new Set([...'的了一是不在和也就之兒嗎啊呢吧の']);
+function titleBits(s){
+  if (s._tb) return s._tb;
+  const t = String(s.title).normalize('NFKC').toLowerCase();
+  const words = new Set((t.match(/[a-z0-9À-ɏ']+/g) || []).map(w => w.replace(/'/g, '')).filter(w => w.length > 1 && !TITLE_STOP.has(w)));
+  const cjk = [...t].filter(c => CJK.test(c)).map(c => T2S[c] || c);
+  const pairs = new Set();
+  for (let i = 0; i + 1 < cjk.length; i++) pairs.add(cjk[i] + cjk[i + 1]);
+  return (s._tb = { words, chars: new Set(cjk.filter(c => !CHAR_STOP.has(c))), pairs, len: cjk.length || t.replace(/[^a-z0-9]/g, '').length });
+}
+function titleSim(a, b){
+  const x = titleBits(a), y = titleBits(b);
+  let sc = 0;
+  x.words.forEach(w => { if (y.words.has(w)) sc += 3; });
+  x.pairs.forEach(p => { if (y.pairs.has(p)) sc += 3; });
+  x.chars.forEach(c => { if (y.chars.has(c)) sc += 1; });
+  if (sc && x.len === y.len) sc += 1;
+  return sc;
+}
 function buildOptions(song, n, diff, rng, seen){
   const used = new Set(song.keys);
   const usedArtists = new Set(song.artists);
@@ -1390,6 +1412,8 @@ function buildOptions(song, n, diff, rng, seen){
   const seenIds = seen ? seen.ids : new Set();
   // random order (every song equally likely); songs already shown as choices in this game go last
   const mix = list => shuffle(list.slice(), rng).sort((x, y) => (seenIds.has(x.id) ? 1 : 0) - (seenIds.has(y.id) ? 1 : 0));
+  // best first by a score, with enough randomness that a song doesn't always get the same choices
+  const rank = (list, score) => list.map(s => [s, score(s) + rng() * 2 - (seenIds.has(s.id) ? 4 : 0)]).sort((p, q) => q[1] - p[1]).map(p => p[0]);
   const out = [];
   const take = (list, max, uniqueArtist) => {
     for (const s of list){
@@ -1399,16 +1423,22 @@ function buildOptions(song, n, diff, rng, seen){
       out.push(s); s.keys.forEach(k => used.add(k)); if (uniqueArtist) s.artists.forEach(a => usedArtists.add(a)); max--;
     }
   };
-  // Harder choices: other songs by the same singer, then singers of the same gender (and era).
-  //   easy:   no same-singer songs, about half the others by same-gender singers
-  //   normal: 2 by the same singer (1 with 4 choices), all others by same-gender singers, half of them from the same era
-  //   hard:   half by the same singer, all others by same-gender singers from the same era where possible
-  const nSame = diff === 'easy' ? 0 : diff === 'normal' ? (n >= 6 ? 2 : 1) : Math.floor(n / 2);
-  take(mix(all.filter(sameArtist)), nSame, false);
+  // Harder choices, in this order: other hits by the same singer (from around the same time, look-alike titles first),
+  // songs with look-alike titles, then singers of the same gender (and era). With d = wrong choices (3 / 5 / 8):
+  //   easy:   0 / 1 / 2 by the same singer, 1 look-alike title, about half of the rest by same-gender singers
+  //   normal: 1 / 2 / 4 by the same singer, 1–2 look-alike titles, the rest same-gender singers, half from the same era
+  //   hard:   2 / 4 / 6 by the same singer, up to 2 look-alike titles, the rest same-gender singers from the same era
+  const d = n - 1;
+  const nSame = diff === 'easy' ? Math.floor(d / 4) : diff === 'normal' ? Math.floor(d / 2) : Math.ceil(d * 2 / 3);
+  const nSim = diff === 'easy' ? 1 : diff === 'normal' ? (d >= 8 ? 2 : 1) : 2;
+  const dy = s => Math.abs(s.year - song.year);
+  take(rank(all.filter(sameArtist), s => Math.min(titleSim(song, s), 4) + (dy(s) <= 3 ? 2 : dy(s) <= 6 ? 1 : 0)), nSame, false);
   const rest = all.filter(s => !sameArtist(s));
+  const alike = rest.map(s => [s, titleSim(song, s)]).filter(p => p[1] >= 2);
+  take(rank(alike.map(p => p[0]), s => Math.min(titleSim(song, s), 6) + (sameVoice(s) ? 2 : 0) + (near(s) ? 1 : 0)), nSim, true);
   if (diff === 'hard'){ take(mix(rest.filter(s => sameVoice(s) && near(s))), 99, true); take(mix(rest.filter(sameVoice)), 99, true); }
   else if (diff === 'normal'){ take(mix(rest.filter(s => sameVoice(s) && near(s))), Math.ceil((n - 1 - out.length) / 2), true); take(mix(rest.filter(sameVoice)), 99, true); }
-  else take(mix(rest.filter(sameVoice)), Math.floor((n - 1) / 2), true);
+  else take(mix(rest.filter(sameVoice)), Math.floor((n - 1 - out.length) / 2), true);
   take(mix(rest), 99, true);
   take(mix(all), 99, false);
   const opts = shuffle([song, ...out], rng);
@@ -1966,7 +1996,7 @@ document.addEventListener('keydown', e => {
 });
 
 /*__BATTLE__*/
-if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, poolFor, recentArtistPenalty, mp, srvNow, get G(){ return G; }, get R(){ return R; } };   // test hook
+if (/[?&]debug\b/.test(location.search)) window.__erg = { BANK, diverseOrder, buildOptions, titleSim, poolFor, recentArtistPenalty, mp, srvNow, get G(){ return G; }, get R(){ return R; } };   // test hook
 renderHome();
 })();
 </script>
